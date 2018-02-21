@@ -75,7 +75,7 @@ class MysqlDatabaseTable implements DatabaseInterface
             $index = new MysqlDatabaseIndex($indexName, $columns, $unique);
             $index->setTable($this->getTable());
             $this->indexes[$indexName] = $index;
-        } catch (\Exception $exception) {
+        } catch (\Exception $e) {
 
         }
     }
@@ -152,7 +152,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         foreach ($columns as $column) {
             try {
                 $modifications[] = $column->createStatement();
-            } catch (TableHasNotDefinedException $exception) {
+            } catch (TableHasNotDefinedException $e) {
                 continue;
             }
         }
@@ -160,7 +160,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         foreach ($indexes as $index) {
             try {
                 $modifications[] = $index->createStatement();
-            } catch (TableHasNotDefinedException $exception) {
+            } catch (TableHasNotDefinedException $e) {
                 continue;
             }
         }

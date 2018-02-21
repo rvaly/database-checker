@@ -20,7 +20,6 @@ class MysqlRepository
         $this->pdo = $pdo;
     }
 
-
     /**
      * @param $database
      *

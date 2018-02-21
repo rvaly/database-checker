@@ -30,12 +30,12 @@ class MysqlDatabaseCheckerService
             try {
                 $newTable = $this->getTable($table, $newTables);
                 $modificationsBetweenTable[] = $this->checkTable($table, $newTable);
-            } catch (TableNotExistException $exception) {
+            } catch (TableNotExistException $e) {
                 //@todo Drop statement.
                 //@todo config for generate create or drop.
                 $modificationsBetweenTable[] = $this->createStatement($table);
                 continue;
-            } catch (\Exception $exception) {
+            } catch (\Exception $e) {
                 continue;
             }
         }
@@ -43,7 +43,7 @@ class MysqlDatabaseCheckerService
         foreach ($newTables as $newTable) {
             try {
                 $this->getTable($newTable, $tables);
-            } catch (TableNotExistException $exception) {
+            } catch (TableNotExistException $e) {
                 $modificationsBetweenTable[] = $this->createStatement($newTable);
                 continue;
             }
@@ -95,10 +95,10 @@ class MysqlDatabaseCheckerService
             try {
                 $newColumn = $this->getColumn($column, $newColumns);
                 $modificationsBetweenTable[$newColumn->getName()] = $this->checkColumn($column, $newColumn);
-            } catch (ColumnNotExistException $exception) {
+            } catch (ColumnNotExistException $e) {
                 $modificationsBetweenTable[$column->getName()] = $this->createStatement($column);
                 continue;
-            } catch (\Exception $exception) {
+            } catch (\Exception $e) {
                 continue;
             }
         }
@@ -110,7 +110,7 @@ class MysqlDatabaseCheckerService
                 if (in_array($colonne, $index->getColumns(), false)) {
                     try {
                         $modificationsBetweenTable[] = $index->alterStatement();
-                    } catch (TableHasNotDefinedException $exception) {
+                    } catch (TableHasNotDefinedException $e) {
                         continue;
                     }
                 }
@@ -158,7 +158,7 @@ class MysqlDatabaseCheckerService
 
         try {
             $statements = $newColumn->alterStatement();
-        } catch (\RuntimeException $exception) {
+        } catch (\RuntimeException $e) {
             return [];
         }
 
@@ -174,7 +174,7 @@ class MysqlDatabaseCheckerService
     {
         try {
             return $databaseInterface->createStatement();
-        } catch (TableHasNotColumnException $exception) {
+        } catch (TableHasNotColumnException $e) {
             return [];
         }
     }

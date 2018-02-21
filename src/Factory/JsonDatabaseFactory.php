@@ -52,7 +52,11 @@ class JsonDatabaseFactory
         $tables = [];
         $dataTables = $this->resolve($data);
         foreach ($dataTables as $tableName => $dataTable) {
-            $table = new MysqlDatabaseTable($tableName);
+            try {
+                $table = new MysqlDatabaseTable($tableName);
+            } catch (\Exception $e) {
+                continue;
+            }
             foreach ((array)$dataTable['columns'] as $columnName => $row) {
                 $table->addColumn(new MysqlDatabaseColumn($columnName, $row['type'], $row['length'], $row['nullable'], $row['defaultValue'], $row['extra']));
             }
