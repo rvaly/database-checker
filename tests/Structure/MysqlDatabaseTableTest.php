@@ -65,6 +65,14 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertCount(3, $statements);
     }
 
+    public function testCreateStatementWithoutColumn()
+    {
+        $databaseTable = new MysqlDatabaseTable('activites');
+        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException");
+        $statements = $databaseTable->createStatement();
+    }
+
+
     public function testAlterStatement()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
