@@ -28,7 +28,9 @@ class MysqlRepository
      */
     public function getTablesStructure($database)
     {
-        $sth = $this->pdo->query('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=\'' . $database . '\' GROUP BY TABLE_NAME ORDER BY TABLE_NAME');
+        $sth = $this->pdo->prepare('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=:database GROUP BY TABLE_NAME ORDER BY TABLE_NAME');
+        $sth->bindParam(':database', $database);
+        $sth->execute();
         $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
         return array_column($results, 'TABLE_NAME');
@@ -49,13 +51,16 @@ class MysqlRepository
                 FROM 
                   information_schema.statistics 
                 WHERE 
-                  TABLE_SCHEMA=\'' . $database . '\' AND 
-                  TABLE_NAME = \'' . $table . '\'  
+                  TABLE_SCHEMA= :database AND 
+                  TABLE_NAME= :myTable  
                 GROUP BY
                   TABLE_NAME,INDEX_NAME
                 ORDER BY
                   TABLE_NAME,INDEX_NAME,COLUMN_NAME';
-        $sth = $this->pdo->query($sql);
+        $sth = $this->pdo->prepare($sql);
+        $sth->bindParam(':database', $database);
+        $sth->bindParam(':myTable', $table);
+        $sth->execute();
 
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -77,13 +82,15 @@ class MysqlRepository
                   EXTRA  
                 FROM INFORMATION_SCHEMA.COLUMNS 
                 WHERE 
-                  TABLE_SCHEMA=\'' . $database . '\' AND 
-                  TABLE_NAME = \'' . $table . '\' 
+                  TABLE_SCHEMA= :database AND 
+                  TABLE_NAME= :myTable 
                 ORDER BY ORDINAL_POSITION';
-        $sth = $this->pdo->query($sql);
+        $sth = $this->pdo->prepare($sql);
+        $sth->bindParam(':database', $database);
+        $sth->bindParam(':myTable', $table);
+        $sth->execute();
 
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
-
 
 }
