@@ -45,7 +45,7 @@ class MysqlDatabaseFactory
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($export));
         try {
             $export = $factoryJsonDatabase->generate();
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             throw new \LogicException('Un expected error with json.' . $e->getMessage());
         }
 

@@ -98,7 +98,7 @@ class MysqlDatabaseCheckerService
             } catch (ColumnNotExistException $exception) {
                 $modificationsBetweenTable[$column->getName()] = $this->createStatement($column);
                 continue;
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
                 continue;
             }
         }
@@ -110,7 +110,7 @@ class MysqlDatabaseCheckerService
                 if (in_array($colonne, $index->getColumns(), false)) {
                     try {
                         $modificationsBetweenTable[] = $index->alterStatement();
-                    } catch (TableHasNotDefinedException $e) {
+                    } catch (TableHasNotDefinedException $exception) {
                         continue;
                     }
                 }
@@ -174,7 +174,7 @@ class MysqlDatabaseCheckerService
     {
         try {
             return $databaseInterface->createStatement();
-        } catch (TableHasNotColumnException $e) {
+        } catch (TableHasNotColumnException $exception) {
             return [];
         }
     }
