@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Guillaume
- * Date: 19/02/2018
- * Time: 13:46
- */
-
 namespace Starkerxp\DatabaseChecker\Checker;
 
 
