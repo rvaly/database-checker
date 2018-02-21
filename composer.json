@@ -1,0 +1,29 @@
+{
+  "name": "starker-xp/database-checker",
+  "license": "MIT",
+  "type": "library",
+  "description": "Permet d'effectuer un diff entre deux configuration d'une base de données",
+  "autoload": {
+    "psr-4": {
+      "Starkerxp\\DatabaseChecker\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Starkerxp\\DatabaseChecker\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Guillaume",
+      "email": "g.caouissin@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^5.4",
+    "symfony/options-resolver": "^3.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  }
+}
