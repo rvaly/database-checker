@@ -144,7 +144,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     public function createStatement()
     {
         $modifications = [];
-        $modifications[] = [sprintf('CREATE TABLE IF NOT EXIST `%s`', $this->getTable())];
+        $modifications[] = [sprintf('CREATE TABLE IF NOT EXISTS `%s`', $this->getTable())];
         $columns = $this->getColumns();
         if (!count($columns)) {
             throw new TableHasNotColumnException('');
@@ -165,7 +165,23 @@ class MysqlDatabaseTable implements DatabaseInterface
             }
         }
 
-        return $this->formatStatements($modifications);
+        if (!$modifications = $this->formatStatements($modifications)) {
+            return [];
+        }
+
+        return $this->formatCreateStatement($modifications);
+
+    }
+    
+    private function formatCreateStatement(array $modifications)
+    {
+        $finalStatement = array_shift($modifications).'(';
+        $tmp = [];
+        foreach ($modifications as $modification) {
+            $tmp[] = str_replace(['ALTER TABLE `'.$this->getTable().'` ADD COLUMN', 'ALTER TABLE `'.$this->getTable().'` ADD ', ';',], '', $modification);
+        }
+
+        return [$finalStatement.implode(',', $tmp).');'];
     }
 
     /**

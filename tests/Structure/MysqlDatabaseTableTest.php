@@ -62,14 +62,15 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
         $databaseTable->addPrimary(['id']);
         $statements = $databaseTable->createStatement();
-        $this->assertCount(3, $statements);
+        $this->assertCount(1, $statements);
+        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`( `id` int(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
     }
 
     public function testCreateStatementWithoutColumn()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException");
-        $statements = $databaseTable->createStatement();
+        $databaseTable->createStatement();
     }
 
 
