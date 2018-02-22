@@ -2,8 +2,8 @@
 
 namespace Starkerxp\DatabaseChecker\Tests\Structure;
 
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
 use PHPUnit\Framework\TestCase;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
 
 class MysqlDatabaseIndexTest extends TestCase
 {
@@ -75,10 +75,10 @@ class MysqlDatabaseIndexTest extends TestCase
     /**
      * @dataProvider dataProviderStatements
      *
-     * @param string $expected
-     * @param string $expectedAlter
-     * @param string $name
-     * @param array $columns
+     * @param string  $expected
+     * @param string  $expectedAlter
+     * @param string  $name
+     * @param array   $columns
      * @param boolean $unique
      *
      * @throws \Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException

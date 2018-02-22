@@ -2,9 +2,9 @@
 
 namespace Starkerxp\DatabaseChecker\Tests\Structure;
 
+use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
-use PHPUnit\Framework\TestCase;
 
 class MysqlDatabaseTableTest extends TestCase
 {
@@ -63,7 +63,7 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->addPrimary(['id']);
         $statements = $databaseTable->createStatement();
         $this->assertCount(1, $statements);
-        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`( `id` int(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
+        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`( `id` INT(255) NOT NULL AUTO_INCREMENT,PRIMARY KEY (`id`));", $statements[0]);
     }
 
     public function testCreateStatementWithoutColumn()

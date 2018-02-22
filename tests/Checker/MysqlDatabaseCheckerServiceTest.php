@@ -2,15 +2,16 @@
 
 namespace Starkerxp\DatabaseChecker\Tests\Checker;
 
+use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Checker\MysqlDatabaseCheckerService;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
-use PHPUnit\Framework\TestCase;
 
 class MysqlDatabaseCheckerServiceTest extends TestCase
 {
 
-    public function testA(){
+    public function testA()
+    {
 
         $table = new MysqlDatabaseTable('activite');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
@@ -36,7 +37,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $newTable->addPrimary(['id']);
 
         $service = new MysqlDatabaseCheckerService();
-        $modifications = $service->diff([$table, $table2], [$newTable, ]);
+        $modifications = $service->diff([$table, $table2], [$newTable,]);
 
 
     }

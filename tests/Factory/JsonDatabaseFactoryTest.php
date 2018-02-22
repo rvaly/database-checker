@@ -3,10 +3,10 @@
 namespace Starkerxp\DatabaseChecker\Tests\Factory;
 
 
+use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Factory\JsonDatabaseFactory;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
-use PHPUnit\Framework\TestCase;
 
 class JsonDatabaseFactoryTest extends TestCase
 {

@@ -2,9 +2,9 @@
 
 namespace Starkerxp\DatabaseChecker\Tests\Factory;
 
+use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Factory\JsonDatabaseFactory;
 use Starkerxp\DatabaseChecker\Factory\MysqlDatabaseFactory;
-use PHPUnit\Framework\TestCase;
 
 class MysqlDatabaseFactoryTest extends TestCase
 {
