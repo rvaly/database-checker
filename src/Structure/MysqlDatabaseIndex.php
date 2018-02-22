@@ -32,105 +32,9 @@ class MysqlDatabaseIndex implements DatabaseInterface
         $this->columns = $columns;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    /**
-     * @param mixed $table
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isUnique()
-    {
-        return $this->unique;
-    }
-
-    /**
-     * @param bool $unique
-     */
-    public function setUnique($unique)
-    {
-        $this->unique = $unique;
-    }
-
-    /**
-     * @return array
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @param array $columns
-     */
-    public function setColumns(array $columns)
-    {
-        $this->columns = $columns;
-    }
-
     public function toArray()
     {
         return get_object_vars($this);
-    }
-
-    public function isPrimary()
-    {
-        return strtolower($this->name) == 'primary';
-    }
-
-    public function getIndexType(){
-        if($this->isPrimary()){
-            return 'PRIMARY';
-        }
-        if($this->isUnique()){
-            return 'UNIQUE';
-        }
-        return '';
-    }
-
-    /**
-     * @return array
-     *
-     * @throws TableHasNotDefinedException
-     */
-    public function createStatement()
-    {
-        if (!$this->getTable()) {
-            throw new TableHasNotDefinedException('table not defined');
-        }
-        if ($this->isPrimary()) {
-            return [sprintf('ALTER TABLE `%s` ADD PRIMARY KEY (%s);', $this->getTable(), '`' . implode('`, `', $this->getColumns()) . '`')];
-        }
-
-        return [sprintf('ALTER TABLE `%s` ADD %s INDEX `%s` (%s);', $this->getTable(), $this->getIndexType() ,$this->getName(), '`' . implode('`, `', $this->getColumns()) . '`')];
     }
 
     /**
@@ -152,6 +56,103 @@ class MysqlDatabaseIndex implements DatabaseInterface
         $modifications[] = $this->createStatement()[0];
 
         return $modifications;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    public function isPrimary()
+    {
+        return strtolower($this->name) == 'primary';
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return array
+     *
+     * @throws TableHasNotDefinedException
+     */
+    public function createStatement()
+    {
+        if (!$this->getTable()) {
+            throw new TableHasNotDefinedException('table not defined');
+        }
+        if ($this->isPrimary()) {
+            return [sprintf('ALTER TABLE `%s` ADD PRIMARY KEY (%s);', $this->getTable(), '`' . implode('`, `', $this->getColumns()) . '`')];
+        }
+
+        return [sprintf('ALTER TABLE `%s` ADD %s INDEX `%s` (%s);', $this->getTable(), $this->getIndexType(), $this->getName(), '`' . implode('`, `', $this->getColumns()) . '`')];
+    }
+
+    /**
+     * @return array
+     */
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    public function getIndexType()
+    {
+        if ($this->isPrimary()) {
+            return 'PRIMARY';
+        }
+        if ($this->isUnique()) {
+            return 'UNIQUE';
+        }
+        return '';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnique()
+    {
+        return $this->unique;
+    }
+
+    /**
+     * @param array $columns
+     */
+    public function setColumns(array $columns)
+    {
+        $this->columns = $columns;
+    }
+
+    /**
+     * @param bool $unique
+     */
+    public function setUnique($unique)
+    {
+        $this->unique = $unique;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @param mixed $table
+     */
+    public function setTable($table)
+    {
+        $this->table = $table;
     }
 
 

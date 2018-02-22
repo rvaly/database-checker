@@ -60,20 +60,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
         }
     }
 
-    /**
-     * @param mixed $table
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-    }
-
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
     public function toArray()
     {
         return get_object_vars($this);
@@ -96,6 +82,31 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
+     * @return array
+     *
+     * @throws TableHasNotDefinedException
+     */
+    public function createStatement()
+    {
+        if (!$this->getTable()) {
+            throw new TableHasNotDefinedException('table not defined');
+        }
+        $null = $this->getNullable() ? '' : 'NOT';
+        $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
+        $modification = sprintf('ALTER TABLE `%s` ADD COLUMN `%s` %s %s NULL %s %s;', $this->getTable(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra());
+
+        return [str_replace(['   ', '  ',], ' ', $modification)];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
      * @return mixed
      */
     public function getNullable()
@@ -111,20 +122,9 @@ class MysqlDatabaseColumn implements DatabaseInterface
         return $this->defaultValue;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getExtra()
+    public function getName()
     {
-        return $this->extra;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTable()
-    {
-        return $this->table;
+        return $this->name;
     }
 
     public function getColonneType()
@@ -138,20 +138,19 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
-     * @return array
-     *
-     * @throws TableHasNotDefinedException
+     * @return mixed
      */
-    public function createStatement()
+    public function getExtra()
     {
-        if (!$this->getTable()) {
-            throw new TableHasNotDefinedException('table not defined');
-        }
-        $null = $this->getNullable() ? '' : 'NOT';
-        $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
-        $modification = sprintf('ALTER TABLE `%s` ADD COLUMN `%s` %s %s NULL %s %s;', $this->getTable(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra());
+        return $this->extra;
+    }
 
-        return [str_replace(['   ', '  ',], ' ', $modification)];
+    /**
+     * @param mixed $table
+     */
+    public function setTable($table)
+    {
+        $this->table = $table;
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace Starkerxp\DatabaseChecker\Checker;
 
 
@@ -53,7 +54,7 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseTable $table
+     * @param MysqlDatabaseTable   $table
      * @param MysqlDatabaseTable[] $newTables
      *
      * @return mixed
@@ -121,7 +122,7 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseColumn $column
+     * @param MysqlDatabaseColumn   $column
      * @param MysqlDatabaseColumn[] $newColumns
      *
      * @return mixed

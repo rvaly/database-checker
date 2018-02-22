@@ -69,7 +69,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     protected function addIndexType($indexName, $unique, array $columns)
     {
         if (empty($indexName)) {
-            $indexName = ($unique ? 'UNI_' : 'IDX_').md5(implode(',', $columns));
+            $indexName = ($unique ? 'UNI_' : 'IDX_') . md5(implode(',', $columns));
         }
         try {
             $index = new MysqlDatabaseIndex($indexName, $columns, $unique);
@@ -173,19 +173,6 @@ class MysqlDatabaseTable implements DatabaseInterface
 
     }
 
-    private function formatCreateStatement(array $modifications)
-    {
-        if(!$finalStatement = array_shift($modifications)){
-            return [];
-        }
-        $tmp = [];
-        foreach ($modifications as $modification) {
-            $tmp[] = str_replace(['ALTER TABLE `'.$this->getTable().'` ADD COLUMN', 'ALTER TABLE `'.$this->getTable().'` ADD ', ';',], '', $modification);
-        }
-
-        return ['('.$finalStatement.implode(',', $tmp).');'];
-    }
-
     /**
      * @param array $modificationsBetweenTable
      *
@@ -201,6 +188,19 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
 
         return array_filter(array_unique($statements));
+    }
+
+    private function formatCreateStatement(array $modifications)
+    {
+        if (!$finalStatement = array_shift($modifications)) {
+            return [];
+        }
+        $tmp = [];
+        foreach ($modifications as $modification) {
+            $tmp[] = str_replace(['ALTER TABLE `' . $this->getTable() . '` ADD COLUMN', 'ALTER TABLE `' . $this->getTable() . '` ADD ', ';',], '', $modification);
+        }
+
+        return ['(' . $finalStatement . implode(',', $tmp) . ');'];
     }
 
     /**
