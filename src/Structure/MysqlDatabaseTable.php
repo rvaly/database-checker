@@ -183,7 +183,7 @@ class MysqlDatabaseTable implements DatabaseInterface
             $tmp[] = str_replace(['ALTER TABLE `'.$this->getTable().'` ADD COLUMN', 'ALTER TABLE `'.$this->getTable().'` ADD ', ';',], '', $modification);
         }
 
-        return ['('.$finalStatement.implode(',', $tmp).');'];
+        return [$finalStatement.'('.implode(',', $tmp).');'];
     }
 
     /**
