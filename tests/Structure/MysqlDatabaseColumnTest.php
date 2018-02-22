@@ -12,7 +12,7 @@ class MysqlDatabaseColumnTest extends TestCase
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
         $this->assertEquals('int', $databaseColumn->getType());
-        $this->assertEquals('int(255)', $databaseColumn->getColonneType());
+        $this->assertEquals('INT(255)', $databaseColumn->getColonneType());
     }
 
     public function testException()
@@ -42,9 +42,9 @@ class MysqlDatabaseColumnTest extends TestCase
             $databaseColumn = new MysqlDatabaseColumn('id', $type, '255', false, null, null);
             $databaseColumn->setTable('activite');
             $statement = $databaseColumn->createStatement();
-            $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` ' . $type . '(255) NOT NULL ;', $statement[0]);
+            $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` ' . strtoupper($type) . '(255) NOT NULL ;', $statement[0]);
             $statement = $databaseColumn->alterStatement();
-            $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` ' . $type . '(255) NOT NULL ;', $statement[0]);
+            $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` ' .  strtoupper($type) . '(255) NOT NULL ;', $statement[0]);
         }
 
         $types = ['text', 'blob'];
@@ -52,9 +52,9 @@ class MysqlDatabaseColumnTest extends TestCase
             $databaseColumn = new MysqlDatabaseColumn('id', $type, '255', false, null, null);
             $databaseColumn->setTable('activite');
             $statement = $databaseColumn->createStatement();
-            $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` ' . $type . ' NOT NULL ;', $statement[0]);
+            $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` ' .  strtoupper($type) . ' NOT NULL ;', $statement[0]);
             $statement = $databaseColumn->alterStatement();
-            $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` ' . $type . ' NOT NULL ;', $statement[0]);
+            $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` ' .  strtoupper($type) . ' NOT NULL ;', $statement[0]);
         }
     }
 
