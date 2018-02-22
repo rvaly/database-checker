@@ -64,8 +64,8 @@ class MysqlDatabaseColumnTest extends TestCase
         $databaseColumn->setTable('activite');
         $databaseColumn->optimizeType();
         $statement = $databaseColumn->createStatement();
-        $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` TINYINT(1) NOT NULL AUTO_INCREMENT;', $statement[0]);
+        $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` TINYINT(1) NOT NULL auto_increment;', $statement[0]);
         $statement = $databaseColumn->alterStatement();
-        $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` TINYINT(1) NOT NULL AUTO_INCREMENT;', $statement[0]);
+        $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` TINYINT(1) NOT NULL auto_increment;', $statement[0]);
     }
 }

@@ -51,7 +51,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function optimizeType()
     {
         $isEnum = explode('enum', $this->type);
-        if ($isEnum) {
+        if (!empty($isEnum)) {
             $numberElements = substr_count(str_replace(['(', ')', "'",], '', $isEnum[1]), ',') + 1;
             if ($numberElements == 2) {
                 $this->type = 'tinyint';
@@ -134,7 +134,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
             $baseType = $baseType . '(' . $this->length . ')';
         }
 
-        return $baseType;
+        return strtoupper($baseType);
     }
 
     /**

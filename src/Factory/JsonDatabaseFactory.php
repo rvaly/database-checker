@@ -132,11 +132,10 @@ class JsonDatabaseFactory
             foreach ((array)$dataTable['columns'] as $columnName => $column) {
                 $dataTable['columns'][$columnName] = $resolverColumns->resolve($column);
             }
-            foreach ((array)$dataTable['indexes'] as $keyIndex => $index) {
-                $dataTable['indexes'][$keyIndex] = $resolverIndex->resolve($index);
-            }
-            foreach ((array)$dataTable['uniques'] as $keyIndex => $index) {
-                $dataTable['uniques'][$keyIndex] = $resolverIndex->resolve($index);
+            foreach (['indexes', 'uniques'] as $indexKey) {
+                foreach ((array)$dataTable[$indexKey] as $keyIndex => $index) {
+                    $dataTable[$indexKey][$keyIndex] = $resolverIndex->resolve($index);
+                }
             }
             $export[$nomTable] = $dataTable;
         }

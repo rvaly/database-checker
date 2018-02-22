@@ -63,7 +63,7 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->addPrimary(['id']);
         $statements = $databaseTable->createStatement();
         $this->assertCount(1, $statements);
-        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`( `id` INT(255) NOT NULL AUTO_INCREMENT,PRIMARY KEY (`id`));", $statements[0]);
+        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`( `id` INT(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
     }
 
     public function testCreateStatementWithoutColumn()
