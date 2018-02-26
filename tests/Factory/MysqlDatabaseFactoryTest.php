@@ -110,4 +110,47 @@ class MysqlDatabaseFactoryTest extends TestCase
 
         return $oMock;
     }
+
+
+    public function testGenerateEnumTableSinceJson()
+    {
+        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepositoryForEnum(), 'hektor2');
+        $export = $factoryMysqlDatabase->generate();
+        $expectedJson = [
+            'activite' => [
+                'indexes' => [],
+                'columns' => [
+                    'id' => ['type' => "enum('0','1')", 'length' => null, 'extra' => null,],
+                ],
+            ],
+        ];
+
+        $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($expectedJson));
+        $expected = $factoryJsonDatabase->generate();
+        $this->assertEquals($expected, $export);
+    }
+
+
+    private function mockMysqlRepositoryForEnum()
+    {
+        $oMock = $this->createMock('\Starkerxp\DatabaseChecker\Repository\MysqlRepository');
+        $oMock->expects($this->any())
+            ->method('getTablesStructure')
+            ->with('hektor2')
+            ->willReturn(['activite']);
+
+        $oMock->expects($this->any())
+            ->method('fetchColumnsStructure')
+            ->with('hektor2', 'activite')
+            ->willReturn([
+                ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'enum', 'COLUMN_TYPE' => "enum('0','1')", 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => null, 'COLLATION_NAME' => null,],
+            ]);
+
+        $oMock->expects($this->any())
+            ->method('fetchIndexStructure')
+            ->with('hektor2', 'activite')
+            ->willReturn([]);
+
+        return $oMock;
+    }
 }
