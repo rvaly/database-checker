@@ -16,6 +16,7 @@ class MysqlDatabaseFactory
 
     protected $databaseName;
     protected $repositoryMysql;
+    private $checkCollate = false;
 
     /**
      * MysqlDatabaseFactory constructor.
@@ -27,6 +28,11 @@ class MysqlDatabaseFactory
     {
         $this->repositoryMysql = $repositoryMysql;
         $this->databaseName = $databaseName;
+    }
+
+    public function enableCheckCollate()
+    {
+        $this->checkCollate = true;
     }
 
     /**

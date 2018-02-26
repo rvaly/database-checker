@@ -22,6 +22,11 @@ class MysqlDatabaseTable implements DatabaseInterface
     private $indexes = [];
 
     /**
+     * @var string
+     */
+    private $collate;
+
+    /**
      * DatabaseTableStructure constructor.
      *
      * @param $table
@@ -34,6 +39,22 @@ class MysqlDatabaseTable implements DatabaseInterface
             throw new TableHasNotDefinedException('');
         }
         $this->table = $table;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollate()
+    {
+        return $this->collate;
+    }
+
+    /**
+     * @param string $collate
+     */
+    public function setCollate($collate)
+    {
+        $this->collate = $collate;
     }
 
     public function addColumn(MysqlDatabaseColumn $column)
@@ -152,6 +173,9 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
         foreach ($columns as $column) {
             try {
+                if($this->getCollate() == ''){
+                    $column->setCollate('');
+                }
                 $modifications[] = $column->createStatement();
             } catch (TableHasNotDefinedException $e) {
                 continue;
@@ -198,10 +222,11 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
         $tmp = [];
         foreach ($modifications as $modification) {
-            $tmp[] = str_replace(['ALTER TABLE `' . $this->getTable() . '` ADD COLUMN', 'ALTER TABLE `' . $this->getTable() . '` ADD ', ';',], '', $modification);
+            $tmp[] = trim(str_replace(['ALTER TABLE `' . $this->getTable() . '` ADD COLUMN', 'ALTER TABLE `' . $this->getTable() . '` ADD ', ';',], '', $modification));
         }
+        $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE='%s'", $this->getCollate());
 
-        return [$finalStatement . '(' . implode(',', $tmp) . ');'];
+        return [$finalStatement . '(' . implode(',', $tmp) . ')' . $collate . ';'];
     }
 
     /**
@@ -210,7 +235,12 @@ class MysqlDatabaseTable implements DatabaseInterface
      */
     public function alterStatement()
     {
-        throw new \RuntimeException('Not implemented');
+        $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE='%s'", $this->getCollate());
+        if ($collate == '') {
+            throw new \RuntimeException('Not implemented');
+        }
+
+        return [sprintf('ALTER TABLE `%s` %s;', $this->getTable(), $collate)];
     }
 
 }

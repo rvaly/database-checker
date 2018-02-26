@@ -20,6 +20,16 @@ class MysqlRepository
         $this->pdo = $pdo;
     }
 
+    public function getSchemaCollation($database)
+    {
+        $sth = $this->pdo->prepare('SELECT default_collation_name FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=:database');
+        $sth->bindParam(':database', $database);
+        $sth->execute();
+        $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
+
+        return array_column($results, 'default_collation_name')[0];
+    }
+
     /**
      * @param $database
      *
@@ -29,6 +39,29 @@ class MysqlRepository
     {
         $sth = $this->pdo->prepare('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=:database GROUP BY TABLE_NAME ORDER BY TABLE_NAME');
         $sth->bindParam(':database', $database);
+        $sth->execute();
+        $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
+
+        return array_column($results, 'TABLE_NAME');
+    }
+
+    /**
+     * @param $database
+     * @param $table
+     *
+     * @return array
+     */
+    public function getTablesCollation($database, $table)
+    {
+        $sql =' SELECT c.collation_name
+                FROM information_schema.`TABLES` t
+                INNER JOIN information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` c ON c.collation_name = t.table_collation
+                WHERE 
+                     t.table_schema = :database
+                   AND t.table_name = :table';
+        $sth = $this->pdo->prepare($sql);
+        $sth->bindParam(':database', $database);
+        $sth->bindParam(':table', $table);
         $sth->execute();
         $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -78,7 +111,8 @@ class MysqlRepository
                   COLUMN_TYPE, 
                   IS_NULLABLE, 
                   COLUMN_DEFAULT, 
-                  EXTRA  
+                  EXTRA,
+                  COLLATION_NAME
                 FROM INFORMATION_SCHEMA.COLUMNS 
                 WHERE 
                   TABLE_SCHEMA= :database AND 

@@ -15,6 +15,15 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseCheckerService
 {
+    /**
+     * @var boolean
+     */
+    private $checkCollate;
+
+    /**
+     * @var boolean
+     */
+    private $checkCasse;
 
     /**
      * @param MysqlDatabaseTable[] $tables
@@ -36,7 +45,7 @@ class MysqlDatabaseCheckerService
                 //@todo config for generate create or drop.
                 $modificationsBetweenTable[] = $this->createStatement($table);
                 continue;
-            } catch (\Exception $e) {
+            } catch (NotCompareDifferentTableException $e) {
                 continue;
             }
         }
@@ -84,7 +93,7 @@ class MysqlDatabaseCheckerService
             throw new NotCompareDifferentTableException('On ne compare pas deux table avec un nom diff�rent');
         }
         // Aucune différence
-        if ($table == $newTable) {
+        if ($this->tableIsEquals($table, $newTable)) {
             return [];
         }
 
@@ -121,6 +130,33 @@ class MysqlDatabaseCheckerService
         return $this->formatStatements($modificationsBetweenTable);
     }
 
+    private function tableIsEquals(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
+    {
+        // Table is equals no need more check
+        if ($table == $newTable) {
+            return true;
+        }
+
+        if (!$this->checkCollate) {
+            $this->disabledCollate($table);
+            $this->disabledCollate($newTable);
+        }
+
+        return $table == $newTable;
+    }
+
+    /**
+     * @param MysqlDatabaseTable $table
+     */
+    private function disabledCollate(MysqlDatabaseTable $table)
+    {
+        $table->setCollate('');
+        $columns = $table->getColumns();
+        foreach ($columns as $column) {
+            $column->setCollate('');
+        }
+    }
+
     /**
      * @param MysqlDatabaseColumn   $column
      * @param MysqlDatabaseColumn[] $newColumns
@@ -153,7 +189,7 @@ class MysqlDatabaseCheckerService
         if ($column->getName() != $newColumn->getName()) {
             throw new NotCompareDifferentColumnException('On ne compare pas deux colonnes avec un nom diff�rent');
         }
-        if ($column == $newColumn) {
+        if ($this->columnIsEquals($column, $newColumn)) {
             return [];
         }
 
@@ -164,6 +200,21 @@ class MysqlDatabaseCheckerService
         }
 
         return $statements;
+    }
+
+    private function columnIsEquals(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn)
+    {
+        // Column is equals no need more check
+        if ($column == $newColumn) {
+            return true;
+        }
+
+        if (!$this->checkCollate) {
+            $column->setCollate('');
+            $newColumn->setCollate('');
+        }
+
+        return $column == $newColumn;
     }
 
     /**

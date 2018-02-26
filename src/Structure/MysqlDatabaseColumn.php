@@ -15,6 +15,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     private $nullable;
     private $defaultValue;
     private $extra;
+    private $collate;
 
     /**
      * DatabaseColumnStructure constructor.
@@ -40,6 +41,27 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $this->nullable = $nullable;
         $this->defaultValue = $defaultValue;
         $this->extra = $extra;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollate()
+    {
+        $type = $this->getType();
+        if (!in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar'], false)) {
+            return '';
+        }
+
+        return $this->collate;
+    }
+
+    /**
+     * @param string $collate
+     */
+    public function setCollate($collate)
+    {
+        $this->collate = $collate;
     }
 
     private function setType($type)
@@ -93,7 +115,8 @@ class MysqlDatabaseColumn implements DatabaseInterface
         }
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
-        $modification = sprintf('ALTER TABLE `%s` ADD COLUMN `%s` %s %s NULL %s %s;', $this->getTable(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra());
+        $collate = $this->getCollate()==''?'':sprintf("COLLATE '%s'", $this->getCollate());
+        $modification = sprintf('ALTER TABLE `%s` ADD COLUMN `%s` %s %s NULL %s %s %s;', $this->getTable(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
         return [str_replace(['   ', '  ',], ' ', $modification)];
     }
@@ -166,7 +189,8 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
         $columnName = '`' . $this->getName() . '`';
-        $modification = sprintf('ALTER TABLE `%s` CHANGE COLUMN %s %s %s %s NULL %s %s;', $this->getTable(), $columnName, $columnName, $this->getColonneType(), $null, $default, $this->getExtra());
+        $collate = $this->getCollate()==''?'':sprintf("COLLATE '%s'", $this->getCollate());
+        $modification = sprintf('ALTER TABLE `%s` CHANGE COLUMN %s %s %s %s NULL %s %s %s;', $this->getTable(), $columnName, $columnName, $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
         return [str_replace(['   ', '  ',], ' ', $modification)];
     }

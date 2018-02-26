@@ -63,7 +63,7 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->addPrimary(['id']);
         $statements = $databaseTable->createStatement();
         $this->assertCount(1, $statements);
-        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`( `id` INT(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
+        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` INT(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
     }
 
     public function testCreateStatementWithoutColumn()
@@ -79,6 +79,41 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable = new MysqlDatabaseTable('activites');
         $this->expectException("\RuntimeException");
         $databaseTable->alterStatement();
+    }
+    public function testAlterStatementWithCollate()
+    {
+        $databaseTable = new MysqlDatabaseTable('activites');
+        $databaseTable->setCollate('latin1_swedish_ci');
+        $statements = $databaseTable->alterStatement();
+        $this->assertCount(1, $statements);
+        $this->assertEquals("ALTER TABLE `activites` COLLATE='latin1_swedish_ci';", $statements[0]);
+    }
+
+    public function testCollate()
+    {
+        //  COLLATE 'latin1_swedish_ci'
+        $databaseTable = new MysqlDatabaseTable('activites');
+        $databaseTable->setCollate('latin1_swedish_ci');
+        $column = new MysqlDatabaseColumn('id', 'CHAR', '255', false, null, 'auto_increment');
+        $column->setCollate('utf8_general_ci');
+        $databaseTable->addColumn($column);
+        $databaseTable->addPrimary(['id']);
+        $statements = $databaseTable->createStatement();
+        $this->assertCount(1, $statements);
+        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` CHAR(255) NOT NULL auto_increment COLLATE 'utf8_general_ci',PRIMARY KEY (`id`))COLLATE='latin1_swedish_ci';", $statements[0]);
+    }
+
+    public function testCollateWithoutDefineTableCollate()
+    {
+        //  COLLATE 'latin1_swedish_ci'
+        $databaseTable = new MysqlDatabaseTable('activites');
+        $column = new MysqlDatabaseColumn('id', 'CHAR', '255', false, null, 'auto_increment');
+        $column->setCollate('utf8_general_ci');
+        $databaseTable->addColumn($column);
+        $databaseTable->addPrimary(['id']);
+        $statements = $databaseTable->createStatement();
+        $this->assertCount(1, $statements);
+        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` CHAR(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
     }
 
 }

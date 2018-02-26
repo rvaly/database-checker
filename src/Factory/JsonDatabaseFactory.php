@@ -105,6 +105,7 @@ class JsonDatabaseFactory
                 'indexes' => [],
                 'primary' => null,
                 'uniques' => [],
+                'collate' => null,
             ]
         );
 
@@ -116,6 +117,7 @@ class JsonDatabaseFactory
                 'nullable' => false,
                 'defaultValue' => null,
                 'extra' => null,
+                'collate' => null,
             ]
         );
 
