@@ -106,9 +106,6 @@ class MysqlDatabaseIndex implements DatabaseInterface
 
     public function getIndexType()
     {
-        if ($this->isPrimary()) {
-            return 'PRIMARY';
-        }
         if ($this->isUnique()) {
             return 'UNIQUE';
         }
