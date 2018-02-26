@@ -35,6 +35,7 @@ class MysqlDatabaseFactory
         $this->checkCollate = true;
     }
 
+
     /**
      * @return MysqlDatabaseTable[]
      *
@@ -94,7 +95,11 @@ class MysqlDatabaseFactory
                 'nullable' => $row['IS_NULLABLE'] !== 'NO',
                 'defaultValue' => $row['IS_NULLABLE'] !== 'NO' && empty($row['COLUMN_DEFAULT']) ? 'NULL' : $row['COLUMN_DEFAULT'],
                 'extra' => $row['EXTRA'],
+                'collate' => $row['COLLATION_NAME'],
             ]);
+            if (!$this->checkCollate) {
+                unset($export[$row['COLUMN_NAME']]['collate']);
+            }
         }
 
         return $export;

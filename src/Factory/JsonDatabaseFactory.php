@@ -43,22 +43,24 @@ class JsonDatabaseFactory
      */
     public function generate()
     {
-        if (empty($this->json)) {
-            throw new \LogicException('');
-        }
-        if (!$data = json_decode($this->json, true)) {
-            $data = [];
-        }
         $tables = [];
-        $dataTables = $this->resolve($data);
+        $dataTables = $this->resolve();
         foreach ($dataTables as $tableName => $dataTable) {
             try {
                 $table = new MysqlDatabaseTable($tableName);
             } catch (\Exception $e) {
                 continue;
             }
+            if (isset($row['collate'])) {
+                $table->setCollate($dataTable['collate']);
+            }
             foreach ((array)$dataTable['columns'] as $columnName => $row) {
-                $table->addColumn(new MysqlDatabaseColumn($columnName, $row['type'], $row['length'], $row['nullable'], $row['defaultValue'], $row['extra']));
+                $column = new MysqlDatabaseColumn($columnName, $row['type'], $row['length'], $row['nullable'], $row['defaultValue'], $row['extra']);
+                if (isset($row['collate'])) {
+                    $column->setCollate($row['collate']);
+                }
+                $table->addColumn($column);
+
             }
             foreach ((array)$dataTable['indexes'] as $row) {
                 $table->addIndex($row['columns'], $row['name']);
@@ -78,8 +80,6 @@ class JsonDatabaseFactory
     /**
      * Check syntax of array.
      *
-     * @param array $data
-     *
      * @return array
      *
      * @throws \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
@@ -88,13 +88,10 @@ class JsonDatabaseFactory
      * @throws \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
      * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
      * @throws \Symfony\Component\OptionsResolver\Exception\NoSuchOptionException
-     * @throws \LogicException
      */
-    protected function resolve(array $data)
+    protected function resolve()
     {
-        if (!count($data)) {
-            throw new \LogicException('json failed');
-        }
+        $data = $this->generateJsonData();
 
         // On force les valeurs par d�faut.
         $resolverTable = new OptionsResolver();
@@ -143,5 +140,16 @@ class JsonDatabaseFactory
         }
 
         return $export;
+    }
+
+    private function generateJsonData()
+    {
+        if (empty($this->json)) {
+            return [];
+        }
+        if (!$data = json_decode($this->json, true)) {
+            $data = [];
+        }
+        return $data;
     }
 }
