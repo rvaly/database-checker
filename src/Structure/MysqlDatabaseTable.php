@@ -120,30 +120,14 @@ class MysqlDatabaseTable implements DatabaseInterface
      */
     public function getIndex($indexName)
     {
-        if (null === $this->indexes[$indexName]) {
+
+        if (empty($this->indexes[$indexName])) {
             throw new \RuntimeException('');
         }
 
         return $this->indexes[$indexName];
     }
 
-    public function toArray()
-    {
-        $export = [];
-        $export['columns'] = [];
-        $columns = $this->getColumns();
-        foreach ($columns as $column) {
-            $export['columns'][] = $column->toArray();
-        }
-
-        $export['indexes'] = [];
-        $indexes = $this->getIndexes();
-        foreach ($indexes as $index) {
-            $export['indexes'][] = $index->toArray();
-        }
-
-        return $export;
-    }
 
     /**
      * @return MysqlDatabaseColumn[]
@@ -173,7 +157,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
         foreach ($columns as $column) {
             try {
-                if($this->getCollate() == ''){
+                if ($this->getCollate() == '') {
                     $column->setCollate('');
                 }
                 $modifications[] = $column->createStatement();
@@ -184,8 +168,11 @@ class MysqlDatabaseTable implements DatabaseInterface
         $indexes = $this->getIndexes();
         foreach ($indexes as $index) {
             try {
+                if (!$this->getIndex($index->getName())) {
+                    continue;
+                }
                 $modifications[] = $index->createStatement();
-            } catch (TableHasNotDefinedException $e) {
+            } catch (\Exception $e) {
                 continue;
             }
         }

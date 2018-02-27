@@ -8,6 +8,12 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
 class MysqlDatabaseIndexTest extends TestCase
 {
 
+    public function testCreateObjectException()
+    {
+        $this->expectException("\RuntimeException");
+        new MysqlDatabaseIndex('', ['id'], true);
+    }
+
     public function testCreateStatementException()
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);

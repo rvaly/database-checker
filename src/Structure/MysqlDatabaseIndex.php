@@ -32,10 +32,6 @@ class MysqlDatabaseIndex implements DatabaseInterface
         $this->columns = $columns;
     }
 
-    public function toArray()
-    {
-        return get_object_vars($this);
-    }
 
     /**
      * @return array
@@ -109,6 +105,7 @@ class MysqlDatabaseIndex implements DatabaseInterface
         if ($this->isUnique()) {
             return 'UNIQUE';
         }
+
         return '';
     }
 
@@ -118,30 +115,6 @@ class MysqlDatabaseIndex implements DatabaseInterface
     public function isUnique()
     {
         return $this->unique;
-    }
-
-    /**
-     * @param array $columns
-     */
-    public function setColumns(array $columns)
-    {
-        $this->columns = $columns;
-    }
-
-    /**
-     * @param bool $unique
-     */
-    public function setUnique($unique)
-    {
-        $this->unique = $unique;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
     }
 
     /**

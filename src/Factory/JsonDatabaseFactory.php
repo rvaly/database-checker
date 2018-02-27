@@ -2,6 +2,7 @@
 
 namespace Starkerxp\DatabaseChecker\Factory;
 
+use Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -40,6 +41,7 @@ class JsonDatabaseFactory
      * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
      * @throws \LogicException
      * @throws \RuntimeException
+     * @throws TableHasNotDefinedException
      */
     public function generate()
     {
@@ -48,6 +50,8 @@ class JsonDatabaseFactory
         foreach ($dataTables as $tableName => $dataTable) {
             try {
                 $table = new MysqlDatabaseTable($tableName);
+            } catch (TableHasNotDefinedException $e) {
+                throw $e;
             } catch (\Exception $e) {
                 continue;
             }
@@ -150,6 +154,7 @@ class JsonDatabaseFactory
         if (!$data = json_decode($this->json, true)) {
             $data = [];
         }
+
         return $data;
     }
 }

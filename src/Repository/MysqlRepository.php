@@ -53,7 +53,7 @@ class MysqlRepository
      */
     public function getTablesCollation($database, $table)
     {
-        $sql =' SELECT c.collation_name
+        $sql = ' SELECT c.collation_name
                 FROM information_schema.`TABLES` t
                 INNER JOIN information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` c ON c.collation_name = t.table_collation
                 WHERE 

@@ -80,6 +80,7 @@ class MysqlDatabaseTableTest extends TestCase
         $this->expectException("\RuntimeException");
         $databaseTable->alterStatement();
     }
+
     public function testAlterStatementWithCollate()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
@@ -114,6 +115,24 @@ class MysqlDatabaseTableTest extends TestCase
         $statements = $databaseTable->createStatement();
         $this->assertCount(1, $statements);
         $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` CHAR(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
+    }
+
+    public function testAccessUnknowIndex()
+    {
+        $databaseTable = new MysqlDatabaseTable('activites');
+        $this->expectException('\RuntimeException');
+        $databaseTable->getIndex('chips');
+
+    }
+
+    public function testCreateIndexesOnNotExistingColumnException()
+    {
+        $databaseTable = new MysqlDatabaseTable('activites');
+        $databaseTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
+        $databaseTable->addIndex(['id']);
+        $databaseTable->addIndex(['id2']);
+        $this->assertCount(2, $databaseTable->getIndexes());
+        $this->assertCount(1, $databaseTable->createStatement());
     }
 
 }

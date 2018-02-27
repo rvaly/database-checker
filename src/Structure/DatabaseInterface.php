@@ -7,7 +7,6 @@ use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 
 interface DatabaseInterface
 {
-    public function toArray();
 
     /**
      * @return mixed

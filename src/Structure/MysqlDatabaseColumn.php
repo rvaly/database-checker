@@ -82,10 +82,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
         }
     }
 
-    public function toArray()
-    {
-        return get_object_vars($this);
-    }
 
     /**
      * @return string
@@ -93,14 +89,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLength()
-    {
-        return $this->length;
     }
 
     /**
@@ -115,7 +103,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
         }
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
-        $collate = $this->getCollate()==''?'':sprintf("COLLATE '%s'", $this->getCollate());
+        $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE '%s'", $this->getCollate());
         $modification = sprintf('ALTER TABLE `%s` ADD COLUMN `%s` %s %s NULL %s %s %s;', $this->getTable(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
         return [str_replace(['   ', '  ',], ' ', $modification)];
@@ -189,7 +177,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
         $columnName = '`' . $this->getName() . '`';
-        $collate = $this->getCollate()==''?'':sprintf("COLLATE '%s'", $this->getCollate());
+        $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE '%s'", $this->getCollate());
         $modification = sprintf('ALTER TABLE `%s` CHANGE COLUMN %s %s %s %s NULL %s %s %s;', $this->getTable(), $columnName, $columnName, $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
         return [str_replace(['   ', '  ',], ' ', $modification)];

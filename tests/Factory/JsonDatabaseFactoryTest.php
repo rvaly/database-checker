@@ -38,4 +38,36 @@ class JsonDatabaseFactoryTest extends TestCase
         $this->assertEquals([$table], $tableOut);
     }
 
+    public function testGenerateEmptyTablenameSinceJsonException()
+    {
+        $json = [
+            '' => [
+                'columns' => [
+                    'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment',],
+                ],
+                'indexes' => [
+                    ['name' => 'caramel', 'columns' => ['id']],
+                ],
+                'primary' => ['id'],
+                'uniques' => [
+                    ['columns' => ['id']],
+                ],
+            ],
+        ];
+        $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($json));
+        $this->expectException('\Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException');
+        $factoryJsonDatabase->generate();
+    }
+
+    public function testGenerateInvalidJsonException()
+    {
+        $factoryJsonDatabase = new JsonDatabaseFactory(null);
+        $tableOut = $factoryJsonDatabase->generate();
+        $this->assertEquals([], $tableOut);
+
+        $factoryJsonDatabase = new JsonDatabaseFactory('"');
+        $tableOut = $factoryJsonDatabase->generate();
+        $this->assertEquals([], $tableOut);
+    }
+
 }
