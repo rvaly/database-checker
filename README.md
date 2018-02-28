@@ -20,3 +20,15 @@ Je me suis retrouvé confronté à un problème de synchronisation des base de d
 - [ ] Suggestion d'index.
 - [ ] Suppresion des index avant un `ALTER COLUMN`.
 - [ ] A partir d'une requête SQL vérifier que les index soit définit.
+
+
+```
+// watcher
+gulp start
+// lance les tests unitaires (nécessite phpunit)
+gulp phpunit
+// prépare le projet pour la production
+gulp build
+// permet de générer la couverture du code (nécessite xdebug/phpuni)
+gulp coverage
+```

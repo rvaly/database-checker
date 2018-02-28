@@ -11,6 +11,9 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 class JsonDatabaseFactoryTest extends TestCase
 {
 
+    /**
+     * @group factory
+     */
     public function testGenerateTableSinceJson()
     {
         $table = new MysqlDatabaseTable('activite');
@@ -38,6 +41,10 @@ class JsonDatabaseFactoryTest extends TestCase
         $this->assertEquals([$table], $tableOut);
     }
 
+    /**
+     * @group factory
+     * @group exception
+     */
     public function testGenerateEmptyTablenameSinceJsonException()
     {
         $json = [
@@ -55,10 +62,14 @@ class JsonDatabaseFactoryTest extends TestCase
             ],
         ];
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($json));
-        $this->expectException('\Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException');
+        $this->expectException('\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException');
         $factoryJsonDatabase->generate();
     }
 
+    /**
+     * @group factory
+     * @group exception
+     */
     public function testGenerateInvalidJsonException()
     {
         $factoryJsonDatabase = new JsonDatabaseFactory(null);

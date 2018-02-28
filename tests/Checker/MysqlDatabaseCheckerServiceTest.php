@@ -10,6 +10,9 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 class MysqlDatabaseCheckerServiceTest extends TestCase
 {
 
+    /**
+     * @group checker
+     */
     public function testA()
     {
 
@@ -42,7 +45,9 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $this->assertNotNull($modifications);
     }
 
-
+    /**
+     * @group checker
+     */
     public function testB()
     {
         $newTable = new MysqlDatabaseTable('activite');

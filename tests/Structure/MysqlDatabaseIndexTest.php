@@ -7,13 +7,20 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
 
 class MysqlDatabaseIndexTest extends TestCase
 {
-
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testCreateObjectException()
     {
         $this->expectException("\RuntimeException");
         new MysqlDatabaseIndex('', ['id'], true);
     }
 
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testCreateStatementException()
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);
@@ -21,6 +28,10 @@ class MysqlDatabaseIndexTest extends TestCase
         $databaseIndex->createStatement();
     }
 
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testAlterStatementException()
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);
@@ -79,6 +90,9 @@ class MysqlDatabaseIndexTest extends TestCase
     }
 
     /**
+     * @group structure
+     * @group exception
+     *
      * @dataProvider dataProviderStatements
      *
      * @param string  $expected
@@ -87,8 +101,9 @@ class MysqlDatabaseIndexTest extends TestCase
      * @param array   $columns
      * @param boolean $unique
      *
-     * @throws \Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException
+     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
+
     public function testStatements($expected, $expectedAlter, $name, array $columns, $unique)
     {
         $createStatementExpected = 'ALTER TABLE `activite` ADD ' . $expected . ';';

@@ -2,7 +2,7 @@
 
 namespace Starkerxp\DatabaseChecker\Factory;
 
-use Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -50,7 +50,7 @@ class JsonDatabaseFactory
         foreach ($dataTables as $tableName => $dataTable) {
             try {
                 $table = new MysqlDatabaseTable($tableName);
-            } catch (TableHasNotDefinedException $e) {
+            } catch (TablenameHasNotDefinedException $e) {
                 throw $e;
             } catch (\Exception $e) {
                 continue;

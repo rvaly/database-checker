@@ -5,7 +5,7 @@ namespace Starkerxp\DatabaseChecker\Structure;
 
 //@todo Manage data sync by option.
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
-use Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 
 class MysqlDatabaseTable implements DatabaseInterface
 {
@@ -31,12 +31,12 @@ class MysqlDatabaseTable implements DatabaseInterface
      *
      * @param $table
      *
-     * @throws TableHasNotDefinedException
+     * @throws TablenameHasNotDefinedException
      */
     public function __construct($table)
     {
         if (empty($table)) {
-            throw new TableHasNotDefinedException('');
+            throw new TablenameHasNotDefinedException('');
         }
         $this->table = $table;
     }
@@ -161,7 +161,7 @@ class MysqlDatabaseTable implements DatabaseInterface
                     $column->setCollate('');
                 }
                 $modifications[] = $column->createStatement();
-            } catch (TableHasNotDefinedException $e) {
+            } catch (TablenameHasNotDefinedException $e) {
                 continue;
             }
         }

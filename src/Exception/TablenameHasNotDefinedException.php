@@ -3,7 +3,7 @@
 namespace Starkerxp\DatabaseChecker\Exception;
 
 
-class TableHasNotDefinedException extends \Exception
+class TablenameHasNotDefinedException extends \Exception
 {
 
 }

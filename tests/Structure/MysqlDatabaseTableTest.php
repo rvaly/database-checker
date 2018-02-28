@@ -8,14 +8,19 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseTableTest extends TestCase
 {
-
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testException()
     {
-
         $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException");
         new MysqlDatabaseTable(null);
     }
 
+    /**
+     * @group structure
+     */
     public function testColumnsCollection()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
@@ -30,6 +35,9 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertCount(0, $databaseTable->getColumns());
     }
 
+    /**
+     * @group structure
+     */
     public function testIndexesCollection()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
@@ -56,6 +64,9 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals(0, $uniqueIndex->isPrimary());
     }
 
+    /**
+     * @group structure
+     */
     public function testCreateStatement()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
@@ -66,21 +77,32 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` INT(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
     }
 
-    public function testCreateStatementWithoutColumn()
+    /**
+     * @group structure
+     * @group exception
+     */
+    public function testCreateStatementWithoutColumnException()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException");
         $databaseTable->createStatement();
     }
 
-
-    public function testAlterStatement()
+    /**
+     * @group structure
+     * @group exception
+     */
+    public function testAlterStatementException()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $this->expectException("\RuntimeException");
         $databaseTable->alterStatement();
     }
 
+    /**
+     * @group structure
+     * @group collate
+     */
     public function testAlterStatementWithCollate()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
@@ -90,6 +112,10 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals("ALTER TABLE `activites` COLLATE='latin1_swedish_ci';", $statements[0]);
     }
 
+    /**
+     * @group structure
+     * @group collate
+     */
     public function testCollate()
     {
         //  COLLATE 'latin1_swedish_ci'
@@ -104,6 +130,10 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` CHAR(255) NOT NULL auto_increment COLLATE 'utf8_general_ci',PRIMARY KEY (`id`))COLLATE='latin1_swedish_ci';", $statements[0]);
     }
 
+    /**
+     * @group structure
+     * @group collate
+     */
     public function testCollateWithoutDefineTableCollate()
     {
         //  COLLATE 'latin1_swedish_ci'
@@ -117,14 +147,21 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` CHAR(255) NOT NULL auto_increment,PRIMARY KEY (`id`));", $statements[0]);
     }
 
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testAccessUnknowIndex()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $this->expectException('\RuntimeException');
         $databaseTable->getIndex('chips');
-
     }
 
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testCreateIndexesOnNotExistingColumnException()
     {
         $databaseTable = new MysqlDatabaseTable('activites');

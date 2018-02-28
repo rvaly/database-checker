@@ -8,19 +8,31 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 class MysqlDatabaseColumnTest extends TestCase
 {
 
-    public function testMutateurs()
+    /**
+     * @group structure
+     * @group mutator
+     */
+    public function testMutator()
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
         $this->assertEquals('int', $databaseColumn->getType());
         $this->assertEquals('INT(255)', $databaseColumn->getColonneType());
     }
 
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testException()
     {
         $this->expectException("\RuntimeException");
         new MysqlDatabaseColumn('', 'INT', '255', false, null, 'auto_increment');
     }
 
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testCreateStatementException()
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
@@ -28,6 +40,10 @@ class MysqlDatabaseColumnTest extends TestCase
         $databaseColumn->createStatement();
     }
 
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testAlterStatementException()
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
@@ -35,6 +51,10 @@ class MysqlDatabaseColumnTest extends TestCase
         $databaseColumn->alterStatement();
     }
 
+    /**
+     * @group structure
+     * @group post
+     */
     public function testStatements()
     {
         $types = ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'varchar', 'bigint', 'char', 'float'];
@@ -58,6 +78,10 @@ class MysqlDatabaseColumnTest extends TestCase
         }
     }
 
+    /**
+     * @group structure
+     * @group optimize
+     */
     public function testOptimizeBooleanEnum()
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'ENUM(\'0\', \'1\')', '255', false, null, 'auto_increment');
@@ -69,6 +93,10 @@ class MysqlDatabaseColumnTest extends TestCase
         $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` TINYINT(1) NOT NULL auto_increment ;', $statement[0]);
     }
 
+    /**
+     * @group structure
+     * @group collate
+     */
     public function testCollate()
     {
         $types = ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'bigint', 'float'];

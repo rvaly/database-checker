@@ -8,7 +8,9 @@ use Starkerxp\DatabaseChecker\Factory\MysqlDatabaseFactory;
 
 class MysqlDatabaseFactoryTest extends TestCase
 {
-
+    /**
+     * @group factory
+     */
     public function testGenerateTableSinceJson()
     {
         $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'hektor2');
@@ -40,7 +42,9 @@ class MysqlDatabaseFactoryTest extends TestCase
         $this->assertEquals($expected, $export);
     }
 
-
+    /**
+     * @group factory
+     */
     public function testCheckCollate()
     {
         $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'hektor2');
@@ -111,7 +115,9 @@ class MysqlDatabaseFactoryTest extends TestCase
         return $oMock;
     }
 
-
+    /**
+     * @group factory
+     */
     public function testGenerateEnumTableSinceJson()
     {
         $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepositoryForEnum(), 'hektor2');

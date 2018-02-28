@@ -3,7 +3,7 @@
 namespace Starkerxp\DatabaseChecker\Structure;
 
 
-use Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 
 class MysqlDatabaseIndex implements DatabaseInterface
 {
@@ -36,12 +36,12 @@ class MysqlDatabaseIndex implements DatabaseInterface
     /**
      * @return array
      *
-     * @throws TableHasNotDefinedException
+     * @throws TablenameHasNotDefinedException
      */
     public function alterStatement()
     {
         if (!$this->getTable()) {
-            throw new TableHasNotDefinedException('table not defined');
+            throw new TablenameHasNotDefinedException('table not defined');
         }
         $modifications = [];
         if ($this->isPrimary()) {
@@ -78,12 +78,12 @@ class MysqlDatabaseIndex implements DatabaseInterface
     /**
      * @return array
      *
-     * @throws TableHasNotDefinedException
+     * @throws TablenameHasNotDefinedException
      */
     public function createStatement()
     {
         if (!$this->getTable()) {
-            throw new TableHasNotDefinedException('table not defined');
+            throw new TablenameHasNotDefinedException('table not defined');
         }
         if ($this->isPrimary()) {
             return [sprintf('ALTER TABLE `%s` ADD PRIMARY KEY (%s);', $this->getTable(), '`' . implode('`, `', $this->getColumns()) . '`')];

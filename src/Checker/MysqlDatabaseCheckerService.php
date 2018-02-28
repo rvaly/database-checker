@@ -7,7 +7,7 @@ use Starkerxp\DatabaseChecker\Exception\ColumnNotExistException;
 use Starkerxp\DatabaseChecker\Exception\NotCompareDifferentColumnException;
 use Starkerxp\DatabaseChecker\Exception\NotCompareDifferentTableException;
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
-use Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\Exception\TableNotExistException;
 use Starkerxp\DatabaseChecker\Structure\DatabaseInterface;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
@@ -120,7 +120,7 @@ class MysqlDatabaseCheckerService
                 if (in_array($colonne, $index->getColumns(), false)) {
                     try {
                         $modificationsBetweenTable[] = $index->alterStatement();
-                    } catch (TableHasNotDefinedException $e) {
+                    } catch (TablenameHasNotDefinedException $e) {
                         continue;
                     }
                 }
@@ -182,7 +182,7 @@ class MysqlDatabaseCheckerService
      * @return array
      *
      * @throws NotCompareDifferentColumnException
-     * @throws \Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException
+     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
     private function checkColumn(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn)
     {

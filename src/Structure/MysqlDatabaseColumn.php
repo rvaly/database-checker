@@ -3,7 +3,7 @@
 namespace Starkerxp\DatabaseChecker\Structure;
 
 
-use Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 
 class MysqlDatabaseColumn implements DatabaseInterface
 {
@@ -94,12 +94,12 @@ class MysqlDatabaseColumn implements DatabaseInterface
     /**
      * @return array
      *
-     * @throws TableHasNotDefinedException
+     * @throws TablenameHasNotDefinedException
      */
     public function createStatement()
     {
         if (!$this->getTable()) {
-            throw new TableHasNotDefinedException('table not defined');
+            throw new TablenameHasNotDefinedException('table not defined');
         }
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
@@ -167,12 +167,12 @@ class MysqlDatabaseColumn implements DatabaseInterface
     /**
      * @return array
      *
-     * @throws TableHasNotDefinedException
+     * @throws TablenameHasNotDefinedException
      */
     public function alterStatement()
     {
         if (!$this->getTable()) {
-            throw new TableHasNotDefinedException('table not defined');
+            throw new TablenameHasNotDefinedException('table not defined');
         }
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
