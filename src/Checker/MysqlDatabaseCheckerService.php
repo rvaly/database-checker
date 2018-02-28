@@ -9,12 +9,14 @@ use Starkerxp\DatabaseChecker\Exception\NotCompareDifferentTableException;
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\Exception\TableNotExistException;
+use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Structure\DatabaseInterface;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseCheckerService
 {
+    use LoggerTrait;
     /**
      * @var boolean
      */

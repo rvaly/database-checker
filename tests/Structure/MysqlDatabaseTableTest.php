@@ -14,7 +14,7 @@ class MysqlDatabaseTableTest extends TestCase
      */
     public function testException()
     {
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException");
+        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
         new MysqlDatabaseTable(null);
     }
 
@@ -32,6 +32,7 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->removeColumn('id2');
         $this->assertCount(1, $databaseTable->getColumns());
         $databaseTable->removeColumn('id');
+        $this->expectException('\Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException');
         $this->assertCount(0, $databaseTable->getColumns());
     }
 

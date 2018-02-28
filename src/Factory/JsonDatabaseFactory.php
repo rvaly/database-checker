@@ -3,6 +3,7 @@
 namespace Starkerxp\DatabaseChecker\Factory;
 
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
+use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,6 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class JsonDatabaseFactory
 {
 
+    use LoggerTrait;
     /**
      * @var string
      */
@@ -33,20 +35,19 @@ class JsonDatabaseFactory
     /**
      * @return MysqlDatabaseTable[]
      *
-     * @throws \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
-     * @throws \Symfony\Component\OptionsResolver\Exception\OptionDefinitionException
-     * @throws \Symfony\Component\OptionsResolver\Exception\NoSuchOptionException
-     * @throws \Symfony\Component\OptionsResolver\Exception\MissingOptionsException
-     * @throws \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
-     * @throws \LogicException
      * @throws \RuntimeException
-     * @throws TableHasNotDefinedException
+     * @throws TablenameHasNotDefinedException
      */
     public function generate()
     {
         $tables = [];
-        $dataTables = $this->resolve();
+        try {
+            $dataTables = $this->resolve();
+        } catch (\Exception $e) {
+            $this->error('An unexpected error are throw when you check json syntax');
+
+            return [];
+        }
         foreach ($dataTables as $tableName => $dataTable) {
             try {
                 $table = new MysqlDatabaseTable($tableName);

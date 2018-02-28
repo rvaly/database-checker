@@ -3,8 +3,11 @@
 namespace Starkerxp\DatabaseChecker\Repository;
 
 
+use Starkerxp\DatabaseChecker\LoggerTrait;
+
 class MysqlRepository
 {
+    use LoggerTrait;
     /**
      * @var \PDO
      */

@@ -6,9 +6,12 @@ namespace Starkerxp\DatabaseChecker\Structure;
 //@todo Manage data sync by option.
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
+use Starkerxp\DatabaseChecker\LoggerTrait;
 
 class MysqlDatabaseTable implements DatabaseInterface
 {
+
+    use LoggerTrait;
 
     private $table;
     /**
@@ -36,6 +39,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     public function __construct($table)
     {
         if (empty($table)) {
+            $this->critical('You need to define name of your table');
             throw new TablenameHasNotDefinedException('');
         }
         $this->table = $table;
@@ -122,6 +126,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     {
 
         if (empty($this->indexes[$indexName])) {
+            $this->critical('You attempt to get undefined index name.', ['index' => $indexName]);
             throw new \RuntimeException('');
         }
 
@@ -131,14 +136,25 @@ class MysqlDatabaseTable implements DatabaseInterface
 
     /**
      * @return MysqlDatabaseColumn[]
+     *
+     * @throws TableHasNotColumnException
      */
     public function getColumns()
     {
+        if (!count($this->columns)) {
+            $this->critical('You need to define columns for this table.', ['table' => $this->getTable()]);
+            throw new TableHasNotColumnException('');
+        }
+
         return $this->columns;
     }
 
     public function getIndexes()
     {
+        if (empty($this->indexes)) {
+            $this->error("You don't have any index. Are you sure ?");
+        }
+
         return $this->indexes;
     }
 
@@ -152,9 +168,6 @@ class MysqlDatabaseTable implements DatabaseInterface
         $modifications = [];
         $modifications[] = [sprintf('CREATE TABLE IF NOT EXISTS `%s`', $this->getTable())];
         $columns = $this->getColumns();
-        if (!count($columns)) {
-            throw new TableHasNotColumnException('');
-        }
         foreach ($columns as $column) {
             try {
                 if ($this->getCollate() == '') {
@@ -173,6 +186,7 @@ class MysqlDatabaseTable implements DatabaseInterface
                 }
                 $modifications[] = $index->createStatement();
             } catch (\Exception $e) {
+                $this->critical('Unexpected error are throw.', ['table' => $this->getTable(), 'index' => $index->getName()]);
                 continue;
             }
         }

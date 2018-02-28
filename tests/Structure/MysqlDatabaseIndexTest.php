@@ -24,7 +24,7 @@ class MysqlDatabaseIndexTest extends TestCase
     public function testCreateStatementException()
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException");
+        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
         $databaseIndex->createStatement();
     }
 
@@ -35,7 +35,7 @@ class MysqlDatabaseIndexTest extends TestCase
     public function testAlterStatementException()
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException");
+        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
         $databaseIndex->alterStatement();
     }
 

@@ -2,6 +2,7 @@
 
 namespace Starkerxp\DatabaseChecker\Factory;
 
+use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Repository\MysqlRepository;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
@@ -13,6 +14,8 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
  */
 class MysqlDatabaseFactory
 {
+
+    use LoggerTrait;
 
     protected $databaseName;
     protected $repositoryMysql;

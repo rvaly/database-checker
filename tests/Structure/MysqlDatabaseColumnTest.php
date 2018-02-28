@@ -36,7 +36,7 @@ class MysqlDatabaseColumnTest extends TestCase
     public function testCreateStatementException()
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException");
+        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
         $databaseColumn->createStatement();
     }
 
@@ -47,7 +47,7 @@ class MysqlDatabaseColumnTest extends TestCase
     public function testAlterStatementException()
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotDefinedException");
+        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
         $databaseColumn->alterStatement();
     }
 

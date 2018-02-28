@@ -4,9 +4,11 @@ namespace Starkerxp\DatabaseChecker\Structure;
 
 
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
+use Starkerxp\DatabaseChecker\LoggerTrait;
 
 class MysqlDatabaseColumn implements DatabaseInterface
 {
+    use LoggerTrait;
 
     private $table;
     private $name;
@@ -98,9 +100,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
      */
     public function createStatement()
     {
-        if (!$this->getTable()) {
-            throw new TablenameHasNotDefinedException('table not defined');
-        }
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
         $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE '%s'", $this->getCollate());
@@ -111,9 +110,16 @@ class MysqlDatabaseColumn implements DatabaseInterface
 
     /**
      * @return mixed
+     *
+     * @throws TablenameHasNotDefinedException
      */
     public function getTable()
     {
+        if (!$this->table) {
+            $this->critical('You need to define name of your table');
+            throw new TablenameHasNotDefinedException('table not defined');
+        }
+
         return $this->table;
     }
 
@@ -171,9 +177,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
      */
     public function alterStatement()
     {
-        if (!$this->getTable()) {
-            throw new TablenameHasNotDefinedException('table not defined');
-        }
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
         $columnName = '`' . $this->getName() . '`';
