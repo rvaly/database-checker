@@ -20,6 +20,7 @@ Je me suis retrouvé confronté à un problème de synchronisation des base de d
 - [ ] Suggestion d'index.
 - [ ] Suppresion des index avant un `ALTER COLUMN`.
 - [ ] A partir d'une requête SQL vérifier que les index soit définit.
+- [ ] Check moteur de stockage
 
 
 ```
