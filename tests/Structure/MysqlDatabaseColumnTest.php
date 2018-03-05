@@ -134,9 +134,9 @@ class MysqlDatabaseColumnTest extends TestCase
         $databaseColumn->setCollate('latin1_swedish_ci');
         $statement = $databaseColumn->toArray();
         $expected = [
-            'type' => 'int',
+            'type' => 'INT',
             'length' => '255',
-            'extra' => null,
+            'extra' => '',
             'table' => 'activite',
             'name' => 'id',
             'nullable' => false,

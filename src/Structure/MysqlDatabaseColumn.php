@@ -42,13 +42,21 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $this->length = $length;
         $this->nullable = $nullable;
         $this->defaultValue = $defaultValue;
-        $this->extra = $extra;
+        $this->setExtra($extra);
     }
 
     private function setType($type)
     {
         $type = strtolower($type);
         $this->type = $type;
+    }
+
+    /**
+     * @param mixed $extra
+     */
+    public function setExtra($extra)
+    {
+        $this->extra = strtoupper($extra);
     }
 
     public function optimizeType()
@@ -67,6 +75,8 @@ class MysqlDatabaseColumn implements DatabaseInterface
     {
         $tmp = get_object_vars($this);
         unset($tmp['logger']);
+        $tmp['type'] = strtoupper($tmp['type']);
+
         return $tmp;
     }
 
@@ -161,19 +171,19 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
-     * @param string $collate
-     */
-    public function setCollate($collate)
-    {
-        $this->collate = $collate;
-    }
-
-    /**
      * @param mixed $table
      */
     public function setTable($table)
     {
         $this->table = $table;
+    }
+
+    /**
+     * @param string $collate
+     */
+    public function setCollate($collate)
+    {
+        $this->collate = $collate;
     }
 
     /**

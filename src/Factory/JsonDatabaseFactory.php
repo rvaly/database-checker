@@ -56,7 +56,7 @@ class JsonDatabaseFactory
             } catch (\Exception $e) {
                 continue;
             }
-            if (isset($row['collate'])) {
+            if (isset($dataTable['collate'])) {
                 $table->setCollate($dataTable['collate']);
             }
             foreach ((array)$dataTable['columns'] as $columnName => $row) {
