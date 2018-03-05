@@ -15,7 +15,7 @@ Je me suis retrouvé confronté à un problème de synchronisation des base de d
 - [ ] Vérifier les datas de certaines table (Ex: La liste des civilités possibles).
 - [ ] Gérer les `DROP` et `REMOVE COLUMNS`.
 - [ ] Une fois la gestion des `DROP` et `REMOVE COLUMNS` effecutées, permettre au logiciel de n'être qu'en création only via une configuration.
-- [ ] Intégrer le check de `collate`.
+- [x] Intégrer le check de `collate`.
 - [ ] Gestion des `FOREIGN KEY`.
 - [ ] Suggestion d'index.
 - [ ] Suppresion des index avant un `ALTER COLUMN`.
