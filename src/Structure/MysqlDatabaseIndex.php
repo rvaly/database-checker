@@ -34,6 +34,12 @@ class MysqlDatabaseIndex implements DatabaseInterface
         $this->columns = $columns;
     }
 
+    public function toArray()
+    {
+        $tmp = get_object_vars($this);
+        unset($tmp['logger']);
+        return $tmp;
+    }
 
     /**
      * @return array
@@ -53,6 +59,11 @@ class MysqlDatabaseIndex implements DatabaseInterface
         return $modifications;
     }
 
+    public function isPrimary()
+    {
+        return strtolower($this->name) == 'primary';
+    }
+
     /**
      * @return mixed
      *
@@ -66,11 +77,6 @@ class MysqlDatabaseIndex implements DatabaseInterface
         }
 
         return $this->table;
-    }
-
-    public function isPrimary()
-    {
-        return strtolower($this->name) == 'primary';
     }
 
     /**

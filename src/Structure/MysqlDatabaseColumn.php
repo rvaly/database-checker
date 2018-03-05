@@ -45,27 +45,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $this->extra = $extra;
     }
 
-    /**
-     * @return string
-     */
-    public function getCollate()
-    {
-        $type = $this->getType();
-        if (!in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar'], false)) {
-            return '';
-        }
-
-        return $this->collate;
-    }
-
-    /**
-     * @param string $collate
-     */
-    public function setCollate($collate)
-    {
-        $this->collate = $collate;
-    }
-
     private function setType($type)
     {
         $type = strtolower($type);
@@ -84,13 +63,11 @@ class MysqlDatabaseColumn implements DatabaseInterface
         }
     }
 
-
-    /**
-     * @return string
-     */
-    public function getType()
+    public function toArray()
     {
-        return $this->type;
+        $tmp = get_object_vars($this);
+        unset($tmp['logger']);
+        return $tmp;
     }
 
     /**
@@ -110,21 +87,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
 
     /**
      * @return mixed
-     *
-     * @throws TablenameHasNotDefinedException
-     */
-    public function getTable()
-    {
-        if (!$this->table) {
-            $this->critical('You need to define name of your table');
-            throw new TablenameHasNotDefinedException('table not defined');
-        }
-
-        return $this->table;
-    }
-
-    /**
-     * @return mixed
      */
     public function getNullable()
     {
@@ -137,6 +99,42 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function getDefaultValue()
     {
         return $this->defaultValue;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollate()
+    {
+        $type = $this->getType();
+        if (!in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar'], false)) {
+            return '';
+        }
+
+        return $this->collate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return mixed
+     *
+     * @throws TablenameHasNotDefinedException
+     */
+    public function getTable()
+    {
+        if (!$this->table) {
+            $this->critical('You need to define name of your table');
+            throw new TablenameHasNotDefinedException('table not defined');
+        }
+
+        return $this->table;
     }
 
     public function getName()
@@ -160,6 +158,14 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function getExtra()
     {
         return $this->extra;
+    }
+
+    /**
+     * @param string $collate
+     */
+    public function setCollate($collate)
+    {
+        $this->collate = $collate;
     }
 
     /**

@@ -45,22 +45,6 @@ class MysqlDatabaseTable implements DatabaseInterface
         $this->table = $table;
     }
 
-    /**
-     * @return string
-     */
-    public function getCollate()
-    {
-        return $this->collate;
-    }
-
-    /**
-     * @param string $collate
-     */
-    public function setCollate($collate)
-    {
-        $this->collate = $collate;
-    }
-
     public function addColumn(MysqlDatabaseColumn $column)
     {
         $column->setTable($this->getTable());
@@ -115,24 +99,23 @@ class MysqlDatabaseTable implements DatabaseInterface
         $this->addIndexType($indexName, 1, $columnName);
     }
 
-    /**
-     * @param $indexName
-     *
-     * @return MysqlDatabaseIndex
-     *
-     * @throws \RuntimeException
-     */
-    public function getIndex($indexName)
+    public function toArray()
     {
-
-        if (empty($this->indexes[$indexName])) {
-            $this->critical('You attempt to get undefined index name.', ['index' => $indexName]);
-            throw new \RuntimeException('');
+        $export = [];
+        $export['columns'] = [];
+        $columns = $this->getColumns();
+        foreach ($columns as $column) {
+            $export['columns'][] = $column->toArray();
         }
 
-        return $this->indexes[$indexName];
-    }
+        $export['indexes'] = [];
+        $indexes = $this->getIndexes();
+        foreach ($indexes as $index) {
+            $export['indexes'][] = $index->toArray();
+        }
 
+        return $export;
+    }
 
     /**
      * @return MysqlDatabaseColumn[]
@@ -200,6 +183,32 @@ class MysqlDatabaseTable implements DatabaseInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCollate()
+    {
+        return $this->collate;
+    }
+
+    /**
+     * @param $indexName
+     *
+     * @return MysqlDatabaseIndex
+     *
+     * @throws \RuntimeException
+     */
+    public function getIndex($indexName)
+    {
+
+        if (empty($this->indexes[$indexName])) {
+            $this->critical('You attempt to get undefined index name.', ['index' => $indexName]);
+            throw new \RuntimeException('');
+        }
+
+        return $this->indexes[$indexName];
+    }
+
+    /**
      * @param array $modificationsBetweenTable
      *
      * @return array
@@ -228,6 +237,14 @@ class MysqlDatabaseTable implements DatabaseInterface
         $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE='%s'", $this->getCollate());
 
         return [$finalStatement . '(' . implode(',', $tmp) . ')' . $collate . ';'];
+    }
+
+    /**
+     * @param string $collate
+     */
+    public function setCollate($collate)
+    {
+        $this->collate = $collate;
     }
 
     /**

@@ -88,9 +88,9 @@ class MysqlDatabaseColumnTest extends TestCase
         $databaseColumn->setTable('activite');
         $databaseColumn->optimizeType();
         $statement = $databaseColumn->createStatement();
-        $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` TINYINT(1) NOT NULL auto_increment ;', $statement[0]);
+        $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` TINYINT(1) NOT NULL AUTO_INCREMENT ;', $statement[0]);
         $statement = $databaseColumn->alterStatement();
-        $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` TINYINT(1) NOT NULL auto_increment ;', $statement[0]);
+        $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` TINYINT(1) NOT NULL AUTO_INCREMENT ;', $statement[0]);
     }
 
     /**
@@ -115,11 +115,35 @@ class MysqlDatabaseColumnTest extends TestCase
             $databaseColumn = new MysqlDatabaseColumn('id', $type, '255', false, null, null);
             $databaseColumn->setTable('activite');
             $databaseColumn->setCollate('latin1_swedish_ci');
-            $typeExpected = strtoupper($type).($type=='text'?'':'(255)');
+            $typeExpected = strtoupper($type) . ($type == 'text' ? '' : '(255)');
             $statement = $databaseColumn->createStatement();
             $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` ' . $typeExpected . ' NOT NULL COLLATE \'latin1_swedish_ci\';', $statement[0]);
             $statement = $databaseColumn->alterStatement();
             $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` ' . $typeExpected . ' NOT NULL COLLATE \'latin1_swedish_ci\';', $statement[0]);
         }
+    }
+
+    /**
+     * @group structure
+     * @group collate
+     */
+    public function testToArray()
+    {
+        $databaseColumn = new MysqlDatabaseColumn('id', 'int', '255', false, null, null);
+        $databaseColumn->setTable('activite');
+        $databaseColumn->setCollate('latin1_swedish_ci');
+        $statement = $databaseColumn->toArray();
+        $expected = [
+            'type' => 'int',
+            'length' => '255',
+            'extra' => null,
+            'table' => 'activite',
+            'name' => 'id',
+            'nullable' => false,
+            'defaultValue' => null,
+            'collate' => 'latin1_swedish_ci',
+        ];
+        $this->assertEquals($expected, $statement);
+
     }
 }

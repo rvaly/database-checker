@@ -42,6 +42,42 @@ class MysqlDatabaseFactoryTest extends TestCase
         $this->assertEquals($expected, $export);
     }
 
+    private function mockMysqlRepository()
+    {
+        $oMock = $this->createMock('\Starkerxp\DatabaseChecker\Repository\MysqlRepository');
+        $oMock->expects($this->any())
+            ->method('getTablesStructure')
+            ->with('hektor2')
+            ->willReturn(['activite']);
+
+        $oMock->expects($this->any())
+            ->method('fetchColumnsStructure')
+            ->with('hektor2', 'activite')
+            ->willReturn([
+                ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => 'auto_increment', 'COLLATION_NAME' => null,],
+                ['COLUMN_NAME' => 'idann', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
+                ['COLUMN_NAME' => 'dateenr', 'DATA_TYPE' => 'datetime', 'COLUMN_TYPE' => 'datetime', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
+                ['COLUMN_NAME' => 'agence', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
+                ['COLUMN_NAME' => 'idnego', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
+                ['COLUMN_NAME' => 'typeaction', 'DATA_TYPE' => 'varchar', 'COLUMN_TYPE' => 'varchar(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => 'latin1_swedish_ci',],
+                ['COLUMN_NAME' => 'valeur', 'DATA_TYPE' => 'text', 'COLUMN_TYPE' => 'text', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => 'latin1_swedish_ci',],
+            ]);
+
+        $oMock->expects($this->any())
+            ->method('fetchIndexStructure')
+            ->with('hektor2', 'activite')
+            ->willReturn([
+                ['INDEX_NAME' => 'dateenr', 'COLUMN_NAME' => 'dateenr', 'NON_UNIQUE' => 1,],
+                ['INDEX_NAME' => 'idclient', 'COLUMN_NAME' => 'agence', 'NON_UNIQUE' => 1,],
+                ['INDEX_NAME' => 'idlca', 'COLUMN_NAME' => 'idann', 'NON_UNIQUE' => 1,],
+                ['INDEX_NAME' => 'idnego', 'COLUMN_NAME' => 'idnego', 'NON_UNIQUE' => 1,],
+                ['INDEX_NAME' => 'PRIMARY', 'COLUMN_NAME' => 'id', 'NON_UNIQUE' => 0,],
+                ['INDEX_NAME' => 'typeaction', 'COLUMN_NAME' => 'typeaction', 'NON_UNIQUE' => 1,],
+            ]);
+
+        return $oMock;
+    }
+
     /**
      * @group factory
      */
@@ -77,42 +113,6 @@ class MysqlDatabaseFactoryTest extends TestCase
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($expectedJson));
         $expected = $factoryJsonDatabase->generate();
         $this->assertEquals($expected, $export);
-    }
-
-    private function mockMysqlRepository()
-    {
-        $oMock = $this->createMock('\Starkerxp\DatabaseChecker\Repository\MysqlRepository');
-        $oMock->expects($this->any())
-            ->method('getTablesStructure')
-            ->with('hektor2')
-            ->willReturn(['activite']);
-
-        $oMock->expects($this->any())
-            ->method('fetchColumnsStructure')
-            ->with('hektor2', 'activite')
-            ->willReturn([
-                ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => 'auto_increment', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'idann', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'dateenr', 'DATA_TYPE' => 'datetime', 'COLUMN_TYPE' => 'datetime', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'agence', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'idnego', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'typeaction', 'DATA_TYPE' => 'varchar', 'COLUMN_TYPE' => 'varchar(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => 'latin1_swedish_ci',],
-                ['COLUMN_NAME' => 'valeur', 'DATA_TYPE' => 'text', 'COLUMN_TYPE' => 'text', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => 'latin1_swedish_ci',],
-            ]);
-
-        $oMock->expects($this->any())
-            ->method('fetchIndexStructure')
-            ->with('hektor2', 'activite')
-            ->willReturn([
-                ['INDEX_NAME' => 'dateenr', 'COLUMN_NAME' => 'dateenr', 'NON_UNIQUE' => 1,],
-                ['INDEX_NAME' => 'idclient', 'COLUMN_NAME' => 'agence', 'NON_UNIQUE' => 1,],
-                ['INDEX_NAME' => 'idlca', 'COLUMN_NAME' => 'idann', 'NON_UNIQUE' => 1,],
-                ['INDEX_NAME' => 'idnego', 'COLUMN_NAME' => 'idnego', 'NON_UNIQUE' => 1,],
-                ['INDEX_NAME' => 'PRIMARY', 'COLUMN_NAME' => 'id', 'NON_UNIQUE' => 0,],
-                ['INDEX_NAME' => 'typeaction', 'COLUMN_NAME' => 'typeaction', 'NON_UNIQUE' => 1,],
-            ]);
-
-        return $oMock;
     }
 
     /**

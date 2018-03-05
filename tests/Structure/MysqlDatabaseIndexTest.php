@@ -90,8 +90,8 @@ class MysqlDatabaseIndexTest extends TestCase
     }
 
     /**
-     * @group structure
-     * @group exception
+     * @group        structure
+     * @group        exception
      *
      * @dataProvider dataProviderStatements
      *
@@ -117,4 +117,22 @@ class MysqlDatabaseIndexTest extends TestCase
         $this->assertEquals($createStatementExpected, $statements[1]);
     }
 
+    /**
+     * @group structure
+     * @group collate
+     */
+    public function testToArray()
+    {
+        $databaseIndex = new MysqlDatabaseIndex('idx_primaire', ['id'], true);
+        $databaseIndex->setTable('activite');
+        $statement = $databaseIndex->toArray();
+        $expected = [
+            'table' => 'activite',
+            'name' => 'idx_primaire',
+            'unique' => true,
+            'columns' => ['id'],
+        ];
+        $this->assertEquals($expected, $statement);
+
+    }
 }
