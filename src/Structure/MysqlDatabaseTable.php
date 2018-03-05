@@ -105,16 +105,28 @@ class MysqlDatabaseTable implements DatabaseInterface
         $export['columns'] = [];
         $columns = $this->getColumns();
         foreach ($columns as $column) {
-            $export['columns'][] = $column->toArray();
+            $export['columns'][$column->getName()] = $column->toArray();
         }
 
         $export['indexes'] = [];
+        $export['uniques'] = [];
         $indexes = $this->getIndexes();
         foreach ($indexes as $index) {
-            $export['indexes'][] = $index->toArray();
+            $arrayIndex = $index->toArray();
+            if ($index->isPrimary()) {
+                $export['primary'] = $index->getColumns();
+                continue;
+            }
+            if ($index->isUnique()) {
+                unset($arrayIndex['table'], $arrayIndex['unique']);
+                $export['uniques'][] = $arrayIndex;
+                continue;
+            }
+            unset($arrayIndex['table'], $arrayIndex['unique']);
+            $export['indexes'][] = $arrayIndex;
         }
 
-        return $export;
+        return [$this->getTable() => $export];
     }
 
     /**

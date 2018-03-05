@@ -173,4 +173,40 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertCount(1, $databaseTable->createStatement());
     }
 
+
+    public function testToArray()
+    {
+        $table = new MysqlDatabaseTable('activite');
+        $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
+        $table->addPrimary(['id']);
+        $table->addUnique(['id']);
+        $table->addIndex(['id'], 'caramel');
+        $statements = $table->toArray();
+        $expected = [
+            'activite' => [
+                'columns' => [
+                    'id' => [
+                        'type' => 'INT',
+                        'length' => '255',
+                        'extra' => 'AUTO_INCREMENT',
+                        'table' => 'activite',
+                        'name' => 'id',
+                        'nullable' => false,
+                        'defaultValue' => null,
+                        'collate' => null,
+                    ],
+                ],
+                'indexes' => [
+                    ['name' => 'caramel', 'columns' => ['id']],
+                ],
+                'primary' => ['id'],
+                'uniques' => [
+                    ['name' => 'UNI_b80bb7740288fda1f201890375a60c8f', 'columns' => ['id'], ],
+                ],
+            ],
+        ];
+
+        $this->assertEquals($expected, $statements);
+    }
+
 }
