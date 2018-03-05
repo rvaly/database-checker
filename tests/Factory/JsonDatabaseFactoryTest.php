@@ -21,6 +21,7 @@ class JsonDatabaseFactoryTest extends TestCase
         $table->addPrimary(['id']);
         $table->addUnique(['id']);
         $table->addIndex(['id'], 'caramel');
+        $table->setCollate('utf8_general_ci');
 
         $json = [
             'activite' => [
@@ -34,6 +35,7 @@ class JsonDatabaseFactoryTest extends TestCase
                 'uniques' => [
                     ['columns' => ['id']],
                 ],
+                'collate' => 'utf8_general_ci',
             ],
         ];
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($json));

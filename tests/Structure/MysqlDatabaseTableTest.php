@@ -93,9 +93,21 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group exception
      */
+    public function testAlterStatementDatabaseHasNotDefinedException()
+    {
+        $databaseTable = new MysqlDatabaseTable('activites');
+        $this->expectException("\Starkerxp\DatabaseChecker\Exception\DatabaseHasNotDefinedException");
+        $databaseTable->alterStatement();
+    }
+
+    /**
+     * @group structure
+     * @group exception
+     */
     public function testAlterStatementException()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
+        $databaseTable->setDatabase('tmp');
         $this->expectException("\RuntimeException");
         $databaseTable->alterStatement();
     }
@@ -107,10 +119,12 @@ class MysqlDatabaseTableTest extends TestCase
     public function testAlterStatementWithCollate()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
+        $databaseTable->setDatabase('test');
         $databaseTable->setCollate('latin1_swedish_ci');
         $statements = $databaseTable->alterStatement();
-        $this->assertCount(1, $statements);
-        $this->assertEquals("ALTER TABLE `activites` COLLATE='latin1_swedish_ci';", $statements[0]);
+        $this->assertCount(2, $statements);
+        $this->assertEquals('ALTER DATABASE test CHARACTER SET latin1 COLLATE latin1_swedish_ci;', $statements[0]);
+        $this->assertEquals('ALTER TABLE `activites` CONVERT TO CHARACTER SET latin1 COLLATE latin1_swedish_ci;', $statements[1]);
     }
 
     /**
@@ -145,7 +159,7 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->addPrimary(['id']);
         $statements = $databaseTable->createStatement();
         $this->assertCount(1, $statements);
-        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` CHAR(255) NOT NULL AUTO_INCREMENT,PRIMARY KEY (`id`));", $statements[0]);
+        $this->assertEquals('CREATE TABLE IF NOT EXISTS `activites`(`id` CHAR(255) NOT NULL AUTO_INCREMENT,PRIMARY KEY (`id`));', $statements[0]);
     }
 
     /**
@@ -173,10 +187,10 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertCount(1, $databaseTable->createStatement());
     }
 
-
     public function testToArray()
     {
         $table = new MysqlDatabaseTable('activite');
+        $table->setCollate('utf8_general_ci');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
         $table->addPrimary(['id']);
         $table->addUnique(['id']);
@@ -189,7 +203,6 @@ class MysqlDatabaseTableTest extends TestCase
                         'type' => 'INT',
                         'length' => '255',
                         'extra' => 'AUTO_INCREMENT',
-                        'table' => 'activite',
                         'name' => 'id',
                         'nullable' => false,
                         'defaultValue' => null,
@@ -203,6 +216,7 @@ class MysqlDatabaseTableTest extends TestCase
                 'uniques' => [
                     ['name' => 'UNI_b80bb7740288fda1f201890375a60c8f', 'columns' => ['id'],],
                 ],
+                'collate' => 'utf8_general_ci',
             ],
         ];
 

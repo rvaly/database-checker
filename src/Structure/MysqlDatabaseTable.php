@@ -4,6 +4,7 @@ namespace Starkerxp\DatabaseChecker\Structure;
 
 
 //@todo Manage data sync by option.
+use Starkerxp\DatabaseChecker\Exception\DatabaseHasNotDefinedException;
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
@@ -13,7 +14,16 @@ class MysqlDatabaseTable implements DatabaseInterface
 
     use LoggerTrait;
 
+    /**
+     * @var string
+     */
+    private $database;
+
+    /**
+     * @var string
+     */
     private $table;
+
     /**
      * @var MysqlDatabaseColumn[]
      */
@@ -127,6 +137,7 @@ class MysqlDatabaseTable implements DatabaseInterface
             unset($arrayIndex['table'], $arrayIndex['unique']);
             $export['indexes'][] = $arrayIndex;
         }
+        $export['collate'] = $this->getCollate();
         $export = array_filter($export);
 
         return [$this->getTable() => $export];
@@ -154,6 +165,22 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
 
         return $this->indexes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollate()
+    {
+        return $this->collate;
+    }
+
+    /**
+     * @param string $collate
+     */
+    public function setCollate($collate)
+    {
+        $this->collate = $collate;
     }
 
     /**
@@ -195,14 +222,6 @@ class MysqlDatabaseTable implements DatabaseInterface
 
         return $this->formatCreateStatement($modifications);
 
-    }
-
-    /**
-     * @return string
-     */
-    public function getCollate()
-    {
-        return $this->collate;
     }
 
     /**
@@ -255,25 +274,32 @@ class MysqlDatabaseTable implements DatabaseInterface
     }
 
     /**
-     * @param string $collate
-     */
-    public function setCollate($collate)
-    {
-        $this->collate = $collate;
-    }
-
-    /**
      *
      * @throws \RuntimeException
+     * @throws DatabaseHasNotDefinedException
      */
     public function alterStatement()
     {
-        $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE='%s'", $this->getCollate());
+        if (empty($this->database)) {
+            throw new DatabaseHasNotDefinedException('');
+        }
+        $collateTmp = $this->getCollate();
+        $collate = $collateTmp == '' ? '' : sprintf('CONVERT TO CHARACTER SET %s COLLATE %s', explode('_', $collateTmp)[0], $collateTmp);
         if ($collate == '') {
             throw new \RuntimeException('Not implemented');
         }
 
-        return [sprintf('ALTER TABLE `%s` %s;', $this->getTable(), $collate)];
+        $modifications = [
+            sprintf('ALTER DATABASE %s CHARACTER SET %s COLLATE %s;', $this->database, explode('_', $collateTmp)[0], $collateTmp),
+            sprintf('ALTER TABLE `%s` %s;', $this->getTable(), $collate),
+        ];
+
+        return $modifications;
+    }
+
+    public function setDatabase($database)
+    {
+        $this->database = $database;
     }
 
 }
