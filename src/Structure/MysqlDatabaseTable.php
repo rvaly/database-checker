@@ -105,7 +105,9 @@ class MysqlDatabaseTable implements DatabaseInterface
         $export['columns'] = [];
         $columns = $this->getColumns();
         foreach ($columns as $column) {
-            $export['columns'][$column->getName()] = $column->toArray();
+            $arrayColumn = $column->toArray();
+            unset($arrayColumn['table']);
+            $export['columns'][$column->getName()] = $arrayColumn;
         }
 
         $export['indexes'] = [];
@@ -125,6 +127,7 @@ class MysqlDatabaseTable implements DatabaseInterface
             unset($arrayIndex['table'], $arrayIndex['unique']);
             $export['indexes'][] = $arrayIndex;
         }
+        $export = array_filter($export);
 
         return [$this->getTable() => $export];
     }

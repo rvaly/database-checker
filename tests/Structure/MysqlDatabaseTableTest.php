@@ -201,11 +201,37 @@ class MysqlDatabaseTableTest extends TestCase
                 ],
                 'primary' => ['id'],
                 'uniques' => [
-                    ['name' => 'UNI_b80bb7740288fda1f201890375a60c8f', 'columns' => ['id'], ],
+                    ['name' => 'UNI_b80bb7740288fda1f201890375a60c8f', 'columns' => ['id'],],
                 ],
             ],
         ];
 
+        $this->assertEquals($expected, $statements);
+    }
+
+    public function testToArrayWithoutIndexes()
+    {
+        $table = new MysqlDatabaseTable('login');
+        $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
+        $table->addPrimary(['id']);
+        $statements = $table->toArray();
+
+        $expected = [
+            'login' => [
+                'columns' => [
+                    'id' => [
+                        'type' => 'INT',
+                        'length' => '255',
+                        'extra' => 'AUTO_INCREMENT',
+                        'name' => 'id',
+                        'nullable' => false,
+                        'defaultValue' => null,
+                        'collate' => null,
+                    ],
+                ],
+                'primary' => ['id'],
+            ],
+        ];
         $this->assertEquals($expected, $statements);
     }
 
