@@ -23,15 +23,11 @@ class MysqlDatabaseCheckerService
     private $checkCollate;
 
     /**
-     * @var boolean
-     */
-    private $checkCasse;
-
-    /**
      * @param MysqlDatabaseTable[] $tables
      * @param MysqlDatabaseTable[] $newTables
      *
      * @return array
+     * @throws TableHasNotColumnException
      */
     public function diff(array $tables, array $newTables)
     {
@@ -74,7 +70,7 @@ class MysqlDatabaseCheckerService
     private function getTable($table, array $newTables)
     {
         foreach ($newTables as $newTable) {
-            if ($table->getTable() == $newTable->getTable()) {
+            if (strtolower($table->getTable()) == strtolower($newTable->getTable())) {
                 return $newTable;
             }
         }
@@ -87,13 +83,10 @@ class MysqlDatabaseCheckerService
      *
      * @return array
      *
-     * @throws NotCompareDifferentTableException
+     * @throws TableHasNotColumnException
      */
     private function checkTable(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
     {
-        if ($table->getTable() != $newTable->getTable()) {
-            throw new NotCompareDifferentTableException('On ne compare pas deux table avec un nom diff�rent');
-        }
         // Aucune différence
         if ($this->tableIsEquals($table, $newTable)) {
             return [];
@@ -114,8 +107,7 @@ class MysqlDatabaseCheckerService
                 continue;
             }
         }
-
-        $columnNeedAlter = array_unique(array_keys($modificationsBetweenTable));
+        $columnNeedAlter = array_unique(array_keys(array_filter($modificationsBetweenTable)));
         $indexes = $newTable->getIndexes();
         foreach ($indexes as $indexName => $index) {
             foreach ($columnNeedAlter as $colonne) {
@@ -134,6 +126,7 @@ class MysqlDatabaseCheckerService
 
     private function tableIsEquals(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
     {
+
         // Table is equals no need more check
         if ($table == $newTable) {
             return true;
@@ -142,13 +135,17 @@ class MysqlDatabaseCheckerService
         if (!$this->checkCollate) {
             $this->disabledCollate($table);
             $this->disabledCollate($newTable);
+            if ($table == $newTable) {
+                return true;
+            }
         }
 
-        return $table == $newTable;
+        return strtolower(json_encode($table->toArray())) == strtolower(json_encode($newTable->toArray()));
     }
 
     /**
      * @param MysqlDatabaseTable $table
+     * @throws TableHasNotColumnException
      */
     private function disabledCollate(MysqlDatabaseTable $table)
     {
@@ -170,7 +167,7 @@ class MysqlDatabaseCheckerService
     private function getColumn(MysqlDatabaseColumn $column, array $newColumns)
     {
         foreach ($newColumns as $newColumn) {
-            if ($column->getName() == $newColumn->getName()) {
+            if (strtolower($column->getName()) == strtolower($newColumn->getName())) {
                 return $newColumn;
             }
         }
@@ -188,7 +185,7 @@ class MysqlDatabaseCheckerService
      */
     private function checkColumn(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn)
     {
-        if ($column->getName() != $newColumn->getName()) {
+        if (strtolower($column->getName()) != strtolower($newColumn->getName())) {
             throw new NotCompareDifferentColumnException('On ne compare pas deux colonnes avec un nom diff�rent');
         }
         if ($this->columnIsEquals($column, $newColumn)) {
@@ -214,9 +211,12 @@ class MysqlDatabaseCheckerService
         if (!$this->checkCollate) {
             $column->setCollate('');
             $newColumn->setCollate('');
+            if($column == $newColumn){
+                return true;
+            }
         }
 
-        return $column == $newColumn;
+        return strtolower(json_encode($column->toArray())) == strtolower(json_encode($newColumn->toArray()));
     }
 
     /**
