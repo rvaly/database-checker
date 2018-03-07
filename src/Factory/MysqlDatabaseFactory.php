@@ -74,7 +74,13 @@ class MysqlDatabaseFactory
                 $export['primary'] = array_filter(explode(',', $row['COLUMN_NAME']));
                 continue;
             }
-            $key = !$row['NON_UNIQUE'] ? 'uniques' : 'indexes';
+            $key = 'indexes';
+            if(!$row['NON_UNIQUE']) {
+                $key = 'uniques';
+            }
+            if(!$row['NON_FULLTEXT']) {
+                $key = 'fulltexts';
+            }
             $export[$key][] = array_filter(['name' => $row['INDEX_NAME'], 'columns' => explode(',', $row['COLUMN_NAME'])]);
         }
 

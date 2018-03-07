@@ -97,4 +97,54 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $this->assertCount(1, $statements);
         $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `aGeNcEs` INT(11) NOT NULL ;', $statements[0]);
     }
+
+    /**
+     * @group checker
+     * @group collate
+     */
+    public function testDisableCollate()
+    {
+        $table = new MysqlDatabaseTable('activite');
+        $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
+        $column->setCollate('utf8_general_ci');
+        $table->addColumn($column);
+
+        $newTable = new MysqlDatabaseTable('activite');
+        $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
+        $column->setCollate('latin1_iso_9777');
+        $newTable->addColumn($column);
+
+        $service = new MysqlDatabaseCheckerService();
+        $service->
+        $statements = $service->diff([$table,], [$newTable,]);
+        $this->assertCount(0, $statements);
+    }
+
+    /**
+     * @group checker
+     * @group collate
+     */
+    public function testEnableCollate()
+    {
+
+    }
+
+    /**
+     * @group checker
+     * @group engine
+     */
+    public function testDisableEngine()
+    {
+
+    }
+
+    /**
+     * @group checker
+     * @group engine
+     */
+    public function testEnableEngine()
+    {
+
+    }
+
 }

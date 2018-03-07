@@ -82,7 +82,8 @@ class MysqlRepository
         $sql = 'SELECT 
                   INDEX_NAME,
                   GROUP_CONCAT(COLUMN_NAME) AS COLUMN_NAME,
-                  NON_UNIQUE
+                  NON_UNIQUE,
+                  IF(INDEX_TYPE="FULLTEXT",0,1) as NON_FULLTEXT
                 FROM 
                   information_schema.statistics 
                 WHERE 

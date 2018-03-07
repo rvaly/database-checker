@@ -9,19 +9,21 @@ Je me suis retrouvé confronté à un problème de synchronisation des base de d
 - [X] Générer l'object depuis une base de données.
 - [X] Conversion des `ENUM('0','1')` en `TYINT(1)`.
 - [X] Génération du diff entre deux objets.
-- [ ] Gestion sensitive de la casse.
-- [ ] Ajouter des optimisations de structure (Ex: `TEXT`, `BLOB` dans une table avec beaucoup d'entrée).
+- [x] Gestion sensitive de la casse.
 - [ ] Permettre d'ignorer certaines tables.
-- [ ] Vérifier les datas de certaines table (Ex: La liste des civilités possibles).
 - [ ] Gérer les `DROP` et `REMOVE COLUMNS`.
 - [ ] Une fois la gestion des `DROP` et `REMOVE COLUMNS` effecutées, permettre au logiciel de n'être qu'en création only via une configuration.
 - [x] Intégrer le check de `collate`.
+- [x] Index `FULLTEXT`.
 - [ ] Gestion des `FOREIGN KEY`.
-- [ ] Suggestion d'index.
 - [ ] Suppresion des index avant un `ALTER COLUMN`.
-- [ ] A partir d'une requête SQL vérifier que les index soit définit.
 - [ ] Check moteur de stockage
 
+
+- [ ] Vérifier les datas de certaines table (Ex: La liste des civilités possibles).
+- [ ] Ajouter des optimisations de structure (Ex: `TEXT`, `BLOB` dans une table avec beaucoup d'entrée).
+- [ ] Suggestion d'index.
+- [ ] A partir d'une requête SQL vérifier que les index soit définit.
 
 ```
 // watcher

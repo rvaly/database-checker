@@ -17,10 +17,16 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 class MysqlDatabaseCheckerService
 {
     use LoggerTrait;
+
     /**
      * @var boolean
      */
     private $checkCollate;
+
+    /**
+     * @var boolean
+     */
+    private $checkEngine;
 
     /**
      * @param MysqlDatabaseTable[] $tables
@@ -111,12 +117,13 @@ class MysqlDatabaseCheckerService
         $indexes = $newTable->getIndexes();
         foreach ($indexes as $indexName => $index) {
             foreach ($columnNeedAlter as $colonne) {
-                if (in_array($colonne, $index->getColumns(), false)) {
-                    try {
-                        $modificationsBetweenTable[] = $index->alterStatement();
-                    } catch (TablenameHasNotDefinedException $e) {
-                        continue;
-                    }
+                if (!in_array($colonne, $index->getColumns(), false)) {
+                    continue;
+                }
+                try {
+                    $modificationsBetweenTable[] = $index->alterStatement();
+                } catch (TablenameHasNotDefinedException $e) {
+                    continue;
                 }
             }
         }
@@ -250,4 +257,5 @@ class MysqlDatabaseCheckerService
         return array_filter(array_unique($statements));
     }
 
+    
 }
