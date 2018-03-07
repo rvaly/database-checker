@@ -28,6 +28,9 @@ class MysqlDatabaseFactoryTest extends TestCase
                 'fulltexts' => [
                     ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
                 ],
+                'uniques' => [
+                    ['name' => 'unq_idnego', 'columns' => ['idnego',],],
+                ],
                 'columns' => [
                     'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
                     'idann' => ['type' => 'int', 'length' => '11',],
@@ -73,7 +76,7 @@ class MysqlDatabaseFactoryTest extends TestCase
                 ['INDEX_NAME' => 'dateenr', 'COLUMN_NAME' => 'dateenr', 'NON_UNIQUE' => 1, 'NON_FULLTEXT' => 1],
                 ['INDEX_NAME' => 'idclient', 'COLUMN_NAME' => 'agence', 'NON_UNIQUE' => 1, 'NON_FULLTEXT' => 1],
                 ['INDEX_NAME' => 'idlca', 'COLUMN_NAME' => 'idann', 'NON_UNIQUE' => 1, 'NON_FULLTEXT' => 1],
-                ['INDEX_NAME' => 'idnego', 'COLUMN_NAME' => 'idnego', 'NON_UNIQUE' => 1, 'NON_FULLTEXT' => 1],
+                ['INDEX_NAME' => 'unq_idnego', 'COLUMN_NAME' => 'idnego', 'NON_UNIQUE' => 0, 'NON_FULLTEXT' => 1],
                 ['INDEX_NAME' => 'PRIMARY', 'COLUMN_NAME' => 'id', 'NON_UNIQUE' => 0, 'NON_FULLTEXT' => 1],
                 ['INDEX_NAME' => 'typeaction', 'COLUMN_NAME' => 'typeaction', 'NON_UNIQUE' => 1, 'NON_FULLTEXT' => 1],
                 ['INDEX_NAME' => 'fulltext_valeur', 'COLUMN_NAME' => 'valeur', 'NON_UNIQUE' => 1, 'NON_FULLTEXT' => 0],
@@ -103,6 +106,9 @@ class MysqlDatabaseFactoryTest extends TestCase
                 ],
                 'fulltexts' => [
                     ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
+                ],
+                'uniques' => [
+                    ['name' => 'unq_idnego', 'columns' => ['idnego',],],
                 ],
                 'primary' => ['id',],
                 'columns' => [
@@ -144,6 +150,9 @@ class MysqlDatabaseFactoryTest extends TestCase
                 'primary' => ['id',],
                 'fulltexts' => [
                     ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
+                ],
+                'uniques' => [
+                    ['name' => 'unq_idnego', 'columns' => ['idnego',],],
                 ],
                 'columns' => [
                     'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],

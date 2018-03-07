@@ -17,7 +17,9 @@ class JsonDatabaseFactoryTest extends TestCase
     public function testGenerateTableSinceJson()
     {
         $table = new MysqlDatabaseTable('activite');
-        $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
+        $column = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
+        $column->setCollate('utf8_general_ci');
+        $table->addColumn($column);
         $table->addPrimary(['id']);
         $table->addUnique(['id']);
         $table->addIndex(['id'], 'caramel');
@@ -26,7 +28,7 @@ class JsonDatabaseFactoryTest extends TestCase
         $json = [
             'activite' => [
                 'columns' => [
-                    'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment',],
+                    'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment', 'collate' => 'utf8_general_ci'],
                 ],
                 'indexes' => [
                     ['name' => 'caramel', 'columns' => ['id']],

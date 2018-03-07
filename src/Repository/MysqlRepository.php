@@ -5,7 +5,7 @@ namespace Starkerxp\DatabaseChecker\Repository;
 
 use Starkerxp\DatabaseChecker\LoggerTrait;
 
-class MysqlRepository
+class MysqlRepository implements StructureInterface
 {
     use LoggerTrait;
     /**
@@ -23,6 +23,11 @@ class MysqlRepository
         $this->pdo = $pdo;
     }
 
+    /**
+     * @param $database
+     *
+     * @return array
+     */
     public function getSchemaCollation($database)
     {
         $sth = $this->pdo->prepare('SELECT default_collation_name FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=:database');

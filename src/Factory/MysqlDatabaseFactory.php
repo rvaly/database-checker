@@ -3,12 +3,12 @@
 namespace Starkerxp\DatabaseChecker\Factory;
 
 use Starkerxp\DatabaseChecker\LoggerTrait;
-use Starkerxp\DatabaseChecker\Repository\MysqlRepository;
+use Starkerxp\DatabaseChecker\Repository\StructureInterface;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
 
 /**
- * Transcris l'�tat de la base de donn�es en version objet afin de pouvoir y appliquer les traitements.
+ * Transcris l'état de la base de données en version objet afin de pouvoir y appliquer les traitements.
  *
  * @package Starkerxp\DatabaseChecker\Factory
  */
@@ -24,10 +24,10 @@ class MysqlDatabaseFactory
     /**
      * MysqlDatabaseFactory constructor.
      *
-     * @param MysqlRepository $repositoryMysql
+     * @param StructureInterface $repositoryMysql
      * @param string          $databaseName
      */
-    public function __construct(MysqlRepository $repositoryMysql, $databaseName)
+    public function __construct(StructureInterface $repositoryMysql, $databaseName)
     {
         $this->repositoryMysql = $repositoryMysql;
         $this->databaseName = $databaseName;
