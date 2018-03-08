@@ -93,17 +93,6 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testAlterStatementDatabaseHasNotDefinedException()
-    {
-        $databaseTable = new MysqlDatabaseTable('activites');
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\DatabaseHasNotDefinedException");
-        $databaseTable->alterStatement();
-    }
-
-    /**
-     * @group structure
-     * @group exception
-     */
     public function testAlterStatementException()
     {
         $databaseTable = new MysqlDatabaseTable('activites');

@@ -5,7 +5,7 @@ namespace Starkerxp\DatabaseChecker\Repository;
 
 use Starkerxp\DatabaseChecker\LoggerTrait;
 
-class MysqlRepository
+class MysqlRepository implements StructureInterface
 {
     use LoggerTrait;
     /**
@@ -23,6 +23,11 @@ class MysqlRepository
         $this->pdo = $pdo;
     }
 
+    /**
+     * @param $database
+     *
+     * @return array
+     */
     public function getSchemaCollation($database)
     {
         $sth = $this->pdo->prepare('SELECT default_collation_name FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=:database');
@@ -82,7 +87,8 @@ class MysqlRepository
         $sql = 'SELECT 
                   INDEX_NAME,
                   GROUP_CONCAT(COLUMN_NAME) AS COLUMN_NAME,
-                  NON_UNIQUE
+                  NON_UNIQUE,
+                  IF(INDEX_TYPE="FULLTEXT",0,1) as NON_FULLTEXT
                 FROM 
                   information_schema.statistics 
                 WHERE 

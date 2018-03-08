@@ -53,15 +53,13 @@ class JsonDatabaseFactory
                 $table = new MysqlDatabaseTable($tableName);
             } catch (TablenameHasNotDefinedException $e) {
                 throw $e;
-            } catch (\Exception $e) {
-                continue;
             }
             if (isset($dataTable['collate'])) {
                 $table->setCollate($dataTable['collate']);
             }
             foreach ((array)$dataTable['columns'] as $columnName => $row) {
                 $column = new MysqlDatabaseColumn($columnName, $row['type'], $row['length'], $row['nullable'], $row['defaultValue'], $row['extra']);
-                if (isset($row['collate'])) {
+                if (isset($row['collate']) || $table->getCollate()) {
                     $column->setCollate($row['collate']);
                 }
                 $table->addColumn($column);

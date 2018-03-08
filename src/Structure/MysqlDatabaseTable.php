@@ -4,7 +4,6 @@ namespace Starkerxp\DatabaseChecker\Structure;
 
 
 //@todo Manage data sync by option.
-use Starkerxp\DatabaseChecker\Exception\DatabaseHasNotDefinedException;
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
@@ -18,6 +17,11 @@ class MysqlDatabaseTable implements DatabaseInterface
      * @var string
      */
     private $database;
+
+    /**
+     * @var string
+     */
+    private $engine;
 
     /**
      * @var string
@@ -138,6 +142,7 @@ class MysqlDatabaseTable implements DatabaseInterface
             $export['indexes'][] = $arrayIndex;
         }
         $export['collate'] = $this->getCollate();
+        $export['engine'] = $this->getEngine();
         $export = array_filter($export);
 
         return [$this->getTable() => $export];
@@ -176,6 +181,14 @@ class MysqlDatabaseTable implements DatabaseInterface
     }
 
     /**
+     * @return string
+     */
+    public function getEngine()
+    {
+        return $this->engine;
+    }
+
+    /**
      * @param string $collate
      */
     public function setCollate($collate)
@@ -184,9 +197,18 @@ class MysqlDatabaseTable implements DatabaseInterface
     }
 
     /**
+     * @param string $engine
+     */
+    public function setEngine($engine)
+    {
+        $this->engine = $engine;
+    }
+
+    /**
      * @return array
      *
      * @throws TableHasNotColumnException
+     * @throws TablenameHasNotDefinedException
      */
     public function createStatement()
     {
@@ -194,14 +216,11 @@ class MysqlDatabaseTable implements DatabaseInterface
         $modifications[] = [sprintf('CREATE TABLE IF NOT EXISTS `%s`', $this->getTable())];
         $columns = $this->getColumns();
         foreach ($columns as $column) {
-            try {
-                if ($this->getCollate() == '') {
-                    $column->setCollate('');
-                }
-                $modifications[] = $column->createStatement();
-            } catch (TablenameHasNotDefinedException $e) {
-                continue;
+
+            if ($this->getCollate() == '') {
+                $column->setCollate('');
             }
+            $modifications[] = $column->createStatement();
         }
         $indexes = $this->getIndexes();
         foreach ($indexes as $index) {
@@ -274,14 +293,29 @@ class MysqlDatabaseTable implements DatabaseInterface
     }
 
     /**
+     * @return array
      *
      * @throws \RuntimeException
-     * @throws DatabaseHasNotDefinedException
      */
     public function alterStatement()
     {
+        $modifications = [];
+        $modifications = array_merge($modifications, $this->alterStatementCollate());
+        $modifications = array_merge($modifications, $this->alterStatementEngine());
+
+        return $modifications;
+    }
+
+    /**
+     * @return array
+     *
+     * @throws \RuntimeException
+     */
+    private function alterStatementCollate()
+    {
+
         if (empty($this->database)) {
-            throw new DatabaseHasNotDefinedException('');
+            return [];
         }
         $collateTmp = $this->getCollate();
         $collate = $collateTmp == '' ? '' : sprintf('CONVERT TO CHARACTER SET %s COLLATE %s', explode('_', $collateTmp)[0], $collateTmp);
@@ -297,9 +331,23 @@ class MysqlDatabaseTable implements DatabaseInterface
         return $modifications;
     }
 
+    private function alterStatementEngine()
+    {
+        if (empty($this->engine)) {
+            return [];
+        }
+
+        $modifications = [
+            sprintf('ALTER TABLE `%s` ENGINE=%s;', $this->getTable(), $this->getEngine()),
+        ];
+
+        return $modifications;
+    }
+
     public function setDatabase($database)
     {
         $this->database = $database;
     }
+
 
 }

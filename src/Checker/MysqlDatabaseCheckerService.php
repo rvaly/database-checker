@@ -2,12 +2,8 @@
 
 namespace Starkerxp\DatabaseChecker\Checker;
 
-
 use Starkerxp\DatabaseChecker\Exception\ColumnNotExistException;
-use Starkerxp\DatabaseChecker\Exception\NotCompareDifferentColumnException;
-use Starkerxp\DatabaseChecker\Exception\NotCompareDifferentTableException;
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\Exception\TableNotExistException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Structure\DatabaseInterface;
@@ -17,10 +13,16 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 class MysqlDatabaseCheckerService
 {
     use LoggerTrait;
+
     /**
      * @var boolean
      */
     private $checkCollate;
+
+    /**
+     * @var boolean
+     */
+    private $checkEngine;
 
     /**
      * @param MysqlDatabaseTable[] $tables
@@ -43,8 +45,6 @@ class MysqlDatabaseCheckerService
                 //@todo config for generate create or drop.
                 $modificationsBetweenTable[] = $this->createStatement($table);
                 continue;
-            } catch (NotCompareDifferentTableException $e) {
-                continue;
             }
         }
 
@@ -61,7 +61,7 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseTable   $table
+     * @param MysqlDatabaseTable $table
      * @param MysqlDatabaseTable[] $newTables
      *
      * @return mixed
@@ -87,12 +87,14 @@ class MysqlDatabaseCheckerService
      */
     private function checkTable(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
     {
+        $this->prepareTable($table);
+        $this->prepareTable($newTable);
         // Aucune différence
         if ($this->tableIsEquals($table, $newTable)) {
             return [];
         }
 
-        $modificationsBetweenTable = [];
+        $modificationsBetweenTable = $newTable->alterStatement();
         $columns = $table->getColumns();
         $newColumns = $newTable->getColumns();
 
@@ -111,33 +113,22 @@ class MysqlDatabaseCheckerService
         $indexes = $newTable->getIndexes();
         foreach ($indexes as $indexName => $index) {
             foreach ($columnNeedAlter as $colonne) {
-                if (in_array($colonne, $index->getColumns(), false)) {
-                    try {
-                        $modificationsBetweenTable[] = $index->alterStatement();
-                    } catch (TablenameHasNotDefinedException $e) {
-                        continue;
-                    }
+                if (!in_array($colonne, $index->getColumns(), false)) {
+                    continue;
                 }
+                $modificationsBetweenTable[] = $index->alterStatement();
             }
         }
+
 
         return $this->formatStatements($modificationsBetweenTable);
     }
 
     private function tableIsEquals(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
     {
-
         // Table is equals no need more check
         if ($table == $newTable) {
             return true;
-        }
-
-        if (!$this->checkCollate) {
-            $this->disabledCollate($table);
-            $this->disabledCollate($newTable);
-            if ($table == $newTable) {
-                return true;
-            }
         }
 
         return strtolower(json_encode($table->toArray())) == strtolower(json_encode($newTable->toArray()));
@@ -157,7 +148,7 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseColumn   $column
+     * @param MysqlDatabaseColumn $column
      * @param MysqlDatabaseColumn[] $newColumns
      *
      * @return mixed
@@ -180,18 +171,13 @@ class MysqlDatabaseCheckerService
      *
      * @return array
      *
-     * @throws NotCompareDifferentColumnException
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
     private function checkColumn(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn)
     {
-        if (strtolower($column->getName()) != strtolower($newColumn->getName())) {
-            throw new NotCompareDifferentColumnException('On ne compare pas deux colonnes avec un nom diff�rent');
-        }
         if ($this->columnIsEquals($column, $newColumn)) {
             return [];
         }
-
         try {
             $statements = $newColumn->alterStatement();
         } catch (\RuntimeException $e) {
@@ -206,14 +192,6 @@ class MysqlDatabaseCheckerService
         // Column is equals no need more check
         if ($column == $newColumn) {
             return true;
-        }
-
-        if (!$this->checkCollate) {
-            $column->setCollate('');
-            $newColumn->setCollate('');
-            if($column == $newColumn){
-                return true;
-            }
         }
 
         return strtolower(json_encode($column->toArray())) == strtolower(json_encode($newColumn->toArray()));
@@ -248,6 +226,26 @@ class MysqlDatabaseCheckerService
         }
 
         return array_filter(array_unique($statements));
+    }
+
+    public function enableCheckCollate()
+    {
+        $this->checkCollate = true;
+    }
+
+    public function enableCheckEngine()
+    {
+        $this->checkEngine = true;
+    }
+
+    private function prepareTable(MysqlDatabaseTable $table)
+    {
+        if (!$this->checkCollate) {
+            $this->disabledCollate($table);
+        }
+        if (!$this->checkEngine) {
+            $table->setEngine('');
+        }
     }
 
 }
