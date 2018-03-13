@@ -63,6 +63,8 @@ class MysqlDatabaseColumnTest extends TestCase
             $databaseColumn->setTable('activite');
             $statement = $databaseColumn->createStatement();
             $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` ' . strtoupper($type) . '(255) NOT NULL ;', $statement[0]);
+            $statements = $databaseColumn->deleteStatement();
+            $this->assertEquals('ALTER TABLE `activite` DROP COLUMN `id`;', $statements);
             $statement = $databaseColumn->alterStatement();
             $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` ' . strtoupper($type) . '(255) NOT NULL ;', $statement[0]);
         }

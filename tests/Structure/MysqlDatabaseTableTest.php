@@ -238,4 +238,35 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals($expected, $statements);
     }
 
+    public function testOverideColumn(){
+        $table = new MysqlDatabaseTable('login');
+        $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '11', false, null, 'auto_increment'));
+        $table->addColumn(new MysqlDatabaseColumn('id', 'varchar', '255', false, null, null));
+        $statements = $table->toArray();
+
+        $expected = [
+            'login' => [
+                'columns' => [
+                    'id' => [
+                        'type' => 'VARCHAR',
+                        'length' => '255',
+                        'extra' => '',
+                        'name' => 'id',
+                        'nullable' => false,
+                        'defaultValue' => null,
+                        'collate' => null,
+                    ],
+                ],
+            ],
+        ];
+        $this->assertEquals($expected, $statements);
+    }
+
+    public function testDeleteStatement(){
+        $table = new MysqlDatabaseTable('login');
+        $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '11', false, null, 'auto_increment'));
+        $table->removeColumn('id');
+        $this->expectException('\Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException');
+        $this->assertCount(0, $table->toArray());
+    }
 }

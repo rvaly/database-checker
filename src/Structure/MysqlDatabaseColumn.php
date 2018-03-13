@@ -171,19 +171,19 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
-     * @param mixed $table
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-    }
-
-    /**
      * @param string $collate
      */
     public function setCollate($collate)
     {
         $this->collate = $collate;
+    }
+
+    /**
+     * @param mixed $table
+     */
+    public function setTable($table)
+    {
+        $this->table = $table;
     }
 
     /**
@@ -195,10 +195,15 @@ class MysqlDatabaseColumn implements DatabaseInterface
     {
         $null = $this->getNullable() ? '' : 'NOT';
         $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
-        $columnName = '`' . $this->getName() . '`';
         $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE '%s'", $this->getCollate());
-        $modification = sprintf('ALTER TABLE `%s` CHANGE COLUMN %s %s %s %s NULL %s %s %s;', $this->getTable(), $columnName, $columnName, $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
+        $modification = sprintf('ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s NULL %s %s %s;', $this->getTable(), $this->getName(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
         return [str_replace(['   ', '  ',], ' ', $modification)];
     }
+
+    public function deleteStatement()
+    {
+        return sprintf('ALTER TABLE `%s` DROP COLUMN `%s`;', $this->getTable(), $this->getName());
+    }
+
 }

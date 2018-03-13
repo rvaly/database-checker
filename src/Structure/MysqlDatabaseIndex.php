@@ -49,15 +49,26 @@ class MysqlDatabaseIndex implements DatabaseInterface
     public function alterStatement()
     {
         $modifications = [];
-        if ($this->isPrimary()) {
-            $modifications[] = sprintf('ALTER TABLE `%s` DROP PRIMARY KEY;', $this->getTable());
-        } else {
-            $modifications[] = sprintf('ALTER TABLE `%s` DROP INDEX `%s`;', $this->getTable(), $this->getName());
-        }
+        $modifications[] = $this->deleteStatement();
         $modifications[] = $this->createStatement()[0];
 
         return $modifications;
     }
+
+    /**
+     * @return string
+     *
+     * @throws TablenameHasNotDefinedException
+     */
+    public function deleteStatement()
+    {
+        if ($this->isPrimary()) {
+            return sprintf('ALTER TABLE `%s` DROP PRIMARY KEY;', $this->getTable());
+        }
+
+        return sprintf('ALTER TABLE `%s` DROP INDEX `%s`;', $this->getTable(), $this->getName());
+    }
+
 
     public function isPrimary()
     {

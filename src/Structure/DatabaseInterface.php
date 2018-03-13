@@ -17,4 +17,6 @@ interface DatabaseInterface
     public function createStatement();
 
     public function alterStatement();
+
+    public function deleteStatement();
 }

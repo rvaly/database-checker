@@ -5,19 +5,23 @@
 
 Je me suis retrouvé confronté à un problème de synchronisation des base de données clients. Et je n'avais aucun outils pour vérifier si l'instance du client était bel est bien valide.
 
+A Faire :
+- [ ] Gestion des `FOREIGN KEY` (dépends du moteur de stockage).
+- [ ] Suppresion des index avant un `ALTER COLUMN`.
+- [ ] Creer la class `MysqlDatabase` afin de gérer les montés de version de mysql exemple les index fulltext n'était pas gérer en innodb sur les version antérieurese à 5.6
+- [ ] Permettre d'ignorer certaines tables.
+
+Terminé :
 - [X] Générer l'object depuis un fichier JSON.
 - [X] Générer l'object depuis une base de données.
 - [X] Conversion des `ENUM('0','1')` en `TYINT(1)`.
 - [X] Génération du diff entre deux objets.
 - [x] Gestion sensitive de la casse.
-- [ ] Permettre d'ignorer certaines tables.
-- [ ] Gérer les `DROP` et `REMOVE COLUMNS`.
-- [ ] Une fois la gestion des `DROP` et `REMOVE COLUMNS` effecutées, permettre au logiciel de n'être qu'en création only via une configuration.
 - [x] Intégrer le check de `collate`.
-- [x] Index `FULLTEXT`.
-- [ ] Gestion des `FOREIGN KEY`.
-- [ ] Suppresion des index avant un `ALTER COLUMN`.
-- [ ] Check moteur de stockage
+- [x] Création des index `FULLTEXT`.
+- [x] Check moteur de stockage
+- [x] Gérer les `DROP COLUMNS`.
+- [x] Une fois la gestion des `DROP` et `REMOVE COLUMNS` effecutées, permettre au logiciel de n'être qu'en création only via une configuration.
 
 
 - [ ] Vérifier les datas de certaines table (Ex: La liste des civilités possibles).

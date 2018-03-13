@@ -192,4 +192,26 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $this->assertCount(1, $statements);
     }
 
+    /**
+     * @group checker
+     * @group drop
+     */
+    public function testEnableDropColumn(){
+        $table = new MysqlDatabaseTable('activite');
+        $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
+        $table->addColumn(new MysqlDatabaseColumn('valeur', 'TEXT', '', false, null, null));
+        $table->addColumn(new MysqlDatabaseColumn('valeur2', 'TEXT', '', false, null, null));
+        $table->addPrimary(['id']);
+
+        $newTable = new MysqlDatabaseTable('activite');
+        $newTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
+        $newTable->addColumn(new MysqlDatabaseColumn('valeur', 'TEXT', '', false, null, null));
+
+        $service = new MysqlDatabaseCheckerService();
+        $service->enableDropStatement();
+        $modifications = $service->diff([$table], [$newTable,]);
+        $this->assertCount(1, $modifications);
+        $this->assertEquals('ALTER TABLE `activite` DROP COLUMN `valeur2`;', $modifications[0]);
+    }
+
 }

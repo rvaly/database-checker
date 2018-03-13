@@ -3,7 +3,6 @@
 namespace Starkerxp\DatabaseChecker\Structure;
 
 
-//@todo Manage data sync by option.
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
@@ -75,7 +74,6 @@ class MysqlDatabaseTable implements DatabaseInterface
 
     public function removeColumn($columnName)
     {
-
         unset($this->columns[$columnName]);
     }
 
@@ -313,7 +311,6 @@ class MysqlDatabaseTable implements DatabaseInterface
      */
     private function alterStatementCollate()
     {
-
         if (empty($this->database)) {
             return [];
         }
@@ -347,6 +344,11 @@ class MysqlDatabaseTable implements DatabaseInterface
     public function setDatabase($database)
     {
         $this->database = $database;
+    }
+
+    public function deleteStatement()
+    {
+        // TODO: Implement deleteStatement() method.
     }
 
 

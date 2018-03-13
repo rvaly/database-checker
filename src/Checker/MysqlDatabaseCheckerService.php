@@ -25,11 +25,17 @@ class MysqlDatabaseCheckerService
     private $checkEngine;
 
     /**
+     * @var boolean
+     */
+    private $dropStatement;
+
+    /**
      * @param MysqlDatabaseTable[] $tables
      * @param MysqlDatabaseTable[] $newTables
      *
      * @return array
      * @throws TableHasNotColumnException
+     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
     public function diff(array $tables, array $newTables)
     {
@@ -61,7 +67,7 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseTable $table
+     * @param MysqlDatabaseTable   $table
      * @param MysqlDatabaseTable[] $newTables
      *
      * @return mixed
@@ -84,6 +90,7 @@ class MysqlDatabaseCheckerService
      * @return array
      *
      * @throws TableHasNotColumnException
+     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
     private function checkTable(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
     {
@@ -103,6 +110,10 @@ class MysqlDatabaseCheckerService
                 $newColumn = $this->getColumn($column, $newColumns);
                 $modificationsBetweenTable[$newColumn->getName()] = $this->checkColumn($column, $newColumn);
             } catch (ColumnNotExistException $e) {
+                if ($this->dropStatement) {
+                    $modificationsBetweenTable[$column->getName()] = $column->deleteStatement();
+                    continue;
+                }
                 $modificationsBetweenTable[$column->getName()] = $this->createStatement($column);
                 continue;
             } catch (\Exception $e) {
@@ -124,14 +135,14 @@ class MysqlDatabaseCheckerService
         return $this->formatStatements($modificationsBetweenTable);
     }
 
-    private function tableIsEquals(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
+    private function prepareTable(MysqlDatabaseTable $table)
     {
-        // Table is equals no need more check
-        if ($table == $newTable) {
-            return true;
+        if (!$this->checkCollate) {
+            $this->disabledCollate($table);
         }
-
-        return strtolower(json_encode($table->toArray())) == strtolower(json_encode($newTable->toArray()));
+        if (!$this->checkEngine) {
+            $table->setEngine('');
+        }
     }
 
     /**
@@ -147,8 +158,18 @@ class MysqlDatabaseCheckerService
         }
     }
 
+    private function tableIsEquals(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
+    {
+        // Table is equals no need more check
+        if ($table == $newTable) {
+            return true;
+        }
+
+        return strtolower(json_encode($table->toArray())) == strtolower(json_encode($newTable->toArray()));
+    }
+
     /**
-     * @param MysqlDatabaseColumn $column
+     * @param MysqlDatabaseColumn   $column
      * @param MysqlDatabaseColumn[] $newColumns
      *
      * @return mixed
@@ -238,14 +259,9 @@ class MysqlDatabaseCheckerService
         $this->checkEngine = true;
     }
 
-    private function prepareTable(MysqlDatabaseTable $table)
+    public function enableDropStatement()
     {
-        if (!$this->checkCollate) {
-            $this->disabledCollate($table);
-        }
-        if (!$this->checkEngine) {
-            $table->setEngine('');
-        }
+        $this->dropStatement = true;
     }
 
 }
