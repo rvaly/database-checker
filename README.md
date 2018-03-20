@@ -8,8 +8,12 @@ Je me suis retrouvé confronté à un problème de synchronisation des base de d
 A Faire :
 - [ ] Gestion des `FOREIGN KEY` (dépends du moteur de stockage).
 - [ ] Suppresion des index avant un `ALTER COLUMN`.
-- [ ] Creer la class `MysqlDatabase` afin de gérer les montés de version de mysql exemple les index fulltext n'était pas gérer en innodb sur les version antérieurese à 5.6
+- [ ] Créer la class `MysqlDatabase` afin de gérer les montés de version de mysql exemple les index fulltext n'était pas gérer en innodb sur les versions antérieurs à 5.6
 - [ ] Permettre d'ignorer certaines tables.
+- [ ] Permettre d'ignorer certaines colonnes.
+- [ ] Permettre d'ignorer certains index.
+- [ ] Permettre la modification de colonne. (Ajout, modification, suppression, rename)
+- [ ] Vérifier les exports json/objet suite à la création de `MysqlDatabase`.
 
 Terminé :
 - [X] Générer l'object depuis un fichier JSON.

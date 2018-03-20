@@ -19,11 +19,6 @@ class MysqlDatabase implements DatabaseInterface
     /**
      * @var string
      */
-    private $engine;
-
-    /**
-     * @var string
-     */
     private $collate;
 
     /**
@@ -50,7 +45,7 @@ class MysqlDatabase implements DatabaseInterface
     public function addTable(MysqlDatabaseTable $table)
     {
         $table->setDatabase($this->getDatabase());
-        if (null !== $this->getCollate()) {
+        if (!empty($this->getCollate())) {
             $table->setCollate($this->getCollate());
         }
         $this->tables[$table->getTable()] = $table;
