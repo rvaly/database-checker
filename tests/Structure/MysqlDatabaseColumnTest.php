@@ -4,6 +4,7 @@ namespace Starkerxp\DatabaseChecker\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 
 class MysqlDatabaseColumnTest extends TestCase
 {
@@ -25,7 +26,7 @@ class MysqlDatabaseColumnTest extends TestCase
      */
     public function testException()
     {
-        $this->expectException("\RuntimeException");
+        $this->expectException(\RuntimeException::class);
         new MysqlDatabaseColumn('', 'INT', '255', false, null, 'auto_increment');
     }
 
@@ -36,7 +37,7 @@ class MysqlDatabaseColumnTest extends TestCase
     public function testCreateStatementException()
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
+        $this->expectException(TablenameHasNotDefinedException::class);
         $databaseColumn->createStatement();
     }
 
@@ -47,7 +48,7 @@ class MysqlDatabaseColumnTest extends TestCase
     public function testAlterStatementException()
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
+        $this->expectException(TablenameHasNotDefinedException::class);
         $databaseColumn->alterStatement();
     }
 

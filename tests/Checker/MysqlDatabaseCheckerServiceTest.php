@@ -4,6 +4,7 @@ namespace Starkerxp\DatabaseChecker\Tests\Checker;
 
 use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Checker\MysqlDatabaseCheckerService;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
@@ -16,7 +17,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
     public function testGenerateAlterStatement()
     {
         $table = new MysqlDatabaseTable('activite');
-        $table->setCollate("dd");
+        $table->setCollate('dd');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
         $table->addColumn(new MysqlDatabaseColumn('idann', 'INT', '11', false, null, null));
         $table->addColumn(new MysqlDatabaseColumn('dateenr', 'DATETIME', '', false, null, null));
@@ -39,9 +40,16 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $newTable->addColumn(new MysqlDatabaseColumn('valeur', 'TEXT', '', false, null, null));
         $newTable->addPrimary(['id']);
 
+        $database = new MysqlDatabase('actual');
+        $database->addTable($table);
+        $database->addTable($table2);
+
+        $newDatabase = new MysqlDatabase('referal');
+        $newDatabase->addTable($newTable);
+
         $service = new MysqlDatabaseCheckerService();
-        $modifications = $service->diff([$table, $table2], [$newTable,]);
-        $this->assertNotNull($modifications);
+        $statements = $service->diff($database, $newDatabase);
+        $this->assertNotNull($statements);
     }
 
     /**
@@ -60,8 +68,13 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $newTable->addPrimary(['id']);
 
         $service = new MysqlDatabaseCheckerService();
-        $modifications = $service->diff([], [$newTable,]);
-        $this->assertNotNull($modifications);
+
+        $database = new MysqlDatabase('actual');
+        $newDatabase = new MysqlDatabase('referal');
+        $newDatabase->addTable($newTable);
+
+        $statements = $service->diff($database, $newDatabase);
+        $this->assertNotNull($statements);
     }
 
     /**
@@ -92,8 +105,15 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $newTable->addColumn(new MysqlDatabaseColumn('valeur', 'TEXT', '', false, null, null));
         $newTable->addPrimary(['id']);
 
+
+        $database = new MysqlDatabase('actual');
+        $database->addTable($table);
+        $database->addTable($table2);
+        $newDatabase = new MysqlDatabase('referal');
+        $newDatabase->addTable($newTable);
         $service = new MysqlDatabaseCheckerService();
-        $statements = $service->diff([$table, $table2], [$newTable,]);
+        $statements = $service->diff($database, $newDatabase);
+
         $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `aGeNcEs` INT(11) NOT NULL ;', $statements[0]);
         $this->assertCount(1, $statements);
     }
@@ -113,9 +133,13 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
         $column->setCollate('latin1_iso_9777');
         $newTable->addColumn($column);
-
+        $database = new MysqlDatabase('actual');
+        $database->addTable($table);
+        $newDatabase = new MysqlDatabase('referal');
+        $newDatabase->addTable($newTable);
         $service = new MysqlDatabaseCheckerService();
-        $statements = $service->diff([$table,], [$newTable,]);
+        $statements = $service->diff($database, $newDatabase);
+
         $this->assertCount(0, $statements);
     }
 
@@ -126,22 +150,26 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
     public function testEnableCollate()
     {
         $table = new MysqlDatabaseTable('activite');
-        $table->setDatabase('test');
         $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
         $column->setCollate('utf8_general_ci');
         $table->addColumn($column);
+        $database = new MysqlDatabase('actual');
+        $database->addTable($table);
 
         $newTable = new MysqlDatabaseTable('activite');
-        $newTable->setDatabase('test');
         $newTable->setCollate('latin1_iso_9777');
-        $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
-        $column->setCollate('canardwc');
-        $newTable->addColumn($column);
+        $newColumn = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
+        $newColumn->setCollate('canardwc');
+        $newTable->addColumn($newColumn);
+
+        $newDatabase = new MysqlDatabase('referal');
+        $newDatabase->setCollate('latin1_iso_9777');
+        $newDatabase->addTable($newTable);
 
         $service = new MysqlDatabaseCheckerService();
         $service->enableCheckCollate();
-        $statements = $service->diff([$table,], [$newTable,]);
-        $this->assertEquals('ALTER DATABASE test CHARACTER SET latin1 COLLATE latin1_iso_9777;', $statements[0]);
+        $statements = $service->diff($database, $newDatabase);
+        $this->assertEquals('ALTER DATABASE actual CHARACTER SET latin1 COLLATE latin1_iso_9777;', $statements[0]);
         $this->assertEquals('ALTER TABLE `activite` CONVERT TO CHARACTER SET latin1 COLLATE latin1_iso_9777;', $statements[1]);
         $this->assertEquals("ALTER TABLE `activite` CHANGE COLUMN `nom` `nom` VARCHAR(11) NOT NULL COLLATE 'canardwc';", $statements[2]);
         $this->assertCount(3, $statements);
@@ -163,8 +191,12 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
         $newTable->addColumn($column);
 
+        $database = new MysqlDatabase('actual');
+        $database->addTable($table);
+        $newDatabase = new MysqlDatabase('referal');
+        $newDatabase->addTable($newTable);
         $service = new MysqlDatabaseCheckerService();
-        $statements = $service->diff([$table,], [$newTable,]);
+        $statements = $service->diff($database, $newDatabase);
         $this->assertCount(0, $statements);
     }
 
@@ -185,9 +217,14 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
         $newTable->addColumn($column);
 
+
+        $database = new MysqlDatabase('actual');
+        $database->addTable($table);
+        $newDatabase = new MysqlDatabase('referal');
+        $newDatabase->addTable($newTable);
         $service = new MysqlDatabaseCheckerService();
         $service->enableCheckEngine();
-        $statements = $service->diff([$table,], [$newTable,]);
+        $statements = $service->diff($database, $newDatabase);
         $this->assertEquals('ALTER TABLE `activite` ENGINE=MEMORY;', $statements[0]);
         $this->assertCount(1, $statements);
     }
@@ -207,11 +244,15 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $newTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
         $newTable->addColumn(new MysqlDatabaseColumn('valeur', 'TEXT', '', false, null, null));
 
+        $database = new MysqlDatabase('actual');
+        $database->addTable($table);
+        $newDatabase = new MysqlDatabase('referal');
+        $newDatabase->addTable($newTable);
         $service = new MysqlDatabaseCheckerService();
         $service->enableDropStatement();
-        $modifications = $service->diff([$table], [$newTable,]);
-        $this->assertCount(1, $modifications);
-        $this->assertEquals('ALTER TABLE `activite` DROP COLUMN `valeur2`;', $modifications[0]);
+        $statements = $service->diff($database, $newDatabase);
+        $this->assertCount(1, $statements);
+        $this->assertEquals('ALTER TABLE `activite` DROP COLUMN `valeur2`;', $statements[0]);
     }
 
 }

@@ -5,6 +5,8 @@ namespace Starkerxp\DatabaseChecker\Tests\Structure;
 use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
+use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 
 class MysqlDatabaseTableTest extends TestCase
 {
@@ -14,7 +16,7 @@ class MysqlDatabaseTableTest extends TestCase
      */
     public function testException()
     {
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
+        $this->expectException(TablenameHasNotDefinedException::class);
         new MysqlDatabaseTable(null);
     }
 
@@ -32,7 +34,7 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->removeColumn('id2');
         $this->assertCount(1, $databaseTable->getColumns());
         $databaseTable->removeColumn('id');
-        $this->expectException('\Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException');
+        $this->expectException(TableHasNotColumnException::class);
         $this->assertCount(0, $databaseTable->getColumns());
     }
 
@@ -85,20 +87,8 @@ class MysqlDatabaseTableTest extends TestCase
     public function testCreateStatementWithoutColumnException()
     {
         $databaseTable = new MysqlDatabaseTable('activites');
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException");
+        $this->expectException(TableHasNotColumnException::class);
         $databaseTable->createStatement();
-    }
-
-    /**
-     * @group structure
-     * @group exception
-     */
-    public function testAlterStatementException()
-    {
-        $databaseTable = new MysqlDatabaseTable('activites');
-        $databaseTable->setDatabase('tmp');
-        $this->expectException("\RuntimeException");
-        $databaseTable->alterStatement();
     }
 
     /**
@@ -111,9 +101,8 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->setDatabase('test');
         $databaseTable->setCollate('latin1_swedish_ci');
         $statements = $databaseTable->alterStatement();
-        $this->assertCount(2, $statements);
-        $this->assertEquals('ALTER DATABASE test CHARACTER SET latin1 COLLATE latin1_swedish_ci;', $statements[0]);
-        $this->assertEquals('ALTER TABLE `activites` CONVERT TO CHARACTER SET latin1 COLLATE latin1_swedish_ci;', $statements[1]);
+        $this->assertCount(1, $statements);
+        $this->assertEquals('ALTER TABLE `activites` CONVERT TO CHARACTER SET latin1 COLLATE latin1_swedish_ci;', $statements[0]);
     }
 
     /**

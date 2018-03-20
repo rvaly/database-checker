@@ -7,6 +7,7 @@ use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TableNotExistException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Structure\DatabaseInterface;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
@@ -30,16 +31,22 @@ class MysqlDatabaseCheckerService
     private $dropStatement;
 
     /**
-     * @param MysqlDatabaseTable[] $tables
-     * @param MysqlDatabaseTable[] $newTables
-     *
+     * @param MysqlDatabase $database
+     * @param MysqlDatabase $newDatabase
      * @return array
      * @throws TableHasNotColumnException
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
-    public function diff(array $tables, array $newTables)
+    public function diff(MysqlDatabase $database, MysqlDatabase $newDatabase)
     {
         $modificationsBetweenTable = [];
+        $tables = $database->getTables();
+        $newTables = $newDatabase->getTables();
+
+        if($this->checkCollate && $database->getCollate() != $newDatabase->getCollate()){
+            $database->setCollate($newDatabase->getCollate());
+            $modificationsBetweenTable[] = $database->alterStatement();
+        }
 
         // check Table
         foreach ($tables as $table) {

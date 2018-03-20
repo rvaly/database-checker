@@ -4,6 +4,7 @@ namespace Starkerxp\DatabaseChecker\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 
 class MysqlDatabaseIndexTest extends TestCase
 {
@@ -13,7 +14,7 @@ class MysqlDatabaseIndexTest extends TestCase
      */
     public function testCreateObjectException()
     {
-        $this->expectException("\RuntimeException");
+        $this->expectException(\RuntimeException::class);
         new MysqlDatabaseIndex('', ['id'], true);
     }
 
@@ -24,7 +25,7 @@ class MysqlDatabaseIndexTest extends TestCase
     public function testCreateStatementException()
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
+        $this->expectException(TablenameHasNotDefinedException::class);
         $databaseIndex->createStatement();
     }
 
@@ -35,7 +36,7 @@ class MysqlDatabaseIndexTest extends TestCase
     public function testAlterStatementException()
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);
-        $this->expectException("\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException");
+        $this->expectException(TablenameHasNotDefinedException::class);
         $databaseIndex->alterStatement();
     }
 

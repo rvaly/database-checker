@@ -306,8 +306,6 @@ class MysqlDatabaseTable implements DatabaseInterface
 
     /**
      * @return array
-     *
-     * @throws \RuntimeException
      */
     private function alterStatementCollate()
     {
@@ -317,11 +315,10 @@ class MysqlDatabaseTable implements DatabaseInterface
         $collateTmp = $this->getCollate();
         $collate = $collateTmp == '' ? '' : sprintf('CONVERT TO CHARACTER SET %s COLLATE %s', explode('_', $collateTmp)[0], $collateTmp);
         if ($collate == '') {
-            throw new \RuntimeException('Not implemented');
+            return [];
         }
 
         $modifications = [
-            sprintf('ALTER DATABASE %s CHARACTER SET %s COLLATE %s;', $this->database, explode('_', $collateTmp)[0], $collateTmp),
             sprintf('ALTER TABLE `%s` %s;', $this->getTable(), $collate),
         ];
 
