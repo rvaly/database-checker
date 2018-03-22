@@ -114,4 +114,15 @@ class MysqlDatabaseFactory
         return $export;
     }
 
+	
+	public function exportStructure(){
+		$export = [];
+        $tables = $this->repositoryMysql->getTablesStructure($this->databaseName);
+        foreach ($tables as $table) {
+            $export[$table] = $this->getIndex($table);
+            $export[$table]['columns'] = $this->getColumns($table);
+        }
+		
+		return json_encode($export);
+	}
 }
