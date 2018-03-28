@@ -118,7 +118,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         $columns = $this->getColumns();
         foreach ($columns as $column) {
             $arrayColumn = $column->toArray();
-            unset($arrayColumn['table']);
+            unset($arrayColumn['table'], $arrayColumn['name']);
             $export['columns'][$column->getName()] = $arrayColumn;
         }
 

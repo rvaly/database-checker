@@ -13,38 +13,39 @@ class MysqlDatabaseFactoryTest extends TestCase
      */
     public function testGenerateTableSinceJson()
     {
-        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'hektor2');
+        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'myTestDatabase');
         $export = $factoryMysqlDatabase->generate();
         $expectedJson = [
-            'activite' => [
-                'indexes' => [
-                    ['name' => 'dateenr', 'columns' => ['dateenr',],],
-                    ['name' => 'idclient', 'columns' => ['agence',],],
-                    ['name' => 'idlca', 'columns' => ['idann',],],
-                    ['name' => 'idnego', 'columns' => ['idnego',],],
-                    ['name' => 'typeaction', 'columns' => ['typeaction',],],
-                ],
-                'primary' => ['id',],
-                'fulltexts' => [
-                    ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
-                ],
-                'uniques' => [
-                    ['name' => 'unq_idnego', 'columns' => ['idnego',],],
-                ],
-                'columns' => [
-                    'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
-                    'idann' => ['type' => 'int', 'length' => '11',],
-                    'dateenr' => ['type' => 'datetime',],
-                    'agence' => ['type' => 'int', 'length' => '11',],
-                    'idnego' => ['type' => 'int', 'length' => '11',],
-                    'typeaction' => ['type' => 'varchar', 'length' => '255',],
-                    'valeur' => ['type' => 'text',],
+            'tables' => [
+                'activite' => [
+                    'indexes' => [
+                        ['name' => 'dateenr', 'columns' => ['dateenr',],],
+                        ['name' => 'idclient', 'columns' => ['agence',],],
+                        ['name' => 'idlca', 'columns' => ['idann',],],
+                        ['name' => 'typeaction', 'columns' => ['typeaction',],],
+                    ],
+                    'primary' => ['id',],
+                    'fulltexts' => [
+                        ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
+                    ],
+                    'uniques' => [
+                        ['name' => 'unq_idnego', 'columns' => ['idnego',],],
+                    ],
+                    'columns' => [
+                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
+                        'idann' => ['type' => 'int', 'length' => '11',],
+                        'dateenr' => ['type' => 'datetime',],
+                        'agence' => ['type' => 'int', 'length' => '11',],
+                        'idnego' => ['type' => 'int', 'length' => '11',],
+                        'typeaction' => ['type' => 'varchar', 'length' => '255',],
+                        'valeur' => ['type' => 'text',],
+                    ],
                 ],
             ],
         ];
 
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($expectedJson));
-        $expected = $factoryJsonDatabase->generate();
+        $expected = $factoryJsonDatabase->generate('myTestDatabase');
         $this->assertEquals($expected, $export);
     }
 
@@ -53,12 +54,12 @@ class MysqlDatabaseFactoryTest extends TestCase
         $oMock = $this->createMock('\Starkerxp\DatabaseChecker\Repository\MysqlRepository');
         $oMock->expects($this->any())
             ->method('getTablesStructure')
-            ->with('hektor2')
+            ->with('myTestDatabase')
             ->willReturn(['activite']);
 
         $oMock->expects($this->any())
             ->method('fetchColumnsStructure')
-            ->with('hektor2', 'activite')
+            ->with('myTestDatabase', 'activite')
             ->willReturn([
                 ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => 'auto_increment', 'COLLATION_NAME' => null,],
                 ['COLUMN_NAME' => 'idann', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
@@ -71,7 +72,7 @@ class MysqlDatabaseFactoryTest extends TestCase
 
         $oMock->expects($this->any())
             ->method('fetchIndexStructure')
-            ->with('hektor2', 'activite')
+            ->with('myTestDatabase', 'activite')
             ->willReturn([
                 ['INDEX_NAME' => 'dateenr', 'COLUMN_NAME' => 'dateenr', 'NON_UNIQUE' => 1, 'NON_FULLTEXT' => 1],
                 ['INDEX_NAME' => 'idclient', 'COLUMN_NAME' => 'agence', 'NON_UNIQUE' => 1, 'NON_FULLTEXT' => 1],
@@ -91,41 +92,42 @@ class MysqlDatabaseFactoryTest extends TestCase
      */
     public function testCheckCollate()
     {
-        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'hektor2');
+        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'myTestDatabase');
         $factoryMysqlDatabase->enableCheckCollate();
         $export = $factoryMysqlDatabase->generate();
 
         $expectedJson = [
-            'activite' => [
-                'indexes' => [
-                    ['name' => 'dateenr', 'columns' => ['dateenr',],],
-                    ['name' => 'idclient', 'columns' => ['agence',],],
-                    ['name' => 'idlca', 'columns' => ['idann',],],
-                    ['name' => 'idnego', 'columns' => ['idnego',],],
-                    ['name' => 'typeaction', 'columns' => ['typeaction',],],
-                ],
-                'fulltexts' => [
-                    ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
-                ],
-                'uniques' => [
-                    ['name' => 'unq_idnego', 'columns' => ['idnego',],],
-                ],
-                'primary' => ['id',],
-                'columns' => [
-                    'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
-                    'idann' => ['type' => 'int', 'length' => '11',],
-                    'dateenr' => ['type' => 'datetime',],
-                    'agence' => ['type' => 'int', 'length' => '11',],
-                    'typeaction' => ['type' => 'varchar', 'length' => '255', 'collate' => 'latin1_swedish_ci'],
-                    'valeur' => ['type' => 'text', 'collate' => 'latin1_swedish_ci'],
-                    'idnego' => ['type' => 'int', 'length' => '11',],
+            'tables' => [
+                'activite' => [
+                    'indexes' => [
+                        ['name' => 'dateenr', 'columns' => ['dateenr',],],
+                        ['name' => 'idclient', 'columns' => ['agence',],],
+                        ['name' => 'idlca', 'columns' => ['idann',],],
+                        ['name' => 'typeaction', 'columns' => ['typeaction',],],
+                    ],
+                    'fulltexts' => [
+                        ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
+                    ],
+                    'uniques' => [
+                        ['name' => 'unq_idnego', 'columns' => ['idnego',],],
+                    ],
+                    'primary' => ['id',],
+                    'columns' => [
+                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
+                        'idann' => ['type' => 'int', 'length' => '11',],
+                        'dateenr' => ['type' => 'datetime',],
+                        'agence' => ['type' => 'int', 'length' => '11',],
+                        'typeaction' => ['type' => 'varchar', 'length' => '255', 'collate' => 'latin1_swedish_ci'],
+                        'valeur' => ['type' => 'text', 'collate' => 'latin1_swedish_ci'],
+                        'idnego' => ['type' => 'int', 'length' => '11',],
+                    ],
                 ],
             ],
         ];
 
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($expectedJson));
-        $expected = $factoryJsonDatabase->generate();
-        $this->assertEquals($expected, $export);
+        $expected = $factoryJsonDatabase->generate('myTestDatabase');
+        $this->assertEquals($expected->toArray(), $export->toArray());
     }
 
 
@@ -135,40 +137,43 @@ class MysqlDatabaseFactoryTest extends TestCase
      */
     public function testCheckCollateDisable()
     {
-        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'hektor2');
+        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'myTestDatabase');
         $export = $factoryMysqlDatabase->generate();
 
         $expectedJson = [
-            'activite' => [
-                'indexes' => [
-                    ['name' => 'dateenr', 'columns' => ['dateenr',],],
-                    ['name' => 'idclient', 'columns' => ['agence',],],
-                    ['name' => 'idlca', 'columns' => ['idann',],],
-                    ['name' => 'idnego', 'columns' => ['idnego',],],
-                    ['name' => 'typeaction', 'columns' => ['typeaction',],],
-                ],
-                'primary' => ['id',],
-                'fulltexts' => [
-                    ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
-                ],
-                'uniques' => [
-                    ['name' => 'unq_idnego', 'columns' => ['idnego',],],
-                ],
-                'columns' => [
-                    'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
-                    'idann' => ['type' => 'int', 'length' => '11',],
-                    'dateenr' => ['type' => 'datetime',],
-                    'agence' => ['type' => 'int', 'length' => '11',],
-                    'typeaction' => ['type' => 'varchar', 'length' => '255',],
-                    'valeur' => ['type' => 'text',],
-                    'idnego' => ['type' => 'int', 'length' => '11',],
+            'tables' => [
+                'activite' => [
+                    'indexes' => [
+                        ['name' => 'dateenr', 'columns' => ['dateenr',],],
+                        ['name' => 'idclient', 'columns' => ['agence',],],
+                        ['name' => 'idlca', 'columns' => ['idann',],],
+                        ['name' => 'typeaction', 'columns' => ['typeaction',],],
+                    ],
+                    'primary' => ['id',],
+                    'fulltexts' => [
+                        ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
+                    ],
+                    'uniques' => [
+                        ['name' => 'unq_idnego', 'columns' => ['idnego',],],
+                    ],
+                    'columns' => [
+                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
+                        'idann' => ['type' => 'int', 'length' => '11',],
+                        'dateenr' => ['type' => 'datetime',],
+                        'agence' => ['type' => 'int', 'length' => '11',],
+                        'typeaction' => ['type' => 'varchar', 'length' => '255',],
+                        'valeur' => ['type' => 'text',],
+                        'idnego' => ['type' => 'int', 'length' => '11',],
+                    ],
                 ],
             ],
         ];
 
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($expectedJson));
-        $expected = $factoryJsonDatabase->generate();
-        $this->assertEquals($expected, $export);
+        $expected = $factoryJsonDatabase->generate('myTestDatabase');
+
+
+        $this->assertEquals($expected->toArray(), $export->toArray());
     }
 
 
@@ -177,20 +182,24 @@ class MysqlDatabaseFactoryTest extends TestCase
      */
     public function testGenerateEnumTableSinceJson()
     {
-        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepositoryForEnum(), 'hektor2');
+        $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepositoryForEnum(), 'myTestDatabase');
         $export = $factoryMysqlDatabase->generate();
         $expectedJson = [
-            'activite' => [
-                'indexes' => [],
-                'columns' => [
-                    'id' => ['type' => "enum('0','1')", 'length' => null, 'extra' => null,],
+            'tables' => [
+                'activite' => [
+                    'indexes' => [],
+                    'columns' => [
+                        'id' => ['type' => "enum('0','1')", 'length' => null, 'extra' => null,],
+                    ],
                 ],
             ],
         ];
 
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($expectedJson));
-        $expected = $factoryJsonDatabase->generate();
-        $this->assertEquals($expected, $export);
+        $expected = $factoryJsonDatabase->generate('myTestDatabase');
+
+
+        $this->assertEquals($expected->toArray(), $export->toArray());
     }
 
 
@@ -199,19 +208,19 @@ class MysqlDatabaseFactoryTest extends TestCase
         $oMock = $this->createMock('\Starkerxp\DatabaseChecker\Repository\MysqlRepository');
         $oMock->expects($this->any())
             ->method('getTablesStructure')
-            ->with('hektor2')
+            ->with('myTestDatabase')
             ->willReturn(['activite']);
 
         $oMock->expects($this->any())
             ->method('fetchColumnsStructure')
-            ->with('hektor2', 'activite')
+            ->with('myTestDatabase', 'activite')
             ->willReturn([
                 ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'enum', 'COLUMN_TYPE' => "enum('0','1')", 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => null, 'COLLATION_NAME' => null,],
             ]);
 
         $oMock->expects($this->any())
             ->method('fetchIndexStructure')
-            ->with('hektor2', 'activite')
+            ->with('myTestDatabase', 'activite')
             ->willReturn([]);
 
         return $oMock;

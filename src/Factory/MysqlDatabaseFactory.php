@@ -4,7 +4,7 @@ namespace Starkerxp\DatabaseChecker\Factory;
 
 use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Repository\StructureInterface;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
 
 
 /**
@@ -25,7 +25,7 @@ class MysqlDatabaseFactory
      * MysqlDatabaseFactory constructor.
      *
      * @param StructureInterface $repositoryMysql
-     * @param string          $databaseName
+     * @param string             $databaseName
      */
     public function __construct(StructureInterface $repositoryMysql, $databaseName)
     {
@@ -38,9 +38,8 @@ class MysqlDatabaseFactory
         $this->checkCollate = true;
     }
 
-
     /**
-     * @return MysqlDatabaseTable[]
+     * @return MysqlDatabase
      *
      * @throws \LogicException
      */
@@ -49,12 +48,13 @@ class MysqlDatabaseFactory
         $export = [];
         $tables = $this->repositoryMysql->getTablesStructure($this->databaseName);
         foreach ($tables as $table) {
-            $export[$table] = $this->getIndex($table);
-            $export[$table]['columns'] = $this->getColumns($table);
+            $export['tables'][$table] = $this->getIndex($table);
+            $export['tables'][$table]['columns'] = $this->getColumns($table);
         }
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($export));
+
         try {
-            $export = $factoryJsonDatabase->generate();
+            $export = $factoryJsonDatabase->generate($this->databaseName);
         } catch (\Exception $e) {
             throw new \LogicException('Un expected error with json.' . $e->getMessage());
         }
@@ -75,10 +75,10 @@ class MysqlDatabaseFactory
                 continue;
             }
             $key = 'indexes';
-            if(!$row['NON_UNIQUE']) {
+            if (!$row['NON_UNIQUE']) {
                 $key = 'uniques';
             }
-            if(!$row['NON_FULLTEXT']) {
+            if (!$row['NON_FULLTEXT']) {
                 $key = 'fulltexts';
             }
             $export[$key][] = array_filter(['name' => $row['INDEX_NAME'], 'columns' => explode(',', $row['COLUMN_NAME'])]);

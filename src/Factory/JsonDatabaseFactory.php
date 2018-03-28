@@ -4,6 +4,7 @@ namespace Starkerxp\DatabaseChecker\Factory;
 
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -33,12 +34,12 @@ class JsonDatabaseFactory
     }
 
     /**
-     * @return MysqlDatabaseTable[]
+     * @return MysqlDatabase
      *
      * @throws \RuntimeException
      * @throws TablenameHasNotDefinedException
      */
-    public function generate()
+    public function generate($databaseName)
     {
         $tables = [];
         try {
@@ -77,7 +78,11 @@ class JsonDatabaseFactory
             $tables[] = $table;
         }
 
-        return $tables;
+        $mysqlDatabase = new MysqlDatabase($databaseName);
+        foreach($tables as $table){
+            $mysqlDatabase->addTable($table);
+        }
+        return $mysqlDatabase;
     }
 
     /**
@@ -103,6 +108,7 @@ class JsonDatabaseFactory
             [
                 'columns' => [],
                 'indexes' => [],
+                'fulltexts' => [],
                 'primary' => null,
                 'uniques' => [],
                 'collate' => null,
@@ -129,17 +135,23 @@ class JsonDatabaseFactory
             ]
         );
         $export = [];
-        foreach ($data as $nomTable => $table) {
-            $dataTable = $resolverTable->resolve($table);
-            foreach ((array)$dataTable['columns'] as $columnName => $column) {
-                $dataTable['columns'][$columnName] = $resolverColumns->resolve($column);
-            }
-            foreach (['indexes', 'uniques'] as $indexKey) {
-                foreach ((array)$dataTable[$indexKey] as $keyIndex => $index) {
-                    $dataTable[$indexKey][$keyIndex] = $resolverIndex->resolve($index);
+        $data = $data['tables'];
+        try {
+            foreach ($data as $nomTable => $table) {
+                $dataTable = $resolverTable->resolve($table);
+                foreach ((array)$dataTable['columns'] as $columnName => $column) {
+                    $dataTable['columns'][$columnName] = $resolverColumns->resolve($column);
                 }
+                foreach (['indexes', 'uniques'] as $indexKey) {
+                    foreach ((array)$dataTable[$indexKey] as $keyIndex => $index) {
+                        $dataTable[$indexKey][$keyIndex] = $resolverIndex->resolve($index);
+                    }
+                }
+                $export[$nomTable] = $dataTable;
             }
-            $export[$nomTable] = $dataTable;
+        } catch (\Exception $e) {
+            var_dump($e);
+            exit;
         }
 
         return $export;

@@ -26,23 +26,25 @@ class JsonDatabaseFactoryTest extends TestCase
         $table->setCollate('utf8_general_ci');
 
         $json = [
-            'activite' => [
-                'columns' => [
-                    'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment', 'collate' => 'utf8_general_ci'],
+            'tables' => [
+                'activite' => [
+                    'columns' => [
+                        'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment', 'collate' => 'utf8_general_ci'],
+                    ],
+                    'indexes' => [
+                        ['name' => 'caramel', 'columns' => ['id']],
+                    ],
+                    'primary' => ['id'],
+                    'uniques' => [
+                        ['columns' => ['id']],
+                    ],
+                    'collate' => 'utf8_general_ci',
                 ],
-                'indexes' => [
-                    ['name' => 'caramel', 'columns' => ['id']],
-                ],
-                'primary' => ['id'],
-                'uniques' => [
-                    ['columns' => ['id']],
-                ],
-                'collate' => 'utf8_general_ci',
             ],
         ];
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($json));
-        $tableOut = $factoryJsonDatabase->generate();
-        $this->assertEquals([$table], $tableOut);
+        $databaseOut = $factoryJsonDatabase->generate('myTestDatabase');
+        $this->assertEquals($table->toArray(), $databaseOut->toArray()['tables']);
     }
 
     /**
@@ -52,22 +54,24 @@ class JsonDatabaseFactoryTest extends TestCase
     public function testGenerateEmptyTablenameSinceJsonException()
     {
         $json = [
-            '' => [
-                'columns' => [
-                    'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment',],
-                ],
-                'indexes' => [
-                    ['name' => 'caramel', 'columns' => ['id']],
-                ],
-                'primary' => ['id'],
-                'uniques' => [
-                    ['columns' => ['id']],
+            'tables' => [
+                '' => [
+                    'columns' => [
+                        'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment',],
+                    ],
+                    'indexes' => [
+                        ['name' => 'caramel', 'columns' => ['id']],
+                    ],
+                    'primary' => ['id'],
+                    'uniques' => [
+                        ['columns' => ['id']],
+                    ],
                 ],
             ],
         ];
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($json));
         $this->expectException('\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException');
-        $factoryJsonDatabase->generate();
+        $factoryJsonDatabase->generate('myTestDatabase');
     }
 
     /**
@@ -77,11 +81,11 @@ class JsonDatabaseFactoryTest extends TestCase
     public function testGenerateInvalidJsonException()
     {
         $factoryJsonDatabase = new JsonDatabaseFactory(null);
-        $tableOut = $factoryJsonDatabase->generate();
+        $tableOut = $factoryJsonDatabase->generate('myTestDatabase');
         $this->assertEquals([], $tableOut);
 
         $factoryJsonDatabase = new JsonDatabaseFactory('"');
-        $tableOut = $factoryJsonDatabase->generate();
+        $tableOut = $factoryJsonDatabase->generate('myTestDatabase');
         $this->assertEquals([], $tableOut);
     }
 

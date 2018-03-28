@@ -63,7 +63,6 @@ class MysqlDatabaseTest extends TestCase
                             'type' => 'INT',
                             'length' => '255',
                             'extra' => 'AUTO_INCREMENT',
-                            'name' => 'id',
                             'nullable' => false,
                             'defaultValue' => null,
                             'collate' => null,
