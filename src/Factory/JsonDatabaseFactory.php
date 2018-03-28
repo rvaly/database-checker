@@ -136,22 +136,18 @@ class JsonDatabaseFactory
         );
         $export = [];
         $data = $data['tables'];
-        try {
-            foreach ($data as $nomTable => $table) {
-                $dataTable = $resolverTable->resolve($table);
-                foreach ((array)$dataTable['columns'] as $columnName => $column) {
-                    $dataTable['columns'][$columnName] = $resolverColumns->resolve($column);
-                }
-                foreach (['indexes', 'uniques'] as $indexKey) {
-                    foreach ((array)$dataTable[$indexKey] as $keyIndex => $index) {
-                        $dataTable[$indexKey][$keyIndex] = $resolverIndex->resolve($index);
-                    }
-                }
-                $export[$nomTable] = $dataTable;
+
+        foreach ($data as $nomTable => $table) {
+            $dataTable = $resolverTable->resolve($table);
+            foreach ((array)$dataTable['columns'] as $columnName => $column) {
+                $dataTable['columns'][$columnName] = $resolverColumns->resolve($column);
             }
-        } catch (\Exception $e) {
-            var_dump($e);
-            exit;
+            foreach (['indexes', 'uniques'] as $indexKey) {
+                foreach ((array)$dataTable[$indexKey] as $keyIndex => $index) {
+                    $dataTable[$indexKey][$keyIndex] = $resolverIndex->resolve($index);
+                }
+            }
+            $export[$nomTable] = $dataTable;
         }
 
         return $export;
