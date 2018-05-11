@@ -14,6 +14,7 @@ A Faire :
 - [ ] Permettre d'ignorer certains index.
 - [ ] Permettre la modification de colonne. (Ajout, modification, suppression, rename)
 - [ ] Vérifier les exports json/objet suite à la création de `MysqlDatabase`.
+- [ ] Gérer pour la version de mysql 5.5 default current_timestamp => default now() update default now()
 
 Terminé :
 - [X] Générer l'object depuis un fichier JSON.
