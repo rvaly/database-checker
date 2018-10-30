@@ -3,12 +3,14 @@
 namespace Starkerxp\DatabaseChecker\Checker;
 
 use Starkerxp\DatabaseChecker\Exception\ColumnNotExistException;
+use Starkerxp\DatabaseChecker\Exception\IndexNotExistException;
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TableNotExistException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Structure\DatabaseInterface;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseCheckerService
@@ -43,7 +45,7 @@ class MysqlDatabaseCheckerService
         $tables = $database->getTables();
         $newTables = $newDatabase->getTables();
 
-        if($this->checkCollate && $database->getCollate() != $newDatabase->getCollate()){
+        if ($this->checkCollate && $database->getCollate() != $newDatabase->getCollate()) {
             $database->setCollate($newDatabase->getCollate());
             $modificationsBetweenTable[] = $database->alterStatement();
         }
@@ -74,7 +76,7 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseTable   $table
+     * @param MysqlDatabaseTable $table
      * @param MysqlDatabaseTable[] $newTables
      *
      * @return mixed
@@ -128,18 +130,53 @@ class MysqlDatabaseCheckerService
             }
         }
         $columnNeedAlter = array_unique(array_keys(array_filter($modificationsBetweenTable)));
-        $indexes = $newTable->getIndexes();
-        foreach ($indexes as $indexName => $index) {
+        $indexes = $table->getIndexes();
+        $newIndexes = $newTable->getIndexes();
+
+        $modificationsIndexBetweenTable = [];
+        $modificationsIndexRemoveBetweenTable = [];
+        foreach ($indexes as $index) {
+            try {
+                $newIndex = $this->getIndex($index, $newIndexes);
+                $modificationsIndexBetweenTable[$newColumn->getName()] = $this->checkIndex($index, $newIndex);
+            } catch (IndexNotExistException $e) {
+                if ($this->dropStatement) {
+                    $modificationsIndexRemoveBetweenTable[$index->getName()] = $index->deleteStatement();
+                    continue;
+                }
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+        // Generate new Indexes.
+        foreach ($newIndexes as $index) {
+            try {
+                $this->getIndex($index, $indexes);
+            } catch (IndexNotExistException $e) {
+                $modificationsIndexBetweenTable[$index->getName()] = $index->createStatement();
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        foreach ($newIndexes as $indexName => $index) {
             foreach ($columnNeedAlter as $colonne) {
                 if (!in_array($colonne, $index->getColumns(), false)) {
                     continue;
                 }
-                $modificationsBetweenTable[] = $index->alterStatement();
+                $modificationsIndexRemoveBetweenTable[] = $index->deleteStatement();
+                $modificationsIndexBetweenTable[] = $index->createStatement();
             }
         }
 
+        $modificationsIndexBetweenTable = $this->formatStatements(array_filter($modificationsIndexBetweenTable));
+        $modificationsIndexRemoveBetweenTable = $this->formatStatements(array_filter($modificationsIndexRemoveBetweenTable));
 
-        return $this->formatStatements($modificationsBetweenTable);
+        $modificationsBetweenTable = $this->formatStatements($modificationsBetweenTable);
+
+        $result = array_merge($modificationsIndexRemoveBetweenTable, $modificationsBetweenTable, $modificationsIndexBetweenTable);
+
+        return $result;
     }
 
     private function prepareTable(MysqlDatabaseTable $table)
@@ -176,7 +213,7 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseColumn   $column
+     * @param MysqlDatabaseColumn $column
      * @param MysqlDatabaseColumn[] $newColumns
      *
      * @return mixed
@@ -225,6 +262,40 @@ class MysqlDatabaseCheckerService
         return strtolower(json_encode($column->toArray())) == strtolower(json_encode($newColumn->toArray()));
     }
 
+    private function getIndex(MysqlDatabaseIndex $index, array $newIndexes)
+    {
+        foreach ($newIndexes as $newIndex) {
+            if (strtolower($index->getName()) == strtolower($newIndex->getName())) {
+                return $newIndex;
+            }
+        }
+        throw new IndexNotExistException('');
+    }
+
+    private function checkIndex(MysqlDatabaseIndex $index, MysqlDatabaseIndex $newIndex)
+    {
+        if ($this->indexIsEquals($index, $newIndex)) {
+            return [];
+        }
+        try {
+            $statements = $newIndex->alterStatement();
+        } catch (\RuntimeException $e) {
+            return [];
+        }
+
+        return $statements;
+    }
+
+    private function indexIsEquals(MysqlDatabaseIndex $index, MysqlDatabaseIndex $newIndex)
+    {
+        // Column is equals no need more check
+        if ($column == $newColumn) {
+            return true;
+        }
+
+        return strtolower(json_encode($column->toArray())) == strtolower(json_encode($newColumn->toArray()));
+    }
+
     /**
      * @param  $databaseInterface
      *
@@ -248,7 +319,7 @@ class MysqlDatabaseCheckerService
     {
         $statements = [];
         foreach ($modificationsBetweenTable as $modifications) {
-            foreach ((array)$modifications as $modification) {
+            foreach ((array) $modifications as $modification) {
                 $statements[] = $modification;
             }
         }

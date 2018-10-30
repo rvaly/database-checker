@@ -116,6 +116,8 @@ class MysqlDatabaseIndexTest extends TestCase
         $this->assertCount(2, $statements);
         $this->assertEquals('ALTER TABLE `activite` DROP ' . $expectedAlter . ';', $statements[0]);
         $this->assertEquals($createStatementExpected, $statements[1]);
+        $statement = $databaseIndex->deleteStatement();
+        $this->assertEquals('ALTER TABLE `activite` DROP ' . $expectedAlter . ';', $statement);
     }
 
     /**

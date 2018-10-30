@@ -234,25 +234,27 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
      * @group drop
      */
     public function testEnableDropColumn(){
+        $database = new MysqlDatabase('actual');
         $table = new MysqlDatabaseTable('activite');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
         $table->addColumn(new MysqlDatabaseColumn('valeur', 'TEXT', '', false, null, null));
         $table->addColumn(new MysqlDatabaseColumn('valeur2', 'TEXT', '', false, null, null));
         $table->addPrimary(['id']);
+        $database->addTable($table);
 
+        $newDatabase = new MysqlDatabase('referal');
         $newTable = new MysqlDatabaseTable('activite');
         $newTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
         $newTable->addColumn(new MysqlDatabaseColumn('valeur', 'TEXT', '', false, null, null));
-
-        $database = new MysqlDatabase('actual');
-        $database->addTable($table);
-        $newDatabase = new MysqlDatabase('referal');
         $newDatabase->addTable($newTable);
+
         $service = new MysqlDatabaseCheckerService();
         $service->enableDropStatement();
         $statements = $service->diff($database, $newDatabase);
-        $this->assertCount(1, $statements);
-        $this->assertEquals('ALTER TABLE `activite` DROP COLUMN `valeur2`;', $statements[0]);
+
+        $this->assertCount(2, $statements);
+        $this->assertEquals('ALTER TABLE `activite` DROP PRIMARY KEY;', $statements[0]);
+        $this->assertEquals('ALTER TABLE `activite` DROP COLUMN `valeur2`;', $statements[1]);
     }
 
 }
