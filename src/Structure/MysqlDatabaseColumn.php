@@ -88,8 +88,8 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function createStatement()
     {
         $null = $this->getNullable() ? '' : 'NOT';
-        $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
-        $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE '%s'", $this->getCollate());
+        $default = $this->formatDefaultValue();
+        $collate = $this->formatCollate();
         $modification = sprintf('ALTER TABLE `%s` ADD COLUMN `%s` %s %s NULL %s %s %s;', $this->getTable(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
         return [str_replace(['   ', '  ',], ' ', $modification)];
@@ -117,7 +117,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function getCollate(): ?string
     {
         $type = $this->getType();
-        if (!in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar'], false)) {
+        if (!\in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar'], false)) {
             return '';
         }
 
@@ -155,8 +155,15 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function getColonneType()
     {
         $baseType = $this->type;
-        if (in_array($baseType, ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'varchar', 'bigint', 'char', 'float'], false)) {
-            $baseType = $baseType . '(' . $this->length . ')';
+        $length = $this->length;
+        $unsigned = '';
+        if (false !== strpos($this->length, 'unsigned')) {
+            $explode = explode(' ', $this->length);
+            $length = $explode[0];
+            $unsigned = !empty($explode[1]) ? ' UNSIGNED' : '';
+        }
+        if (\in_array($baseType, ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'varchar', 'bigint', 'char', 'float'], false)) {
+            $baseType = $baseType . '(' . $length . ')' . $unsigned;
         }
 
         return strtoupper($baseType);
@@ -194,16 +201,46 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function alterStatement()
     {
         $null = $this->getNullable() ? '' : 'NOT';
-        $default = $this->getDefaultValue() == false ? '' : ' DEFAULT ' . $this->getDefaultValue();
-        $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE '%s'", $this->getCollate());
+        $default = $this->formatDefaultValue();
+        $collate = $this->formatCollate();
         $modification = sprintf('ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s NULL %s %s %s;', $this->getTable(), $this->getName(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
         return [str_replace(['   ', '  ',], ' ', $modification)];
     }
 
-    public function deleteStatement()
+    public function deleteStatement(): string
     {
         return sprintf('ALTER TABLE `%s` DROP COLUMN `%s`;', $this->getTable(), $this->getName());
+    }
+
+    /**
+     * @return string
+     */
+    private function formatDefaultValue(): string
+    {
+        $default = $this->getDefaultValue();
+        if (empty($default)) {
+            return '';
+        }
+
+        if ($default === 'NULL') {
+            return ' DEFAULT NULL';
+        }
+
+        return " DEFAULT '" . $default . "'";
+    }
+
+    /**
+     * @return null|string
+     */
+    private function formatCollate(): ?string
+    {
+        $collate = $this->getCollate();
+        if (empty($collate)) {
+            return '';
+        }
+
+        return sprintf("COLLATE '%s'", $collate);
     }
 
 }

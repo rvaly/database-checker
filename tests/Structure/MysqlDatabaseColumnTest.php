@@ -83,6 +83,39 @@ class MysqlDatabaseColumnTest extends TestCase
 
     /**
      * @group structure
+     * @group collate
+     */
+    public function testStatementsUnsigned(): void
+    {
+        $types = ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'bigint', 'float'];
+        foreach ($types as $type) {
+            $databaseColumn = new MysqlDatabaseColumn('id', $type, '255 unsigned', false, null, null);
+            $databaseColumn->setTable('activite');
+            $databaseColumn->setCollate('latin1_swedish_ci');
+            $statement = $databaseColumn->createStatement();
+            $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` ' . strtoupper($type) . '(255) UNSIGNED NOT NULL ;', $statement[0]);
+            $statement = $databaseColumn->alterStatement();
+            $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` ' . strtoupper($type) . '(255) UNSIGNED NOT NULL ;', $statement[0]);
+        }
+    }
+
+    /**
+     * @group structure
+     * @group collate
+     */
+    public function testDefaultValueNotNull(): void
+    {
+        $databaseColumn = new MysqlDatabaseColumn('dateenr', 'DATE', '', false, '0000-00-00', '');
+        $databaseColumn->setTable('activite');
+        $databaseColumn->setCollate('latin1_swedish_ci');
+        $statement = $databaseColumn->createStatement();
+        $this->assertEquals("ALTER TABLE `activite` ADD COLUMN `dateenr` DATE NOT NULL DEFAULT '0000-00-00' ;", $statement[0]);
+        $statement = $databaseColumn->alterStatement();
+        $this->assertEquals("ALTER TABLE `activite` CHANGE COLUMN `dateenr` `dateenr` DATE NOT NULL DEFAULT '0000-00-00' ;", $statement[0]);
+    }
+
+    /**
+     * @group structure
      * @group optimize
      */
     public function testOptimizeBooleanEnum(): void
