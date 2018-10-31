@@ -136,6 +136,9 @@ class JsonDatabaseFactory
         );
         $export = [];
         $data = $data['tables'];
+        if(empty($data['tables'])){
+            return [];
+        }
 
         foreach ($data as $nomTable => $table) {
             $dataTable = $resolverTable->resolve($table);
