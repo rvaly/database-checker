@@ -4,6 +4,7 @@ namespace Starkerxp\DatabaseChecker\Tests\Factory;
 
 
 use PHPUnit\Framework\TestCase;
+use Starkerxp\DatabaseChecker\Exception\JsonInvalidFormatException;
 use Starkerxp\DatabaseChecker\Factory\JsonDatabaseFactory;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
@@ -79,15 +80,23 @@ class JsonDatabaseFactoryTest extends TestCase
      * @group factory
      * @group exception
      */
-    public function testGenerateInvalidJsonException(): void
+    public function testGenerateNullJsonException(): void
     {
         $factoryJsonDatabase = new JsonDatabaseFactory(null);
-        $tableOut = $factoryJsonDatabase->generate('myTestDatabase');
-        $this->assertEquals([], $tableOut);
+        $this->expectException(JsonInvalidFormatException::class);
+        $factoryJsonDatabase->generate('myTestDatabase');
+    }
 
+    /**
+     * @group factory
+     * @group exception
+     */
+    public function testGenerateInvalidJsonException(): void
+    {
         $factoryJsonDatabase = new JsonDatabaseFactory('"');
-        $tableOut = $factoryJsonDatabase->generate('myTestDatabase');
-        $this->assertEquals([], $tableOut);
+        $this->expectException(JsonInvalidFormatException::class);
+        $factoryJsonDatabase->generate('myTestDatabase');
+
     }
 
 }

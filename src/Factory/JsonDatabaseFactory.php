@@ -2,6 +2,7 @@
 
 namespace Starkerxp\DatabaseChecker\Factory;
 
+use Starkerxp\DatabaseChecker\Exception\JsonInvalidFormatException;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
@@ -42,12 +43,11 @@ class JsonDatabaseFactory
     public function generate($databaseName): MysqlDatabase
     {
         $tables = [];
+        $mysqlDatabase = new MysqlDatabase($databaseName);
         try {
             $dataTables = $this->resolve();
         } catch (\Exception $e) {
-            $this->error('An unexpected error are throw when you check json syntax');
-
-            return [];
+            throw new JsonInvalidFormatException('An unexpected error are throw when you check json syntax');
         }
         foreach ($dataTables as $tableName => $dataTable) {
             try {
@@ -58,7 +58,7 @@ class JsonDatabaseFactory
             if (isset($dataTable['collate'])) {
                 $table->setCollate($dataTable['collate']);
             }
-            foreach ((array)$dataTable['columns'] as $columnName => $row) {
+            foreach ((array) $dataTable['columns'] as $columnName => $row) {
                 $column = new MysqlDatabaseColumn($columnName, $row['type'], $row['length'], $row['nullable'], $row['defaultValue'], $row['extra']);
                 if (isset($row['collate']) || $table->getCollate()) {
                     $column->setCollate($row['collate']);
@@ -66,22 +66,22 @@ class JsonDatabaseFactory
                 $table->addColumn($column);
 
             }
-            foreach ((array)$dataTable['indexes'] as $row) {
+            foreach ((array) $dataTable['indexes'] as $row) {
                 $table->addIndex($row['columns'], $row['name']);
             }
             if (isset($dataTable['primary'])) {
-                $table->addPrimary((array)$dataTable['primary']);
+                $table->addPrimary((array) $dataTable['primary']);
             }
-            foreach ((array)$dataTable['uniques'] as $row) {
+            foreach ((array) $dataTable['uniques'] as $row) {
                 $table->addUnique($row['columns'], $row['name']);
             }
             $tables[] = $table;
         }
 
-        $mysqlDatabase = new MysqlDatabase($databaseName);
-        foreach($tables as $table){
+        foreach ($tables as $table) {
             $mysqlDatabase->addTable($table);
         }
+
         return $mysqlDatabase;
     }
 
@@ -136,17 +136,14 @@ class JsonDatabaseFactory
         );
         $export = [];
         $data = $data['tables'];
-        if(empty($data['tables'])){
-            return [];
-        }
 
         foreach ($data as $nomTable => $table) {
             $dataTable = $resolverTable->resolve($table);
-            foreach ((array)$dataTable['columns'] as $columnName => $column) {
+            foreach ((array) $dataTable['columns'] as $columnName => $column) {
                 $dataTable['columns'][$columnName] = $resolverColumns->resolve($column);
             }
             foreach (['indexes', 'uniques'] as $indexKey) {
-                foreach ((array)$dataTable[$indexKey] as $keyIndex => $index) {
+                foreach ((array) $dataTable[$indexKey] as $keyIndex => $index) {
                     $dataTable[$indexKey][$keyIndex] = $resolverIndex->resolve($index);
                 }
             }
