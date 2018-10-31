@@ -14,7 +14,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
     /**
      * @group checker
      */
-    public function testGenerateAlterStatement()
+    public function testGenerateAlterStatement(): void
     {
         $table = new MysqlDatabaseTable('activite');
         $table->setCollate('dd');
@@ -55,7 +55,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
     /**
      * @group checker
      */
-    public function testCreateStatement()
+    public function testCreateStatement(): void
     {
         $newTable = new MysqlDatabaseTable('activite');
         $newTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '11', false, null, 'auto_increment'));
@@ -80,7 +80,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
     /**
      * @group checker
      */
-    public function testCheckCasse()
+    public function testCheckCasse(): void
     {
         $table = new MysqlDatabaseTable('activite');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '11', false, null, 'auto_increment'));
@@ -122,7 +122,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
      * @group checker
      * @group collate
      */
-    public function testDisableCollate()
+    public function testDisableCollate(): void
     {
         $table = new MysqlDatabaseTable('activite');
         $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
@@ -147,7 +147,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
      * @group checker
      * @group collate
      */
-    public function testEnableCollate()
+    public function testEnableCollate(): void
     {
         $table = new MysqlDatabaseTable('activite');
         $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
@@ -179,7 +179,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
      * @group checker
      * @group engine
      */
-    public function testDisableEngine()
+    public function testDisableEngine(): void
     {
         $table = new MysqlDatabaseTable('activite');
         $table->setEngine('INNODB');
@@ -205,7 +205,7 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
      * @group checker
      * @group engine
      */
-    public function testEnableEngine()
+    public function testEnableEngine(): void
     {
         $table = new MysqlDatabaseTable('activite');
         $table->setEngine('INNODB');
@@ -233,7 +233,8 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
      * @group checker
      * @group drop
      */
-    public function testEnableDropColumn(){
+    public function testEnableDropColumn(): void
+    {
         $database = new MysqlDatabase('actual');
         $table = new MysqlDatabaseTable('activite');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));

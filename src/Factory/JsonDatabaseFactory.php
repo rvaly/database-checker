@@ -39,7 +39,7 @@ class JsonDatabaseFactory
      * @throws \RuntimeException
      * @throws TablenameHasNotDefinedException
      */
-    public function generate($databaseName)
+    public function generate($databaseName): MysqlDatabase
     {
         $tables = [];
         try {
@@ -97,7 +97,7 @@ class JsonDatabaseFactory
      * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
      * @throws \Symfony\Component\OptionsResolver\Exception\NoSuchOptionException
      */
-    protected function resolve()
+    protected function resolve(): array
     {
         $data = $this->generateJsonData();
 

@@ -39,7 +39,7 @@ class MysqlDatabaseCheckerService
      * @throws TableHasNotColumnException
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
-    public function diff(MysqlDatabase $database, MysqlDatabase $newDatabase)
+    public function diff(MysqlDatabase $database, MysqlDatabase $newDatabase): array
     {
         $modificationsBetweenTable = [];
         $tables = $database->getTables();
@@ -101,7 +101,7 @@ class MysqlDatabaseCheckerService
      * @throws TableHasNotColumnException
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
-    private function checkTable(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
+    private function checkTable(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable): array
     {
         $this->prepareTable($table);
         $this->prepareTable($newTable);
@@ -179,7 +179,7 @@ class MysqlDatabaseCheckerService
         return $result;
     }
 
-    private function prepareTable(MysqlDatabaseTable $table)
+    private function prepareTable(MysqlDatabaseTable $table): void
     {
         if (!$this->checkCollate) {
             $this->disabledCollate($table);
@@ -193,7 +193,7 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseTable $table
      * @throws TableHasNotColumnException
      */
-    private function disabledCollate(MysqlDatabaseTable $table)
+    private function disabledCollate(MysqlDatabaseTable $table): void
     {
         $table->setCollate('');
         $columns = $table->getColumns();
@@ -202,7 +202,7 @@ class MysqlDatabaseCheckerService
         }
     }
 
-    private function tableIsEquals(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable)
+    private function tableIsEquals(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable): bool
     {
         // Table is equals no need more check
         if ($table == $newTable) {
@@ -238,7 +238,7 @@ class MysqlDatabaseCheckerService
      *
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
-    private function checkColumn(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn)
+    private function checkColumn(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn): array
     {
         if ($this->columnIsEquals($column, $newColumn)) {
             return [];
@@ -252,7 +252,7 @@ class MysqlDatabaseCheckerService
         return $statements;
     }
 
-    private function columnIsEquals(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn)
+    private function columnIsEquals(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn): bool
     {
         // Column is equals no need more check
         if ($column == $newColumn) {
@@ -272,7 +272,7 @@ class MysqlDatabaseCheckerService
         throw new IndexNotExistException('');
     }
 
-    private function checkIndex(MysqlDatabaseIndex $index, MysqlDatabaseIndex $newIndex)
+    private function checkIndex(MysqlDatabaseIndex $index, MysqlDatabaseIndex $newIndex): array
     {
         if ($this->indexIsEquals($index, $newIndex)) {
             return [];
@@ -286,7 +286,7 @@ class MysqlDatabaseCheckerService
         return $statements;
     }
 
-    private function indexIsEquals(MysqlDatabaseIndex $index, MysqlDatabaseIndex $newIndex)
+    private function indexIsEquals(MysqlDatabaseIndex $index, MysqlDatabaseIndex $newIndex): bool
     {
         // Column is equals no need more check
         if ($column == $newColumn) {
@@ -301,7 +301,7 @@ class MysqlDatabaseCheckerService
      *
      * @return array
      */
-    protected function createStatement(DatabaseInterface $databaseInterface)
+    protected function createStatement(DatabaseInterface $databaseInterface): ?array
     {
         try {
             return $databaseInterface->createStatement();
@@ -315,7 +315,7 @@ class MysqlDatabaseCheckerService
      *
      * @return array
      */
-    private function formatStatements(array $modificationsBetweenTable)
+    private function formatStatements(array $modificationsBetweenTable): array
     {
         $statements = [];
         foreach ($modificationsBetweenTable as $modifications) {
@@ -327,17 +327,17 @@ class MysqlDatabaseCheckerService
         return array_filter(array_unique($statements));
     }
 
-    public function enableCheckCollate()
+    public function enableCheckCollate(): void
     {
         $this->checkCollate = true;
     }
 
-    public function enableCheckEngine()
+    public function enableCheckEngine(): void
     {
         $this->checkEngine = true;
     }
 
-    public function enableDropStatement()
+    public function enableDropStatement(): void
     {
         $this->dropStatement = true;
     }

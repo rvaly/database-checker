@@ -14,7 +14,7 @@ class MysqlDatabaseTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testException()
+    public function testException(): void
     {
         $this->expectException(DatabaseHasNotDefinedException::class);
         new MysqlDatabase(null);
@@ -23,7 +23,7 @@ class MysqlDatabaseTest extends TestCase
     /**
      * @group structure
      */
-    public function testCreateStatement()
+    public function testCreateStatement(): void
     {
         $database = new MysqlDatabase('activites');
         $statements = $database->createStatement();
@@ -36,14 +36,14 @@ class MysqlDatabaseTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testAlterStatement()
+    public function testAlterStatement(): void
     {
         $databaseTable = new MysqlDatabase('activites');
         $statements = $databaseTable->alterStatement();
         $this->assertCount(0, $statements);
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $database = new MysqlDatabase('hektor');
         $database->setCollate('utf8_general_ci');

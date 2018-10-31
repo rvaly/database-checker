@@ -14,7 +14,7 @@ class JsonDatabaseFactoryTest extends TestCase
     /**
      * @group factory
      */
-    public function testGenerateTableSinceJson()
+    public function testGenerateTableSinceJson(): void
     {
         $table = new MysqlDatabaseTable('activite');
         $column = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
@@ -51,7 +51,7 @@ class JsonDatabaseFactoryTest extends TestCase
      * @group factory
      * @group exception
      */
-    public function testGenerateEmptyTablenameSinceJsonException()
+    public function testGenerateEmptyTablenameSinceJsonException(): void
     {
         $json = [
             'tables' => [
@@ -78,7 +78,7 @@ class JsonDatabaseFactoryTest extends TestCase
      * @group factory
      * @group exception
      */
-    public function testGenerateInvalidJsonException()
+    public function testGenerateInvalidJsonException(): void
     {
         $factoryJsonDatabase = new JsonDatabaseFactory(null);
         $tableOut = $factoryJsonDatabase->generate('myTestDatabase');

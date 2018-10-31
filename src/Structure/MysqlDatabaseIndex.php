@@ -70,7 +70,7 @@ class MysqlDatabaseIndex implements DatabaseInterface
     }
 
 
-    public function isPrimary()
+    public function isPrimary(): bool
     {
         return strtolower($this->name) == 'primary';
     }
@@ -115,12 +115,12 @@ class MysqlDatabaseIndex implements DatabaseInterface
     /**
      * @return array
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         return $this->columns;
     }
 
-    public function getIndexType()
+    public function getIndexType(): string
     {
         if ($this->isUnique()) {
             return 'UNIQUE';
@@ -132,7 +132,7 @@ class MysqlDatabaseIndex implements DatabaseInterface
     /**
      * @return bool
      */
-    public function isUnique()
+    public function isUnique(): bool
     {
         return $this->unique;
     }
@@ -140,7 +140,7 @@ class MysqlDatabaseIndex implements DatabaseInterface
     /**
      * @param mixed $table
      */
-    public function setTable($table)
+    public function setTable($table): void
     {
         $this->table = $table;
     }

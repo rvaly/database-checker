@@ -13,7 +13,7 @@ class LoggetTraitTest extends TestCase
      * @group logger
      * @group exception
      */
-    public function testLogExceptionValid()
+    public function testLogExceptionValid(): void
     {
         $logger = new Runtime();
         $logger->setMinLevel('debug');   // catch logs >= to `critical`
@@ -32,7 +32,7 @@ class LoggetTraitTest extends TestCase
      * @group logger
      * @group exception
      */
-    public function testLogGreatherThanExceptionInvalid()
+    public function testLogGreatherThanExceptionInvalid(): void
     {
         $logger = new Runtime();
         $logger->setMinLevel('emergency')

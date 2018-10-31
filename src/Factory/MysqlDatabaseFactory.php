@@ -33,7 +33,7 @@ class MysqlDatabaseFactory
         $this->databaseName = $databaseName;
     }
 
-    public function enableCheckCollate()
+    public function enableCheckCollate(): void
     {
         $this->checkCollate = true;
     }
@@ -43,7 +43,7 @@ class MysqlDatabaseFactory
      *
      * @throws \LogicException
      */
-    public function generate()
+    public function generate(): MysqlDatabase
     {
         $export = [];
         $tables = $this->repositoryMysql->getTablesStructure($this->databaseName);
@@ -63,7 +63,7 @@ class MysqlDatabaseFactory
     }
 
 
-    protected function getIndex($table)
+    protected function getIndex($table): array
     {
         if (!$results = $this->repositoryMysql->fetchIndexStructure($this->databaseName, $table)) {
             return [];
@@ -87,7 +87,7 @@ class MysqlDatabaseFactory
         return $export;
     }
 
-    protected function getColumns($table)
+    protected function getColumns($table): array
     {
         $export = [];
         $results = $this->repositoryMysql->fetchColumnsStructure($this->databaseName, $table);

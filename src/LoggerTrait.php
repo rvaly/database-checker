@@ -16,7 +16,7 @@ trait LoggerTrait
     use LoggerAwareTrait;
     use \Psr\Log\LoggerTrait;
 
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         if ($this->logger) {
             $this->logger->log($level, $message, $context);

@@ -42,7 +42,7 @@ class MysqlDatabase implements DatabaseInterface
         $this->database = $database;
     }
 
-    public function addTable(MysqlDatabaseTable $table)
+    public function addTable(MysqlDatabaseTable $table): void
     {
         $table->setDatabase($this->getDatabase());
         if (!empty($this->getCollate())) {
@@ -62,7 +62,7 @@ class MysqlDatabase implements DatabaseInterface
     /**
      * @return string
      */
-    public function getCollate()
+    public function getCollate(): string
     {
         return $this->collate;
     }
@@ -70,12 +70,12 @@ class MysqlDatabase implements DatabaseInterface
     /**
      * @param string $collate
      */
-    public function setCollate($collate)
+    public function setCollate($collate): void
     {
         $this->collate = $collate;
     }
 
-    public function removeTable($tableName)
+    public function removeTable($tableName): void
     {
         unset($this->tables[$tableName]);
     }
@@ -99,7 +99,7 @@ class MysqlDatabase implements DatabaseInterface
     /**
      * @return MysqlDatabaseTable[]
      */
-    public function getTables()
+    public function getTables(): array
     {
         return $this->tables;
     }

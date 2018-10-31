@@ -13,7 +13,7 @@ class MysqlDatabaseColumnTest extends TestCase
      * @group structure
      * @group mutator
      */
-    public function testMutator()
+    public function testMutator(): void
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
         $this->assertEquals('int', $databaseColumn->getType());
@@ -24,7 +24,7 @@ class MysqlDatabaseColumnTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testException()
+    public function testException(): void
     {
         $this->expectException(\RuntimeException::class);
         new MysqlDatabaseColumn('', 'INT', '255', false, null, 'auto_increment');
@@ -34,7 +34,7 @@ class MysqlDatabaseColumnTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testCreateStatementException()
+    public function testCreateStatementException(): void
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
         $this->expectException(TablenameHasNotDefinedException::class);
@@ -45,7 +45,7 @@ class MysqlDatabaseColumnTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testAlterStatementException()
+    public function testAlterStatementException(): void
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment');
         $this->expectException(TablenameHasNotDefinedException::class);
@@ -56,7 +56,7 @@ class MysqlDatabaseColumnTest extends TestCase
      * @group structure
      * @group post
      */
-    public function testStatements()
+    public function testStatements(): void
     {
         $types = ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'varchar', 'bigint', 'char', 'float'];
         foreach ($types as $type) {
@@ -85,7 +85,7 @@ class MysqlDatabaseColumnTest extends TestCase
      * @group structure
      * @group optimize
      */
-    public function testOptimizeBooleanEnum()
+    public function testOptimizeBooleanEnum(): void
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'ENUM(\'0\', \'1\')', '255', false, null, 'auto_increment');
         $databaseColumn->setTable('activite');
@@ -100,7 +100,7 @@ class MysqlDatabaseColumnTest extends TestCase
      * @group structure
      * @group collate
      */
-    public function testCollate()
+    public function testCollate(): void
     {
         $types = ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'bigint', 'float'];
         foreach ($types as $type) {
@@ -130,7 +130,7 @@ class MysqlDatabaseColumnTest extends TestCase
      * @group structure
      * @group collate
      */
-    public function testToArray()
+    public function testToArray(): void
     {
         $databaseColumn = new MysqlDatabaseColumn('id', 'int', '255', false, null, null);
         $databaseColumn->setTable('activite');

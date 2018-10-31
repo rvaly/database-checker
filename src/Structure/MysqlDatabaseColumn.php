@@ -45,7 +45,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $this->setExtra($extra);
     }
 
-    private function setType($type)
+    private function setType($type): void
     {
         $type = strtolower($type);
         $this->type = $type;
@@ -54,12 +54,12 @@ class MysqlDatabaseColumn implements DatabaseInterface
     /**
      * @param mixed $extra
      */
-    public function setExtra($extra)
+    public function setExtra($extra): void
     {
         $this->extra = strtoupper($extra);
     }
 
-    public function optimizeType()
+    public function optimizeType(): void
     {
         $isEnum = explode('enum', $this->type);
         if (!empty($isEnum)) {
@@ -114,7 +114,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     /**
      * @return string
      */
-    public function getCollate()
+    public function getCollate(): ?string
     {
         $type = $this->getType();
         if (!in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar'], false)) {
@@ -127,7 +127,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -173,7 +173,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     /**
      * @param string $collate
      */
-    public function setCollate($collate)
+    public function setCollate($collate): void
     {
         $this->collate = $collate;
     }
@@ -181,7 +181,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     /**
      * @param mixed $table
      */
-    public function setTable($table)
+    public function setTable($table): void
     {
         $this->table = $table;
     }

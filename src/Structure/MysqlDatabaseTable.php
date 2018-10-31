@@ -58,7 +58,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         $this->table = $table;
     }
 
-    public function addColumn(MysqlDatabaseColumn $column)
+    public function addColumn(MysqlDatabaseColumn $column): void
     {
         $column->setTable($this->getTable());
         $this->columns[$column->getName()] = $column;
@@ -72,12 +72,12 @@ class MysqlDatabaseTable implements DatabaseInterface
         return $this->table;
     }
 
-    public function removeColumn($columnName)
+    public function removeColumn($columnName): void
     {
         unset($this->columns[$columnName]);
     }
 
-    public function addIndex(array $columns, $indexName = '')
+    public function addIndex(array $columns, $indexName = ''): void
     {
         $this->addIndexType($indexName, 0, $columns);
     }
@@ -87,7 +87,7 @@ class MysqlDatabaseTable implements DatabaseInterface
      * @param       $unique
      * @param array $columns
      */
-    protected function addIndexType($indexName, $unique, array $columns)
+    protected function addIndexType($indexName, $unique, array $columns): void
     {
         if (empty($indexName)) {
             $indexName = ($unique ? 'UNI_' : 'IDX_') . md5(implode(',', $columns));
@@ -101,12 +101,12 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
     }
 
-    public function addPrimary(array $columnName)
+    public function addPrimary(array $columnName): void
     {
         $this->addIndexType('PRIMARY', 1, $columnName);
     }
 
-    public function addUnique(array $columnName, $indexName = '')
+    public function addUnique(array $columnName, $indexName = ''): void
     {
         $this->addIndexType($indexName, 1, $columnName);
     }
@@ -151,7 +151,7 @@ class MysqlDatabaseTable implements DatabaseInterface
      *
      * @throws TableHasNotColumnException
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         if (!count($this->columns)) {
             $this->critical('You need to define columns for this table.', ['table' => $this->getTable()]);
@@ -161,7 +161,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         return $this->columns;
     }
 
-    public function getIndexes()
+    public function getIndexes(): array
     {
         if (empty($this->indexes)) {
             $this->error("You don't have any index. Are you sure ?");
@@ -173,7 +173,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @return string
      */
-    public function getCollate()
+    public function getCollate(): string
     {
         return $this->collate;
     }
@@ -181,7 +181,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @return string
      */
-    public function getEngine()
+    public function getEngine(): string
     {
         return $this->engine;
     }
@@ -189,7 +189,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @param string $collate
      */
-    public function setCollate($collate)
+    public function setCollate($collate): void
     {
         $this->collate = $collate;
     }
@@ -197,7 +197,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @param string $engine
      */
-    public function setEngine($engine)
+    public function setEngine($engine): void
     {
         $this->engine = $engine;
     }
@@ -248,7 +248,7 @@ class MysqlDatabaseTable implements DatabaseInterface
      *
      * @throws \RuntimeException
      */
-    public function getIndex($indexName)
+    public function getIndex($indexName): MysqlDatabaseIndex
     {
 
         if (empty($this->indexes[$indexName])) {
@@ -264,7 +264,7 @@ class MysqlDatabaseTable implements DatabaseInterface
      *
      * @return array
      */
-    private function formatStatements(array $modificationsBetweenTable)
+    private function formatStatements(array $modificationsBetweenTable): array
     {
         $statements = [];
         foreach ($modificationsBetweenTable as $modifications) {
@@ -276,7 +276,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         return array_filter(array_unique($statements));
     }
 
-    private function formatCreateStatement(array $modifications)
+    private function formatCreateStatement(array $modifications): array
     {
         if (!$finalStatement = array_shift($modifications)) {
             return [];
@@ -307,7 +307,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @return array
      */
-    private function alterStatementCollate()
+    private function alterStatementCollate(): array
     {
         if (empty($this->database)) {
             return [];
@@ -325,7 +325,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         return $modifications;
     }
 
-    private function alterStatementEngine()
+    private function alterStatementEngine(): array
     {
         if (empty($this->engine)) {
             return [];
@@ -338,7 +338,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         return $modifications;
     }
 
-    public function setDatabase($database)
+    public function setDatabase($database): void
     {
         $this->database = $database;
     }

@@ -11,7 +11,7 @@ class MysqlDatabaseFactoryTest extends TestCase
     /**
      * @group factory
      */
-    public function testGenerateTableSinceJson()
+    public function testGenerateTableSinceJson(): void
     {
         $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'myTestDatabase');
         $export = $factoryMysqlDatabase->generate();
@@ -90,7 +90,7 @@ class MysqlDatabaseFactoryTest extends TestCase
      * @group collate
      * @group factory
      */
-    public function testCheckCollate()
+    public function testCheckCollate(): void
     {
         $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'myTestDatabase');
         $factoryMysqlDatabase->enableCheckCollate();
@@ -135,7 +135,7 @@ class MysqlDatabaseFactoryTest extends TestCase
      * @group collate
      * @group factory
      */
-    public function testCheckCollateDisable()
+    public function testCheckCollateDisable(): void
     {
         $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepository(), 'myTestDatabase');
         $export = $factoryMysqlDatabase->generate();
@@ -180,7 +180,7 @@ class MysqlDatabaseFactoryTest extends TestCase
     /**
      * @group factory
      */
-    public function testGenerateEnumTableSinceJson()
+    public function testGenerateEnumTableSinceJson(): void
     {
         $factoryMysqlDatabase = new MysqlDatabaseFactory($this->mockMysqlRepositoryForEnum(), 'myTestDatabase');
         $export = $factoryMysqlDatabase->generate();

@@ -12,7 +12,7 @@ class MysqlDatabaseIndexTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testCreateObjectException()
+    public function testCreateObjectException(): void
     {
         $this->expectException(\RuntimeException::class);
         new MysqlDatabaseIndex('', ['id'], true);
@@ -22,7 +22,7 @@ class MysqlDatabaseIndexTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testCreateStatementException()
+    public function testCreateStatementException(): void
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);
         $this->expectException(TablenameHasNotDefinedException::class);
@@ -33,14 +33,14 @@ class MysqlDatabaseIndexTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testAlterStatementException()
+    public function testAlterStatementException(): void
     {
         $databaseIndex = new MysqlDatabaseIndex('primary', ['id'], true);
         $this->expectException(TablenameHasNotDefinedException::class);
         $databaseIndex->alterStatement();
     }
 
-    public function dataProviderStatements()
+    public function dataProviderStatements(): array
     {
         $combinaisons = [
             'primaryOneColumn' => [
@@ -105,7 +105,7 @@ class MysqlDatabaseIndexTest extends TestCase
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
 
-    public function testStatements($expected, $expectedAlter, $name, array $columns, $unique)
+    public function testStatements($expected, $expectedAlter, $name, array $columns, $unique): void
     {
         $createStatementExpected = 'ALTER TABLE `activite` ADD ' . $expected . ';';
         $databaseIndex = new MysqlDatabaseIndex($name, $columns, $unique);
@@ -124,7 +124,7 @@ class MysqlDatabaseIndexTest extends TestCase
      * @group structure
      * @group collate
      */
-    public function testToArray()
+    public function testToArray(): void
     {
         $databaseIndex = new MysqlDatabaseIndex('idx_primaire', ['id'], true);
         $databaseIndex->setTable('activite');

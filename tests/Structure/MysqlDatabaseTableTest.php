@@ -14,7 +14,7 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testException()
+    public function testException(): void
     {
         $this->expectException(TablenameHasNotDefinedException::class);
         new MysqlDatabaseTable(null);
@@ -23,7 +23,7 @@ class MysqlDatabaseTableTest extends TestCase
     /**
      * @group structure
      */
-    public function testColumnsCollection()
+    public function testColumnsCollection(): void
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $databaseTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
@@ -41,7 +41,7 @@ class MysqlDatabaseTableTest extends TestCase
     /**
      * @group structure
      */
-    public function testIndexesCollection()
+    public function testIndexesCollection(): void
     {
         $databaseTable = new MysqlDatabaseTable('activites');
 
@@ -70,7 +70,7 @@ class MysqlDatabaseTableTest extends TestCase
     /**
      * @group structure
      */
-    public function testCreateStatement()
+    public function testCreateStatement(): void
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $databaseTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
@@ -84,7 +84,7 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testCreateStatementWithoutColumnException()
+    public function testCreateStatementWithoutColumnException(): void
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $this->expectException(TableHasNotColumnException::class);
@@ -95,7 +95,7 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group collate
      */
-    public function testAlterStatementWithCollate()
+    public function testAlterStatementWithCollate(): void
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $databaseTable->setDatabase('test');
@@ -109,7 +109,7 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group collate
      */
-    public function testCollate()
+    public function testCollate(): void
     {
         //  COLLATE 'latin1_swedish_ci'
         $databaseTable = new MysqlDatabaseTable('activites');
@@ -127,7 +127,7 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group collate
      */
-    public function testCollateWithoutDefineTableCollate()
+    public function testCollateWithoutDefineTableCollate(): void
     {
         //  COLLATE 'latin1_swedish_ci'
         $databaseTable = new MysqlDatabaseTable('activites');
@@ -144,7 +144,7 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testAccessUnknowIndex()
+    public function testAccessUnknowIndex(): void
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $this->expectException('\RuntimeException');
@@ -155,7 +155,7 @@ class MysqlDatabaseTableTest extends TestCase
      * @group structure
      * @group exception
      */
-    public function testCreateIndexesOnNotExistingColumnException()
+    public function testCreateIndexesOnNotExistingColumnException(): void
     {
         $databaseTable = new MysqlDatabaseTable('activites');
         $databaseTable->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
@@ -165,7 +165,7 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertCount(1, $databaseTable->createStatement());
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $table = new MysqlDatabaseTable('activite');
         $table->setCollate('utf8_general_ci');
@@ -200,7 +200,7 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals($expected, $statements);
     }
 
-    public function testToArrayWithoutIndexes()
+    public function testToArrayWithoutIndexes(): void
     {
         $table = new MysqlDatabaseTable('login');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '255', false, null, 'auto_increment'));
@@ -225,7 +225,8 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals($expected, $statements);
     }
 
-    public function testOverideColumn(){
+    public function testOverideColumn(): void
+    {
         $table = new MysqlDatabaseTable('login');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '11', false, null, 'auto_increment'));
         $table->addColumn(new MysqlDatabaseColumn('id', 'varchar', '255', false, null, null));
@@ -248,7 +249,8 @@ class MysqlDatabaseTableTest extends TestCase
         $this->assertEquals($expected, $statements);
     }
 
-    public function testDeleteStatement(){
+    public function testDeleteStatement(): void
+    {
         $table = new MysqlDatabaseTable('login');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '11', false, null, 'auto_increment'));
         $table->removeColumn('id');
