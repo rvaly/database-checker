@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Factory\JsonDatabaseFactory;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 
 class JsonDatabaseFactoryTest extends TestCase
 {
@@ -70,7 +71,7 @@ class JsonDatabaseFactoryTest extends TestCase
             ],
         ];
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($json));
-        $this->expectException('\Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException');
+        $this->expectException(TablenameHasNotDefinedException::class);
         $factoryJsonDatabase->generate('myTestDatabase');
     }
 

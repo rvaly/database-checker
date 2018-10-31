@@ -62,7 +62,7 @@ class MysqlDatabase implements DatabaseInterface
     /**
      * @return string
      */
-    public function getCollate(): string
+    public function getCollate(): ?string
     {
         return $this->collate;
     }

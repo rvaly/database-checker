@@ -173,7 +173,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @return string
      */
-    public function getCollate(): string
+    public function getCollate(): ?string
     {
         return $this->collate;
     }
@@ -181,7 +181,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @return string
      */
-    public function getEngine(): string
+    public function getEngine(): ?string
     {
         return $this->engine;
     }
