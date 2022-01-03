@@ -2,14 +2,12 @@
 
 namespace Starkerxp\DatabaseChecker\Structure;
 
-
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
 
 class MysqlDatabaseTable implements DatabaseInterface
 {
-
     use LoggerTrait;
 
     /**
@@ -97,7 +95,6 @@ class MysqlDatabaseTable implements DatabaseInterface
             $index->setTable($this->getTable());
             $this->indexes[$indexName] = $index;
         } catch (\Exception $e) {
-
         }
     }
 
@@ -147,9 +144,9 @@ class MysqlDatabaseTable implements DatabaseInterface
     }
 
     /**
-     * @return MysqlDatabaseColumn[]
-     *
      * @throws TableHasNotColumnException
+     *
+     * @return MysqlDatabaseColumn[]
      */
     public function getColumns(): array
     {
@@ -203,10 +200,10 @@ class MysqlDatabaseTable implements DatabaseInterface
     }
 
     /**
-     * @return array
-     *
      * @throws TableHasNotColumnException
      * @throws TablenameHasNotDefinedException
+     *
+     * @return array
      */
     public function createStatement()
     {
@@ -214,8 +211,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         $modifications[] = [sprintf('CREATE TABLE IF NOT EXISTS `%s`', $this->getTable())];
         $columns = $this->getColumns();
         foreach ($columns as $column) {
-
-            if ($this->getCollate() == '') {
+            if ('' == $this->getCollate()) {
                 $column->setCollate('');
             }
             $modifications[] = $column->createStatement();
@@ -238,19 +234,17 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
 
         return $this->formatCreateStatement($modifications);
-
     }
 
     /**
      * @param $indexName
      *
-     * @return MysqlDatabaseIndex
-     *
      * @throws \RuntimeException
+     *
+     * @return MysqlDatabaseIndex
      */
     public function getIndex($indexName): MysqlDatabaseIndex
     {
-
         if (empty($this->indexes[$indexName])) {
             $this->critical('You attempt to get undefined index name.', ['index' => $indexName]);
             throw new \RuntimeException('');
@@ -268,7 +262,7 @@ class MysqlDatabaseTable implements DatabaseInterface
     {
         $statements = [];
         foreach ($modificationsBetweenTable as $modifications) {
-            foreach ((array)$modifications as $modification) {
+            foreach ((array) $modifications as $modification) {
                 $statements[] = $modification;
             }
         }
@@ -283,17 +277,17 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
         $tmp = [];
         foreach ($modifications as $modification) {
-            $tmp[] = trim(str_replace(['ALTER TABLE `' . $this->getTable() . '` ADD COLUMN', 'ALTER TABLE `' . $this->getTable() . '` ADD ', ';',], '', $modification));
+            $tmp[] = trim(str_replace(['ALTER TABLE `' . $this->getTable() . '` ADD COLUMN', 'ALTER TABLE `' . $this->getTable() . '` ADD ', ';'], '', $modification));
         }
-        $collate = $this->getCollate() == '' ? '' : sprintf("COLLATE='%s'", $this->getCollate());
+        $collate = '' == $this->getCollate() ? '' : sprintf("COLLATE='%s'", $this->getCollate());
 
         return [$finalStatement . '(' . implode(',', $tmp) . ')' . $collate . ';'];
     }
 
     /**
-     * @return array
-     *
      * @throws \RuntimeException
+     *
+     * @return array
      */
     public function alterStatement()
     {
@@ -313,8 +307,8 @@ class MysqlDatabaseTable implements DatabaseInterface
             return [];
         }
         $collateTmp = $this->getCollate();
-        $collate = $collateTmp == '' ? '' : sprintf('CONVERT TO CHARACTER SET %s COLLATE %s', explode('_', $collateTmp)[0], $collateTmp);
-        if ($collate == '') {
+        $collate = '' == $collateTmp ? '' : sprintf('CONVERT TO CHARACTER SET %s COLLATE %s', explode('_', $collateTmp)[0], $collateTmp);
+        if ('' == $collate) {
             return [];
         }
 
@@ -347,6 +341,4 @@ class MysqlDatabaseTable implements DatabaseInterface
     {
         // TODO: Implement deleteStatement() method.
     }
-
-
 }

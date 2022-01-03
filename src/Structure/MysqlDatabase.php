@@ -2,13 +2,11 @@
 
 namespace Starkerxp\DatabaseChecker\Structure;
 
-
 use Starkerxp\DatabaseChecker\Exception\DatabaseHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
 
 class MysqlDatabase implements DatabaseInterface
 {
-
     use LoggerTrait;
 
     /**
@@ -106,7 +104,6 @@ class MysqlDatabase implements DatabaseInterface
 
     /**
      * @return array
-     *
      */
     public function createStatement()
     {
@@ -116,17 +113,18 @@ class MysqlDatabase implements DatabaseInterface
     }
 
     /**
-     * @return array
-     *
      * @throws \RuntimeException
+     *
+     * @return array
      */
     public function alterStatement()
     {
         $collateTmp = $this->getCollate();
-        $collate = $collateTmp == '' ? '' : sprintf('CONVERT TO CHARACTER SET %s COLLATE %s', explode('_', $collateTmp)[0], $collateTmp);
-        if ($collate == '') {
+        $collate = '' == $collateTmp ? '' : sprintf('CONVERT TO CHARACTER SET %s COLLATE %s', explode('_', $collateTmp)[0], $collateTmp);
+        if ('' == $collate) {
             return [];
         }
+
         return [
             sprintf('ALTER DATABASE %s CHARACTER SET %s COLLATE %s;', $this->database, explode('_', $collateTmp)[0], $collateTmp),
         ];
@@ -136,5 +134,4 @@ class MysqlDatabase implements DatabaseInterface
     {
         return [];
     }
-
 }

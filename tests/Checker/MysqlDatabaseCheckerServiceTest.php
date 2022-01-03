@@ -10,7 +10,6 @@ use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseCheckerServiceTest extends TestCase
 {
-
     /**
      * @group checker
      */
@@ -104,7 +103,6 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $newTable->addColumn(new MysqlDatabaseColumn('typeaction', 'VARCHAR', '255', false, '', null));
         $newTable->addColumn(new MysqlDatabaseColumn('valeur', 'TEXT', '', false, null, null));
         $newTable->addPrimary(['id']);
-
 
         $database = new MysqlDatabase('actual');
         $database->addTable($table);
@@ -200,7 +198,6 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $this->assertCount(0, $statements);
     }
 
-
     /**
      * @group checker
      * @group engine
@@ -216,7 +213,6 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $newTable->setEngine('MEMORY');
         $column = new MysqlDatabaseColumn('nom', 'varchar', '11', false, null, '');
         $newTable->addColumn($column);
-
 
         $database = new MysqlDatabase('actual');
         $database->addTable($table);
@@ -257,5 +253,4 @@ class MysqlDatabaseCheckerServiceTest extends TestCase
         $this->assertEquals('ALTER TABLE `activite` DROP PRIMARY KEY;', $statements[0]);
         $this->assertEquals('ALTER TABLE `activite` DROP COLUMN `valeur2`;', $statements[1]);
     }
-
 }

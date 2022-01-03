@@ -12,12 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Convert json data to array object.
- *
- * @package Starkerxp\DatabaseChecker\Factory
  */
 class JsonDatabaseFactory
 {
-
     use LoggerTrait;
     /**
      * @var string
@@ -35,10 +32,12 @@ class JsonDatabaseFactory
     }
 
     /**
-     * @return MysqlDatabase
+     * @param mixed $databaseName
      *
      * @throws \RuntimeException
      * @throws TablenameHasNotDefinedException
+     *
+     * @return MysqlDatabase
      */
     public function generate($databaseName): MysqlDatabase
     {
@@ -64,7 +63,6 @@ class JsonDatabaseFactory
                     $column->setCollate($row['collate']);
                 }
                 $table->addColumn($column);
-
             }
             foreach ((array) $dataTable['indexes'] as $row) {
                 $table->addIndex($row['columns'], $row['name']);
@@ -88,14 +86,14 @@ class JsonDatabaseFactory
     /**
      * Check syntax of array.
      *
-     * @return array
-     *
      * @throws \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
      * @throws \Symfony\Component\OptionsResolver\Exception\OptionDefinitionException
      * @throws \Symfony\Component\OptionsResolver\Exception\MissingOptionsException
      * @throws \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
      * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
      * @throws \Symfony\Component\OptionsResolver\Exception\NoSuchOptionException
+     *
+     * @return array
      */
     protected function resolve(): array
     {

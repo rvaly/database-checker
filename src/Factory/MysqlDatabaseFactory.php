@@ -6,15 +6,11 @@ use Starkerxp\DatabaseChecker\LoggerTrait;
 use Starkerxp\DatabaseChecker\Repository\StructureInterface;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
 
-
 /**
  * Transcris l'état de la base de données en version objet afin de pouvoir y appliquer les traitements.
- *
- * @package Starkerxp\DatabaseChecker\Factory
  */
 class MysqlDatabaseFactory
 {
-
     use LoggerTrait;
 
     protected $databaseName;
@@ -39,9 +35,9 @@ class MysqlDatabaseFactory
     }
 
     /**
-     * @return MysqlDatabase
-     *
      * @throws \LogicException
+     *
+     * @return MysqlDatabase
      */
     public function generate(): MysqlDatabase
     {
@@ -62,7 +58,6 @@ class MysqlDatabaseFactory
         return $export;
     }
 
-
     protected function getIndex($table): array
     {
         if (!$results = $this->repositoryMysql->fetchIndexStructure($this->databaseName, $table)) {
@@ -70,7 +65,7 @@ class MysqlDatabaseFactory
         }
         $export = [];
         foreach ($results as $row) {
-            if ($row['INDEX_NAME'] === 'PRIMARY') {
+            if ('PRIMARY' === $row['INDEX_NAME']) {
                 $export['primary'] = array_filter(explode(',', $row['COLUMN_NAME']));
                 continue;
             }
@@ -94,15 +89,15 @@ class MysqlDatabaseFactory
         foreach ($results as $row) {
             $type = $row['DATA_TYPE'];
             $length = str_replace([$type, '(', ')'], '', $row['COLUMN_TYPE']);
-            if ($type === 'enum') {
+            if ('enum' === $type) {
                 $type = $row['COLUMN_TYPE'];
                 $length = null;
             }
             $export[$row['COLUMN_NAME']] = array_filter([
                 'type' => $type,
                 'length' => $length,
-                'nullable' => $row['IS_NULLABLE'] !== 'NO',
-                'defaultValue' => $row['IS_NULLABLE'] !== 'NO' && empty($row['COLUMN_DEFAULT']) ? 'NULL' : $row['COLUMN_DEFAULT'],
+                'nullable' => 'NO' !== $row['IS_NULLABLE'],
+                'defaultValue' => 'NO' !== $row['IS_NULLABLE'] && empty($row['COLUMN_DEFAULT']) ? 'NULL' : $row['COLUMN_DEFAULT'],
                 'extra' => $row['EXTRA'],
                 'collate' => $row['COLLATION_NAME'],
             ]);
@@ -114,15 +109,15 @@ class MysqlDatabaseFactory
         return $export;
     }
 
-	
-	public function exportStructure(){
-		$export = [];
+    public function exportStructure()
+    {
+        $export = [];
         $tables = $this->repositoryMysql->getTablesStructure($this->databaseName);
         foreach ($tables as $table) {
             $export[$table] = $this->getIndex($table);
             $export[$table]['columns'] = $this->getColumns($table);
         }
-		
-		return json_encode($export);
-	}
+
+        return json_encode($export);
+    }
 }

@@ -3,12 +3,11 @@
 namespace Starkerxp\DatabaseChecker\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 
 class MysqlDatabaseColumnTest extends TestCase
 {
-
     /**
      * @group structure
      * @group mutator
@@ -146,12 +145,12 @@ class MysqlDatabaseColumnTest extends TestCase
             $this->assertEquals('ALTER TABLE `activite` CHANGE COLUMN `id` `id` ' . strtoupper($type) . '(255) NOT NULL ;', $statement[0]);
         }
 
-        $types = ['varchar', 'text', 'char',];
+        $types = ['varchar', 'text', 'char'];
         foreach ($types as $type) {
             $databaseColumn = new MysqlDatabaseColumn('id', $type, '255', false, null, null);
             $databaseColumn->setTable('activite');
             $databaseColumn->setCollate('latin1_swedish_ci');
-            $typeExpected = strtoupper($type) . ($type == 'text' ? '' : '(255)');
+            $typeExpected = strtoupper($type) . ('text' == $type ? '' : '(255)');
             $statement = $databaseColumn->createStatement();
             $this->assertEquals('ALTER TABLE `activite` ADD COLUMN `id` ' . $typeExpected . ' NOT NULL COLLATE \'latin1_swedish_ci\';', $statement[0]);
             $statement = $databaseColumn->alterStatement();
@@ -180,6 +179,5 @@ class MysqlDatabaseColumnTest extends TestCase
             'collate' => 'latin1_swedish_ci',
         ];
         $this->assertEquals($expected, $statement);
-
     }
 }

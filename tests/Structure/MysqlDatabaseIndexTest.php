@@ -3,8 +3,8 @@
 namespace Starkerxp\DatabaseChecker\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
 
 class MysqlDatabaseIndexTest extends TestCase
 {
@@ -96,15 +96,14 @@ class MysqlDatabaseIndexTest extends TestCase
      *
      * @dataProvider dataProviderStatements
      *
-     * @param string  $expected
-     * @param string  $expectedAlter
-     * @param string  $name
-     * @param array   $columns
-     * @param boolean $unique
+     * @param string $expected
+     * @param string $expectedAlter
+     * @param string $name
+     * @param array  $columns
+     * @param bool   $unique
      *
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
      */
-
     public function testStatements($expected, $expectedAlter, $name, array $columns, $unique): void
     {
         $createStatementExpected = 'ALTER TABLE `activite` ADD ' . $expected . ';';
@@ -136,6 +135,5 @@ class MysqlDatabaseIndexTest extends TestCase
             'columns' => ['id'],
         ];
         $this->assertEquals($expected, $statement);
-
     }
 }

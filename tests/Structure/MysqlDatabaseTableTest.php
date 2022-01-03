@@ -3,10 +3,10 @@
 namespace Starkerxp\DatabaseChecker\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
+use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseTableTest extends TestCase
 {
@@ -77,7 +77,7 @@ class MysqlDatabaseTableTest extends TestCase
         $databaseTable->addPrimary(['id']);
         $statements = $databaseTable->createStatement();
         $this->assertCount(1, $statements);
-        $this->assertEquals("CREATE TABLE IF NOT EXISTS `activites`(`id` INT(255) NOT NULL AUTO_INCREMENT,PRIMARY KEY (`id`));", $statements[0]);
+        $this->assertEquals('CREATE TABLE IF NOT EXISTS `activites`(`id` INT(255) NOT NULL AUTO_INCREMENT,PRIMARY KEY (`id`));', $statements[0]);
     }
 
     /**
@@ -191,7 +191,7 @@ class MysqlDatabaseTableTest extends TestCase
                 ],
                 'primary' => ['id'],
                 'uniques' => [
-                    ['name' => 'UNI_b80bb7740288fda1f201890375a60c8f', 'columns' => ['id'],],
+                    ['name' => 'UNI_b80bb7740288fda1f201890375a60c8f', 'columns' => ['id']],
                 ],
                 'collate' => 'utf8_general_ci',
             ],

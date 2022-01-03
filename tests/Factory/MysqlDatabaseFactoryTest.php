@@ -19,26 +19,26 @@ class MysqlDatabaseFactoryTest extends TestCase
             'tables' => [
                 'activite' => [
                     'indexes' => [
-                        ['name' => 'dateenr', 'columns' => ['dateenr',],],
-                        ['name' => 'idclient', 'columns' => ['agence',],],
-                        ['name' => 'idlca', 'columns' => ['idann',],],
-                        ['name' => 'typeaction', 'columns' => ['typeaction',],],
+                        ['name' => 'dateenr', 'columns' => ['dateenr']],
+                        ['name' => 'idclient', 'columns' => ['agence']],
+                        ['name' => 'idlca', 'columns' => ['idann']],
+                        ['name' => 'typeaction', 'columns' => ['typeaction']],
                     ],
-                    'primary' => ['id',],
+                    'primary' => ['id'],
                     'fulltexts' => [
-                        ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
+                        ['name' => 'fulltext_valeur', 'columns' => ['valeur']],
                     ],
                     'uniques' => [
-                        ['name' => 'unq_idnego', 'columns' => ['idnego',],],
+                        ['name' => 'unq_idnego', 'columns' => ['idnego']],
                     ],
                     'columns' => [
-                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
-                        'idann' => ['type' => 'int', 'length' => '11',],
-                        'dateenr' => ['type' => 'datetime',],
-                        'agence' => ['type' => 'int', 'length' => '11',],
-                        'idnego' => ['type' => 'int', 'length' => '11',],
-                        'typeaction' => ['type' => 'varchar', 'length' => '255',],
-                        'valeur' => ['type' => 'text',],
+                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment'],
+                        'idann' => ['type' => 'int', 'length' => '11'],
+                        'dateenr' => ['type' => 'datetime'],
+                        'agence' => ['type' => 'int', 'length' => '11'],
+                        'idnego' => ['type' => 'int', 'length' => '11'],
+                        'typeaction' => ['type' => 'varchar', 'length' => '255'],
+                        'valeur' => ['type' => 'text'],
                     ],
                 ],
             ],
@@ -61,13 +61,13 @@ class MysqlDatabaseFactoryTest extends TestCase
             ->method('fetchColumnsStructure')
             ->with('myTestDatabase', 'activite')
             ->willReturn([
-                ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => 'auto_increment', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'idann', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'dateenr', 'DATA_TYPE' => 'datetime', 'COLUMN_TYPE' => 'datetime', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'agence', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
-                ['COLUMN_NAME' => 'typeaction', 'DATA_TYPE' => 'varchar', 'COLUMN_TYPE' => 'varchar(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => 'latin1_swedish_ci',],
-                ['COLUMN_NAME' => 'valeur', 'DATA_TYPE' => 'text', 'COLUMN_TYPE' => 'text', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => 'latin1_swedish_ci',],
-                ['COLUMN_NAME' => 'idnego', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null,],
+                ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => 'auto_increment', 'COLLATION_NAME' => null],
+                ['COLUMN_NAME' => 'idann', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null],
+                ['COLUMN_NAME' => 'dateenr', 'DATA_TYPE' => 'datetime', 'COLUMN_TYPE' => 'datetime', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null],
+                ['COLUMN_NAME' => 'agence', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null],
+                ['COLUMN_NAME' => 'typeaction', 'DATA_TYPE' => 'varchar', 'COLUMN_TYPE' => 'varchar(255)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => 'latin1_swedish_ci'],
+                ['COLUMN_NAME' => 'valeur', 'DATA_TYPE' => 'text', 'COLUMN_TYPE' => 'text', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => 'latin1_swedish_ci'],
+                ['COLUMN_NAME' => 'idnego', 'DATA_TYPE' => 'int', 'COLUMN_TYPE' => 'int(11)', 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => '', 'COLLATION_NAME' => null],
             ]);
 
         $oMock->expects($this->any())
@@ -100,26 +100,26 @@ class MysqlDatabaseFactoryTest extends TestCase
             'tables' => [
                 'activite' => [
                     'indexes' => [
-                        ['name' => 'dateenr', 'columns' => ['dateenr',],],
-                        ['name' => 'idclient', 'columns' => ['agence',],],
-                        ['name' => 'idlca', 'columns' => ['idann',],],
-                        ['name' => 'typeaction', 'columns' => ['typeaction',],],
+                        ['name' => 'dateenr', 'columns' => ['dateenr']],
+                        ['name' => 'idclient', 'columns' => ['agence']],
+                        ['name' => 'idlca', 'columns' => ['idann']],
+                        ['name' => 'typeaction', 'columns' => ['typeaction']],
                     ],
                     'fulltexts' => [
-                        ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
+                        ['name' => 'fulltext_valeur', 'columns' => ['valeur']],
                     ],
                     'uniques' => [
-                        ['name' => 'unq_idnego', 'columns' => ['idnego',],],
+                        ['name' => 'unq_idnego', 'columns' => ['idnego']],
                     ],
-                    'primary' => ['id',],
+                    'primary' => ['id'],
                     'columns' => [
-                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
-                        'idann' => ['type' => 'int', 'length' => '11',],
-                        'dateenr' => ['type' => 'datetime',],
-                        'agence' => ['type' => 'int', 'length' => '11',],
+                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment'],
+                        'idann' => ['type' => 'int', 'length' => '11'],
+                        'dateenr' => ['type' => 'datetime'],
+                        'agence' => ['type' => 'int', 'length' => '11'],
                         'typeaction' => ['type' => 'varchar', 'length' => '255', 'collate' => 'latin1_swedish_ci'],
                         'valeur' => ['type' => 'text', 'collate' => 'latin1_swedish_ci'],
-                        'idnego' => ['type' => 'int', 'length' => '11',],
+                        'idnego' => ['type' => 'int', 'length' => '11'],
                     ],
                 ],
             ],
@@ -129,7 +129,6 @@ class MysqlDatabaseFactoryTest extends TestCase
         $expected = $factoryJsonDatabase->generate('myTestDatabase');
         $this->assertEquals($expected->toArray(), $export->toArray());
     }
-
 
     /**
      * @group collate
@@ -144,26 +143,26 @@ class MysqlDatabaseFactoryTest extends TestCase
             'tables' => [
                 'activite' => [
                     'indexes' => [
-                        ['name' => 'dateenr', 'columns' => ['dateenr',],],
-                        ['name' => 'idclient', 'columns' => ['agence',],],
-                        ['name' => 'idlca', 'columns' => ['idann',],],
-                        ['name' => 'typeaction', 'columns' => ['typeaction',],],
+                        ['name' => 'dateenr', 'columns' => ['dateenr']],
+                        ['name' => 'idclient', 'columns' => ['agence']],
+                        ['name' => 'idlca', 'columns' => ['idann']],
+                        ['name' => 'typeaction', 'columns' => ['typeaction']],
                     ],
-                    'primary' => ['id',],
+                    'primary' => ['id'],
                     'fulltexts' => [
-                        ['name' => 'fulltext_valeur', 'columns' => ['valeur',],],
+                        ['name' => 'fulltext_valeur', 'columns' => ['valeur']],
                     ],
                     'uniques' => [
-                        ['name' => 'unq_idnego', 'columns' => ['idnego',],],
+                        ['name' => 'unq_idnego', 'columns' => ['idnego']],
                     ],
                     'columns' => [
-                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment',],
-                        'idann' => ['type' => 'int', 'length' => '11',],
-                        'dateenr' => ['type' => 'datetime',],
-                        'agence' => ['type' => 'int', 'length' => '11',],
-                        'typeaction' => ['type' => 'varchar', 'length' => '255',],
-                        'valeur' => ['type' => 'text',],
-                        'idnego' => ['type' => 'int', 'length' => '11',],
+                        'id' => ['type' => 'int', 'length' => '255', 'extra' => 'auto_increment'],
+                        'idann' => ['type' => 'int', 'length' => '11'],
+                        'dateenr' => ['type' => 'datetime'],
+                        'agence' => ['type' => 'int', 'length' => '11'],
+                        'typeaction' => ['type' => 'varchar', 'length' => '255'],
+                        'valeur' => ['type' => 'text'],
+                        'idnego' => ['type' => 'int', 'length' => '11'],
                     ],
                 ],
             ],
@@ -172,10 +171,8 @@ class MysqlDatabaseFactoryTest extends TestCase
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($expectedJson));
         $expected = $factoryJsonDatabase->generate('myTestDatabase');
 
-
         $this->assertEquals($expected->toArray(), $export->toArray());
     }
-
 
     /**
      * @group factory
@@ -189,7 +186,7 @@ class MysqlDatabaseFactoryTest extends TestCase
                 'activite' => [
                     'indexes' => [],
                     'columns' => [
-                        'id' => ['type' => "enum('0','1')", 'length' => null, 'extra' => null,],
+                        'id' => ['type' => "enum('0','1')", 'length' => null, 'extra' => null],
                     ],
                 ],
             ],
@@ -198,10 +195,8 @@ class MysqlDatabaseFactoryTest extends TestCase
         $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($expectedJson));
         $expected = $factoryJsonDatabase->generate('myTestDatabase');
 
-
         $this->assertEquals($expected->toArray(), $export->toArray());
     }
-
 
     private function mockMysqlRepositoryForEnum()
     {
@@ -215,7 +210,7 @@ class MysqlDatabaseFactoryTest extends TestCase
             ->method('fetchColumnsStructure')
             ->with('myTestDatabase', 'activite')
             ->willReturn([
-                ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'enum', 'COLUMN_TYPE' => "enum('0','1')", 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => null, 'COLLATION_NAME' => null,],
+                ['COLUMN_NAME' => 'id', 'DATA_TYPE' => 'enum', 'COLUMN_TYPE' => "enum('0','1')", 'IS_NULLABLE' => 'NO', 'COLUMN_DEFAULT' => null, 'EXTRA' => null, 'COLLATION_NAME' => null],
             ]);
 
         $oMock->expects($this->any())

@@ -18,26 +18,28 @@ class MysqlDatabaseCheckerService
     use LoggerTrait;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $checkCollate;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $checkEngine;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $dropStatement;
 
     /**
      * @param MysqlDatabase $database
      * @param MysqlDatabase $newDatabase
-     * @return array
+     *
      * @throws TableHasNotColumnException
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     *
+     * @return array
      */
     public function diff(MysqlDatabase $database, MysqlDatabase $newDatabase): array
     {
@@ -76,11 +78,12 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseTable $table
+     * @param MysqlDatabaseTable   $table
      * @param MysqlDatabaseTable[] $newTables
      *
-     * @return mixed
      * @throws TableNotExistException
+     *
+     * @return mixed
      */
     private function getTable($table, array $newTables)
     {
@@ -96,10 +99,10 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseTable $table
      * @param MysqlDatabaseTable $newTable
      *
-     * @return array
-     *
      * @throws TableHasNotColumnException
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     *
+     * @return array
      */
     private function checkTable(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable): array
     {
@@ -119,16 +122,32 @@ class MysqlDatabaseCheckerService
                 $newColumn = $this->getColumn($column, $newColumns);
                 $modificationsBetweenTable[$newColumn->getName()] = $this->checkColumn($column, $newColumn);
             } catch (ColumnNotExistException $e) {
+
                 if ($this->dropStatement) {
                     $modificationsBetweenTable[$column->getName()] = $column->deleteStatement();
                     continue;
                 }
+                // il ne passe jamais ici
                 $modificationsBetweenTable[$column->getName()] = $this->createStatement($column);
                 continue;
             } catch (\Exception $e) {
                 continue;
             }
         }
+
+        //add
+        foreach ($newColumns as $column) {
+            try {
+                $this->getColumn($column, $columns);
+            } catch (ColumnNotExistException $e) {
+
+                $modificationsBetweenTable[$column->getName()] = $this->createStatement($column);
+                continue;
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
         $columnNeedAlter = array_unique(array_keys(array_filter($modificationsBetweenTable)));
         $indexes = $table->getIndexes();
         $newIndexes = $newTable->getIndexes();
@@ -191,6 +210,7 @@ class MysqlDatabaseCheckerService
 
     /**
      * @param MysqlDatabaseTable $table
+     *
      * @throws TableHasNotColumnException
      */
     private function disabledCollate(MysqlDatabaseTable $table): void
@@ -213,12 +233,12 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseColumn $column
+     * @param MysqlDatabaseColumn   $column
      * @param MysqlDatabaseColumn[] $newColumns
      *
-     * @return mixed
-     *
      * @throws ColumnNotExistException
+     *
+     * @return mixed
      */
     private function getColumn(MysqlDatabaseColumn $column, array $newColumns)
     {
@@ -234,9 +254,9 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseColumn $column
      * @param MysqlDatabaseColumn $newColumn
      *
-     * @return array
-     *
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     *
+     * @return array
      */
     private function checkColumn(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn): array
     {
@@ -341,5 +361,4 @@ class MysqlDatabaseCheckerService
     {
         $this->dropStatement = true;
     }
-
 }

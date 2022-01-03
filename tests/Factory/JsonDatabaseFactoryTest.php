@@ -2,17 +2,15 @@
 
 namespace Starkerxp\DatabaseChecker\Tests\Factory;
 
-
 use PHPUnit\Framework\TestCase;
 use Starkerxp\DatabaseChecker\Exception\JsonInvalidFormatException;
+use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\Factory\JsonDatabaseFactory;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
 use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 
 class JsonDatabaseFactoryTest extends TestCase
 {
-
     /**
      * @group factory
      */
@@ -59,7 +57,7 @@ class JsonDatabaseFactoryTest extends TestCase
             'tables' => [
                 '' => [
                     'columns' => [
-                        'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment',],
+                        'id' => ['type' => 'INT', 'length' => '255', 'extra' => 'auto_increment'],
                     ],
                     'indexes' => [
                         ['name' => 'caramel', 'columns' => ['id']],
@@ -96,7 +94,5 @@ class JsonDatabaseFactoryTest extends TestCase
         $factoryJsonDatabase = new JsonDatabaseFactory('"');
         $this->expectException(JsonInvalidFormatException::class);
         $factoryJsonDatabase->generate('myTestDatabase');
-
     }
-
 }

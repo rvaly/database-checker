@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Guillaume
  * Date: 28/02/2018
- * Time: 13:28
+ * Time: 13:28.
  */
 
 namespace Starkerxp\DatabaseChecker;
-
 
 use Psr\Log\LoggerAwareTrait;
 
@@ -22,5 +21,4 @@ trait LoggerTrait
             $this->logger->log($level, $message, $context);
         }
     }
-
 }

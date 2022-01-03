@@ -31,7 +31,6 @@ class MysqlDatabaseTest extends TestCase
         $this->assertEquals('CREATE DATABASE IF NOT EXISTS `activites`;', $statements[0]);
     }
 
-
     /**
      * @group structure
      * @group exception
@@ -73,7 +72,7 @@ class MysqlDatabaseTest extends TestCase
                     ],
                     'primary' => ['id'],
                     'uniques' => [
-                        ['name' => 'UNI_b80bb7740288fda1f201890375a60c8f', 'columns' => ['id'],],
+                        ['name' => 'UNI_b80bb7740288fda1f201890375a60c8f', 'columns' => ['id']],
                     ],
                     'collate' => 'utf8_general_ci',
                 ],
@@ -82,5 +81,4 @@ class MysqlDatabaseTest extends TestCase
         ];
         $this->assertEquals($expected, $statements);
     }
-
 }

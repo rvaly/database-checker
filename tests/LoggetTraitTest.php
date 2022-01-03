@@ -25,7 +25,6 @@ class LoggetTraitTest extends TestCase
         } catch (TablenameHasNotDefinedException $e) {
             $this->assertCount(1, $logger->getItems());
         }
-
     }
 
     /**
@@ -46,7 +45,5 @@ class LoggetTraitTest extends TestCase
         } catch (TablenameHasNotDefinedException $e) {
             $this->assertCount(0, $logger->getItems());
         }
-
     }
 }
-

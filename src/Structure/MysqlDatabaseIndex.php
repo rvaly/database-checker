@@ -2,7 +2,6 @@
 
 namespace Starkerxp\DatabaseChecker\Structure;
 
-
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
 
@@ -18,9 +17,9 @@ class MysqlDatabaseIndex implements DatabaseInterface
     /**
      * DatabaseColumnStructure constructor.
      *
-     * @param string  $name
-     * @param boolean $unique
-     * @param array   $columns
+     * @param string $name
+     * @param bool   $unique
+     * @param array  $columns
      *
      * @throws \RuntimeException
      */
@@ -38,13 +37,14 @@ class MysqlDatabaseIndex implements DatabaseInterface
     {
         $tmp = get_object_vars($this);
         unset($tmp['logger']);
+
         return $tmp;
     }
 
     /**
-     * @return array
-     *
      * @throws TablenameHasNotDefinedException
+     *
+     * @return array
      */
     public function alterStatement()
     {
@@ -56,9 +56,9 @@ class MysqlDatabaseIndex implements DatabaseInterface
     }
 
     /**
-     * @return string
-     *
      * @throws TablenameHasNotDefinedException
+     *
+     * @return string
      */
     public function deleteStatement()
     {
@@ -69,16 +69,15 @@ class MysqlDatabaseIndex implements DatabaseInterface
         return sprintf('ALTER TABLE `%s` DROP INDEX `%s`;', $this->getTable(), $this->getName());
     }
 
-
     public function isPrimary(): bool
     {
-        return strtolower($this->name) == 'primary';
+        return 'primary' == strtolower($this->name);
     }
 
     /**
-     * @return mixed
-     *
      * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     *
+     * @return mixed
      */
     public function getTable()
     {
@@ -99,9 +98,9 @@ class MysqlDatabaseIndex implements DatabaseInterface
     }
 
     /**
-     * @return array
-     *
      * @throws TablenameHasNotDefinedException
+     *
+     * @return array
      */
     public function createStatement()
     {
@@ -144,6 +143,4 @@ class MysqlDatabaseIndex implements DatabaseInterface
     {
         $this->table = $table;
     }
-
-
 }

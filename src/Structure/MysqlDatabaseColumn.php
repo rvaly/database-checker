@@ -2,7 +2,6 @@
 
 namespace Starkerxp\DatabaseChecker\Structure;
 
-
 use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
 use Starkerxp\DatabaseChecker\LoggerTrait;
 
@@ -23,7 +22,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
      * DatabaseColumnStructure constructor.
      *
      * @param $name
-     *
      * @param $type
      * @param $length
      * @param $nullable
@@ -63,8 +61,8 @@ class MysqlDatabaseColumn implements DatabaseInterface
     {
         $isEnum = explode('enum', $this->type);
         if (!empty($isEnum)) {
-            $numberElements = substr_count(str_replace(['(', ')', "'",], '', $isEnum[1]), ',') + 1;
-            if ($numberElements == 2) {
+            $numberElements = substr_count(str_replace(['(', ')', "'"], '', $isEnum[1]), ',') + 1;
+            if (2 == $numberElements) {
                 $this->type = 'tinyint';
                 $this->length = 1;
             }
@@ -81,9 +79,9 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
-     * @return array
-     *
      * @throws TablenameHasNotDefinedException
+     *
+     * @return array
      */
     public function createStatement()
     {
@@ -92,7 +90,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $collate = $this->formatCollate();
         $modification = sprintf('ALTER TABLE `%s` ADD COLUMN `%s` %s %s NULL %s %s %s;', $this->getTable(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
-        return [str_replace(['   ', '  ',], ' ', $modification)];
+        return [str_replace(['   ', '  '], ' ', $modification)];
     }
 
     /**
@@ -117,7 +115,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function getCollate(): ?string
     {
         $type = $this->getType();
-        if (!\in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar'], false)) {
+        if (!\in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar','float'], false)) {
             return '';
         }
 
@@ -133,9 +131,9 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
-     * @return mixed
-     *
      * @throws TablenameHasNotDefinedException
+     *
+     * @return mixed
      */
     public function getTable()
     {
@@ -194,9 +192,9 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
-     * @return array
-     *
      * @throws TablenameHasNotDefinedException
+     *
+     * @return array
      */
     public function alterStatement()
     {
@@ -205,7 +203,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $collate = $this->formatCollate();
         $modification = sprintf('ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s NULL %s %s %s;', $this->getTable(), $this->getName(), $this->getName(), $this->getColonneType(), $null, $default, $this->getExtra(), $collate);
 
-        return [str_replace(['   ', '  ',], ' ', $modification)];
+        return [str_replace(['   ', '  '], ' ', $modification)];
     }
 
     public function deleteStatement(): string
@@ -223,7 +221,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
             return '';
         }
 
-        if ($default === 'NULL') {
+        if ('NULL' === $default) {
             return ' DEFAULT NULL';
         }
 
@@ -242,5 +240,4 @@ class MysqlDatabaseColumn implements DatabaseInterface
 
         return sprintf("COLLATE '%s'", $collate);
     }
-
 }
