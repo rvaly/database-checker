@@ -3,7 +3,7 @@
 namespace LBIGroupDataBaseChecker\Structure;
 
 use LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException;
-use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\DatabaseChecker\LoggerTrait;
 
 class MysqlDatabaseColumn implements DatabaseInterface
 {

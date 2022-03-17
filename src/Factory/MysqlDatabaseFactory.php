@@ -2,7 +2,7 @@
 
 namespace LBIGroupDataBaseChecker\Factory;
 
-use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\DatabaseChecker\LoggerTrait;
 use LBIGroupDataBaseChecker\Repository\StructureInterface;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabase;
 
@@ -35,9 +35,9 @@ class MysqlDatabaseFactory
     }
 
     /**
+     * @return MysqlDatabase
      * @throws \LogicException
      *
-     * @return MysqlDatabase
      */
     public function generate(): MysqlDatabase
     {

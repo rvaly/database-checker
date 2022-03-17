@@ -4,7 +4,7 @@ namespace LBIGroupDataBaseChecker\Factory;
 
 use LBIGroupDataBaseChecker\Exception\JsonInvalidFormatException;
 use LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException;
-use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\DatabaseChecker\LoggerTrait;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabase;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabaseColumn;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabaseTable;

@@ -6,7 +6,7 @@ use LBIGroupDataBaseChecker\Exception\ColumnNotExistException;
 use LBIGroupDataBaseChecker\Exception\IndexNotExistException;
 use LBIGroupDataBaseChecker\Exception\TableHasNotColumnException;
 use LBIGroupDataBaseChecker\Exception\TableNotExistException;
-use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\DatabaseChecker\LoggerTrait;
 use LBIGroupDataBaseChecker\Structure\DatabaseInterface;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabase;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabaseColumn;
