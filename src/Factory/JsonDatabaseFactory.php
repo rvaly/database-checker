@@ -1,13 +1,13 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Factory;
+namespace LBIGroupDataBaseChecker\Factory;
 
-use Starkerxp\DatabaseChecker\Exception\JsonInvalidFormatException;
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
-use Starkerxp\DatabaseChecker\LoggerTrait;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
+use LBIGroupDataBaseChecker\Exception\JsonInvalidFormatException;
+use LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException;
+use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\Structure\MysqlDatabase;
+use LBIGroupDataBaseChecker\Structure\MysqlDatabaseColumn;
+use LBIGroupDataBaseChecker\Structure\MysqlDatabaseTable;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**

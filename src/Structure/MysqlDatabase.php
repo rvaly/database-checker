@@ -1,9 +1,9 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Structure;
+namespace LBIGroupDataBaseChecker\Structure;
 
-use Starkerxp\DatabaseChecker\Exception\DatabaseHasNotDefinedException;
-use Starkerxp\DatabaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\Exception\DatabaseHasNotDefinedException;
+use LBIGroupDataBaseChecker\LoggerTrait;
 
 class MysqlDatabase implements DatabaseInterface
 {

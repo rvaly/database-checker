@@ -1,9 +1,9 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Repository;
+namespace LBIGroupDataBaseChecker\Repository;
 
 
-use Starkerxp\DatabaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\LoggerTrait;
 
 class MysqlRepository implements StructureInterface
 {

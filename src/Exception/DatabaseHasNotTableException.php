@@ -6,7 +6,7 @@
  * Time: 23:39
  */
 
-namespace Starkerxp\DatabaseChecker\Exception;
+namespace LBIGroupDataBaseChecker\Exception;
 
 
 

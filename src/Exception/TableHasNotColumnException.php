@@ -1,6 +1,6 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Exception;
+namespace LBIGroupDataBaseChecker\Exception;
 
 
 class TableHasNotColumnException extends \Exception

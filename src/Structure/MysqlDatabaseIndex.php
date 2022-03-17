@@ -1,9 +1,9 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Structure;
+namespace LBIGroupDataBaseChecker\Structure;
 
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
-use Starkerxp\DatabaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException;
+use LBIGroupDataBaseChecker\LoggerTrait;
 
 class MysqlDatabaseIndex implements DatabaseInterface
 {
@@ -75,7 +75,7 @@ class MysqlDatabaseIndex implements DatabaseInterface
     }
 
     /**
-     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
      * @return mixed
      */

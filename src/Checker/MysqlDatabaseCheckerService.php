@@ -1,17 +1,17 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Checker;
+namespace LBIGroupDataBaseChecker\Checker;
 
-use Starkerxp\DatabaseChecker\Exception\ColumnNotExistException;
-use Starkerxp\DatabaseChecker\Exception\IndexNotExistException;
-use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
-use Starkerxp\DatabaseChecker\Exception\TableNotExistException;
-use Starkerxp\DatabaseChecker\LoggerTrait;
-use Starkerxp\DatabaseChecker\Structure\DatabaseInterface;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
+use LBIGroupDataBaseChecker\Exception\ColumnNotExistException;
+use LBIGroupDataBaseChecker\Exception\IndexNotExistException;
+use LBIGroupDataBaseChecker\Exception\TableHasNotColumnException;
+use LBIGroupDataBaseChecker\Exception\TableNotExistException;
+use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\Structure\DatabaseInterface;
+use LBIGroupDataBaseChecker\Structure\MysqlDatabase;
+use LBIGroupDataBaseChecker\Structure\MysqlDatabaseColumn;
+use LBIGroupDataBaseChecker\Structure\MysqlDatabaseIndex;
+use LBIGroupDataBaseChecker\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseCheckerService
 {
@@ -37,7 +37,7 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabase $newDatabase
      *
      * @throws TableHasNotColumnException
-     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
      * @return array
      */
@@ -100,7 +100,7 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseTable $newTable
      *
      * @throws TableHasNotColumnException
-     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
      * @return array
      */
@@ -254,7 +254,7 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseColumn $column
      * @param MysqlDatabaseColumn $newColumn
      *
-     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
      * @return array
      */

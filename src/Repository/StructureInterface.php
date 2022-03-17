@@ -6,7 +6,7 @@
  * Time: 13:34
  */
 
-namespace Starkerxp\DatabaseChecker\Repository;
+namespace LBIGroupDataBaseChecker\Repository;
 
 
 interface StructureInterface

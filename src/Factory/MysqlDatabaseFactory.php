@@ -1,10 +1,10 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Factory;
+namespace LBIGroupDataBaseChecker\Factory;
 
-use Starkerxp\DatabaseChecker\LoggerTrait;
-use Starkerxp\DatabaseChecker\Repository\StructureInterface;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
+use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\Repository\StructureInterface;
+use LBIGroupDataBaseChecker\Structure\MysqlDatabase;
 
 /**
  * Transcris l'état de la base de données en version objet afin de pouvoir y appliquer les traitements.

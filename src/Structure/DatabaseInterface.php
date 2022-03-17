@@ -1,9 +1,9 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Structure;
+namespace LBIGroupDataBaseChecker\Structure;
 
 
-use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
+use LBIGroupDataBaseChecker\Exception\TableHasNotColumnException;
 
 interface DatabaseInterface
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Structure;
+namespace LBIGroupDataBaseChecker\Structure;
 
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
-use Starkerxp\DatabaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException;
+use LBIGroupDataBaseChecker\LoggerTrait;
 
 class MysqlDatabaseColumn implements DatabaseInterface
 {
