@@ -1,16 +1,16 @@
 {
   "name": "lbigroupp/database-checker",
-  "license": "MIT",
-  "type": "library",
   "description": "Get diff between actual schema and json configuration",
+  "license": "MIT",
+  "minimum-stability": "stable",
   "require": {
-    "php": "^7.1.3",
+    "php": "^7.2",
     "symfony/options-resolver": "^4.0",
     "psr/log": "^1.0"
   },
   "autoload": {
     "psr-4": {
-      "LBIGroupDataBaseChecker\\": ""
+      "LBIGroupDataBaseChecker\\": "src/"
     }
   }
 }
