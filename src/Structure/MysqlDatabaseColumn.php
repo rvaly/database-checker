@@ -240,4 +240,9 @@ class MysqlDatabaseColumn implements DatabaseInterface
 
         return sprintf("COLLATE '%s'", $collate);
     }
+
+    public function getLength()
+    {
+        return $this->length;
+    }
 }

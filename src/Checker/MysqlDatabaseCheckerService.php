@@ -30,16 +30,16 @@ class MysqlDatabaseCheckerService
     /**
      * @var bool
      */
-    private $dropStatement;
+    private $dropStatement = false;
 
     /**
      * @param MysqlDatabase $database
      * @param MysqlDatabase $newDatabase
      *
-     * @throws TableHasNotColumnException
+     * @return array
      * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
-     * @return array
+     * @throws TableHasNotColumnException
      */
     public function diff(MysqlDatabase $database, MysqlDatabase $newDatabase): array
     {
@@ -81,9 +81,9 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseTable   $table
      * @param MysqlDatabaseTable[] $newTables
      *
+     * @return mixed
      * @throws TableNotExistException
      *
-     * @return mixed
      */
     private function getTable($table, array $newTables)
     {
@@ -99,10 +99,10 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseTable $table
      * @param MysqlDatabaseTable $newTable
      *
-     * @throws TableHasNotColumnException
+     * @return array
      * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
-     * @return array
+     * @throws TableHasNotColumnException
      */
     private function checkTable(MysqlDatabaseTable $table, MysqlDatabaseTable $newTable): array
     {
@@ -183,7 +183,9 @@ class MysqlDatabaseCheckerService
                 if (!in_array($colonne, $index->getColumns(), false)) {
                     continue;
                 }
-                $modificationsIndexRemoveBetweenTable[] = $index->deleteStatement();
+                if ($this->dropStatement) {
+                    $modificationsIndexRemoveBetweenTable[] = $index->deleteStatement();
+                }
                 $modificationsIndexBetweenTable[] = $index->createStatement();
             }
         }
@@ -236,9 +238,9 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseColumn   $column
      * @param MysqlDatabaseColumn[] $newColumns
      *
+     * @return mixed
      * @throws ColumnNotExistException
      *
-     * @return mixed
      */
     private function getColumn(MysqlDatabaseColumn $column, array $newColumns)
     {
@@ -254,9 +256,9 @@ class MysqlDatabaseCheckerService
      * @param MysqlDatabaseColumn $column
      * @param MysqlDatabaseColumn $newColumn
      *
+     * @return array
      * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
-     * @return array
      */
     private function checkColumn(MysqlDatabaseColumn $column, MysqlDatabaseColumn $newColumn): array
     {
@@ -276,6 +278,9 @@ class MysqlDatabaseCheckerService
     {
         // Column is equals no need more check
         if ($column == $newColumn) {
+            return true;
+        }
+        if (null === $column->getLength() || false === $column->getLength()) {
             return true;
         }
 
@@ -309,11 +314,11 @@ class MysqlDatabaseCheckerService
     private function indexIsEquals(MysqlDatabaseIndex $index, MysqlDatabaseIndex $newIndex): bool
     {
         // Column is equals no need more check
-        if ($column == $newColumn) {
+        if ($index == $newIndex) {
             return true;
         }
 
-        return strtolower(json_encode($column->toArray())) == strtolower(json_encode($newColumn->toArray()));
+        return strtolower(json_encode($index->toArray())) == strtolower(json_encode($newIndex->toArray()));
     }
 
     /**
@@ -339,7 +344,7 @@ class MysqlDatabaseCheckerService
     {
         $statements = [];
         foreach ($modificationsBetweenTable as $modifications) {
-            foreach ((array) $modifications as $modification) {
+            foreach ((array)$modifications as $modification) {
                 $statements[] = $modification;
             }
         }
@@ -359,6 +364,12 @@ class MysqlDatabaseCheckerService
 
     public function enableDropStatement(): void
     {
-        $this->dropStatement = true;
+        $this->dropStatement = false;
+//        $this->dropStatement = true;
+    }
+
+    public function getDropStatement(): bool
+    {
+        return $this->dropStatement;
     }
 }
