@@ -5,8 +5,9 @@
   "minimum-stability": "stable",
   "require": {
     "php": "^7.2",
-    "symfony/options-resolver": "^4.0",
-    "psr/log": "^1.0"
+    "symfony/options-resolver": "^5.0",
+    "psr/log": "^1.0",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {
