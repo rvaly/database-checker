@@ -99,7 +99,7 @@ class JsonDatabaseFactory
     {
         $data = $this->generateJsonData();
 
-        // On force les valeurs par d�faut.
+        // On force les valeurs par défaut.
         $resolverTable = new OptionsResolver();
         $resolverTable->setRequired(['columns']);
         $resolverTable->setDefaults(

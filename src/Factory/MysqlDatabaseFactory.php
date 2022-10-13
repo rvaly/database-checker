@@ -60,7 +60,9 @@ class MysqlDatabaseFactory
 
     protected function getIndex($table): array
     {
-        if (!$results = $this->repositoryMysql->fetchIndexStructure($this->databaseName, $table)) {
+        $results = $this->repositoryMysql->fetchIndexStructure($this->databaseName, $table);
+
+        if (!$results) {
             return [];
         }
         $export = [];
