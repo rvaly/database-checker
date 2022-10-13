@@ -4,7 +4,7 @@ namespace LBIGroupDataBaseChecker\Factory;
 
 use LBIGroupDataBaseChecker\Exception\JsonInvalidFormatException;
 use LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException;
-use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\DatabaseChecker\LoggerTrait;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabase;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabaseColumn;
 use LBIGroupDataBaseChecker\Structure\MysqlDatabaseTable;
@@ -99,7 +99,7 @@ class JsonDatabaseFactory
     {
         $data = $this->generateJsonData();
 
-        // On force les valeurs par d�faut.
+        // On force les valeurs par défaut.
         $resolverTable = new OptionsResolver();
         $resolverTable->setRequired(['columns']);
         $resolverTable->setDefaults(

@@ -1,13 +1,13 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Tests\Factory;
+namespace LBIGroupDataBaseChecker\Test\Tests\Factory;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Exception\JsonInvalidFormatException;
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
-use Starkerxp\DatabaseChecker\Factory\JsonDatabaseFactory;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
+use LBIGroupDataBaseChecker\Test\Exception\JsonInvalidFormatException;
+use LBIGroupDataBaseChecker\Test\Exception\TablenameHasNotDefinedException;
+use LBIGroupDataBaseChecker\Test\Factory\JsonDatabaseFactory;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseColumn;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseTable;
 
 class JsonDatabaseFactoryTest extends TestCase
 {

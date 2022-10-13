@@ -1,10 +1,10 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Tests\Factory;
+namespace LBIGroupDataBaseChecker\Test\Tests\Factory;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Factory\JsonDatabaseFactory;
-use Starkerxp\DatabaseChecker\Factory\MysqlDatabaseFactory;
+use LBIGroupDataBaseChecker\Test\Factory\JsonDatabaseFactory;
+use LBIGroupDataBaseChecker\Test\Factory\MysqlDatabaseFactory;
 
 class MysqlDatabaseFactoryTest extends TestCase
 {
@@ -51,7 +51,7 @@ class MysqlDatabaseFactoryTest extends TestCase
 
     private function mockMysqlRepository()
     {
-        $oMock = $this->createMock('\Starkerxp\DatabaseChecker\Repository\MysqlRepository');
+        $oMock = $this->createMock('\LBIGroupDataBaseChecker\Test\Repository\MysqlRepository');
         $oMock->expects($this->any())
             ->method('getTablesStructure')
             ->with('myTestDatabase')
@@ -200,7 +200,7 @@ class MysqlDatabaseFactoryTest extends TestCase
 
     private function mockMysqlRepositoryForEnum()
     {
-        $oMock = $this->createMock('\Starkerxp\DatabaseChecker\Repository\MysqlRepository');
+        $oMock = $this->createMock('\LBIGroupDataBaseChecker\Test\Repository\MysqlRepository');
         $oMock->expects($this->any())
             ->method('getTablesStructure')
             ->with('myTestDatabase')

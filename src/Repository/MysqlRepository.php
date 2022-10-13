@@ -3,11 +3,12 @@
 namespace LBIGroupDataBaseChecker\Repository;
 
 
-use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\DatabaseChecker\LoggerTrait;
 
 class MysqlRepository implements StructureInterface
 {
     use LoggerTrait;
+
     /**
      * @var \PDO
      */

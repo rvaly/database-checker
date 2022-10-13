@@ -1,10 +1,10 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Tests\Structure;
+namespace LBIGroupDataBaseChecker\Test\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
+use LBIGroupDataBaseChecker\Test\Exception\TablenameHasNotDefinedException;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseColumn;
 
 class MysqlDatabaseColumnTest extends TestCase
 {

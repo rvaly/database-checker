@@ -3,7 +3,7 @@
 namespace LBIGroupDataBaseChecker\Structure;
 
 use LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException;
-use LBIGroupDataBaseChecker\LoggerTrait;
+use LBIGroupDataBaseChecker\DatabaseChecker\LoggerTrait;
 
 class MysqlDatabaseColumn implements DatabaseInterface
 {
@@ -79,9 +79,9 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
+     * @return array
      * @throws TablenameHasNotDefinedException
      *
-     * @return array
      */
     public function createStatement()
     {
@@ -115,7 +115,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     public function getCollate(): ?string
     {
         $type = $this->getType();
-        if (!\in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar','float'], false)) {
+        if (!\in_array($type, ['char', 'varchar', 'enum', 'longtext', 'mediumtext', 'text', 'tinytext', 'varchar', 'float', 'decimal'], false)) {
             return '';
         }
 
@@ -131,9 +131,9 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
+     * @return mixed
      * @throws TablenameHasNotDefinedException
      *
-     * @return mixed
      */
     public function getTable()
     {
@@ -160,7 +160,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
             $length = $explode[0];
             $unsigned = !empty($explode[1]) ? ' UNSIGNED' : '';
         }
-        if (\in_array($baseType, ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'varchar', 'bigint', 'char', 'float'], false)) {
+        if (\in_array($baseType, ['int', 'mediumint', 'tinyint', 'smallint', 'binary', 'varchar', 'bigint', 'char', 'float', 'decimal'], false)) {
             $baseType = $baseType . '(' . $length . ')' . $unsigned;
         }
 
@@ -192,9 +192,9 @@ class MysqlDatabaseColumn implements DatabaseInterface
     }
 
     /**
+     * @return array
      * @throws TablenameHasNotDefinedException
      *
-     * @return array
      */
     public function alterStatement()
     {
@@ -239,5 +239,10 @@ class MysqlDatabaseColumn implements DatabaseInterface
         }
 
         return sprintf("COLLATE '%s'", $collate);
+    }
+
+    public function getLength()
+    {
+        return $this->length;
     }
 }

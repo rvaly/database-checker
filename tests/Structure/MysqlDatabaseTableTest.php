@@ -1,12 +1,12 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Tests\Structure;
+namespace LBIGroupDataBaseChecker\Test\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException;
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
+use LBIGroupDataBaseChecker\Test\Exception\TableHasNotColumnException;
+use LBIGroupDataBaseChecker\Test\Exception\TablenameHasNotDefinedException;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseColumn;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseTableTest extends TestCase
 {
@@ -254,7 +254,7 @@ class MysqlDatabaseTableTest extends TestCase
         $table = new MysqlDatabaseTable('login');
         $table->addColumn(new MysqlDatabaseColumn('id', 'INT', '11', false, null, 'auto_increment'));
         $table->removeColumn('id');
-        $this->expectException('\Starkerxp\DatabaseChecker\Exception\TableHasNotColumnException');
+        $this->expectException('\LBIGroupDataBaseChecker\Test\Exception\TableHasNotColumnException');
         $this->assertCount(0, $table->toArray());
     }
 }

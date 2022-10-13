@@ -1,11 +1,11 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Tests;
+namespace LBIGroupDataBaseChecker\Test\Tests;
 
 use Apix\Log\Logger\Runtime;
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
+use LBIGroupDataBaseChecker\Test\Exception\TablenameHasNotDefinedException;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseIndex;
 
 class LoggetTraitTest extends TestCase
 {

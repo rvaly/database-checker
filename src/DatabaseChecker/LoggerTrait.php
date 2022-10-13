@@ -6,7 +6,7 @@
  * Time: 13:28.
  */
 
-namespace Starkerxp\DatabaseChecker;
+namespace LBIGroupDataBaseChecker\DatabaseChecker;
 
 use Psr\Log\LoggerAwareTrait;
 

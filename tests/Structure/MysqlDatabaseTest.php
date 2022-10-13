@@ -1,12 +1,12 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Tests\Structure;
+namespace LBIGroupDataBaseChecker\Test\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Exception\DatabaseHasNotDefinedException;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabase;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseColumn;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseTable;
+use LBIGroupDataBaseChecker\Test\Exception\DatabaseHasNotDefinedException;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabase;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseColumn;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseTable;
 
 class MysqlDatabaseTest extends TestCase
 {

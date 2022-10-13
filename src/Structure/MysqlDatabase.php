@@ -2,8 +2,8 @@
 
 namespace LBIGroupDataBaseChecker\Structure;
 
+use LBIGroupDataBaseChecker\DatabaseChecker\LoggerTrait;
 use LBIGroupDataBaseChecker\Exception\DatabaseHasNotDefinedException;
-use LBIGroupDataBaseChecker\LoggerTrait;
 
 class MysqlDatabase implements DatabaseInterface
 {
@@ -113,9 +113,9 @@ class MysqlDatabase implements DatabaseInterface
     }
 
     /**
+     * @return array
      * @throws \RuntimeException
      *
-     * @return array
      */
     public function alterStatement()
     {

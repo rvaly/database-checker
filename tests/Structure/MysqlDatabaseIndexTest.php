@@ -1,10 +1,10 @@
 <?php
 
-namespace Starkerxp\DatabaseChecker\Tests\Structure;
+namespace LBIGroupDataBaseChecker\Test\Tests\Structure;
 
 use PHPUnit\Framework\TestCase;
-use Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException;
-use Starkerxp\DatabaseChecker\Structure\MysqlDatabaseIndex;
+use LBIGroupDataBaseChecker\Test\Exception\TablenameHasNotDefinedException;
+use LBIGroupDataBaseChecker\Test\Structure\MysqlDatabaseIndex;
 
 class MysqlDatabaseIndexTest extends TestCase
 {
@@ -102,7 +102,7 @@ class MysqlDatabaseIndexTest extends TestCase
      * @param array  $columns
      * @param bool   $unique
      *
-     * @throws \Starkerxp\DatabaseChecker\Exception\TablenameHasNotDefinedException
+     * @throws \LBIGroupDataBaseChecker\Test\Exception\TablenameHasNotDefinedException
      */
     public function testStatements($expected, $expectedAlter, $name, array $columns, $unique): void
     {
