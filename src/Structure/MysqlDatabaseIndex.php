@@ -11,26 +11,21 @@ class MysqlDatabaseIndex implements DatabaseInterface
 
     private $table;
     private $name;
-    private $unique;
-    private $columns;
 
     /**
      * DatabaseColumnStructure constructor.
      *
      * @param string $name
      * @param bool   $unique
-     * @param array  $columns
      *
      * @throws \RuntimeException
      */
-    public function __construct($name, array $columns, $unique)
+    public function __construct($name, private readonly array $columns, private $unique)
     {
         if (empty($name)) {
             throw new \RuntimeException('');
         }
         $this->name = $name;
-        $this->unique = $unique;
-        $this->columns = $columns;
     }
 
     public function toArray()
@@ -111,9 +106,6 @@ class MysqlDatabaseIndex implements DatabaseInterface
         return [sprintf('ALTER TABLE `%s` ADD %s INDEX `%s` (%s);', $this->getTable(), $this->getIndexType(), $this->getName(), '`' . implode('`, `', $this->getColumns()) . '`')];
     }
 
-    /**
-     * @return array
-     */
     public function getColumns(): array
     {
         return $this->columns;
@@ -128,18 +120,12 @@ class MysqlDatabaseIndex implements DatabaseInterface
         return '';
     }
 
-    /**
-     * @return bool
-     */
     public function isUnique(): bool
     {
         return $this->unique;
     }
 
-    /**
-     * @param mixed $table
-     */
-    public function setTable($table): void
+    public function setTable(mixed $table): void
     {
         $this->table = $table;
     }

@@ -11,11 +11,8 @@ class MysqlDatabaseColumn implements DatabaseInterface
 
     private $table;
     private $name;
-    private $type;
-    private $length;
-    private $nullable;
-    private $defaultValue;
-    private $extra;
+    private string $type;
+    private string $extra;
     private $collate;
 
     /**
@@ -30,36 +27,30 @@ class MysqlDatabaseColumn implements DatabaseInterface
      *
      * @throws \RuntimeException
      */
-    public function __construct($name, $type, $length, $nullable, $defaultValue, $extra)
+    public function __construct($name, $type, private $length, private $nullable, private $defaultValue, $extra)
     {
         if (empty($name)) {
             throw new \RuntimeException('');
         }
         $this->name = $name;
         $this->setType($type);
-        $this->length = $length;
-        $this->nullable = $nullable;
-        $this->defaultValue = $defaultValue;
         $this->setExtra($extra);
     }
 
     private function setType($type): void
     {
-        $type = strtolower($type);
+        $type = strtolower((string) $type);
         $this->type = $type;
     }
 
-    /**
-     * @param mixed $extra
-     */
-    public function setExtra($extra): void
+    public function setExtra(mixed $extra): void
     {
-        $this->extra = strtoupper($extra);
+        $this->extra = strtoupper((string) $extra);
     }
 
     public function optimizeType(): void
     {
-        $isEnum = explode('enum', $this->type);
+        $isEnum = explode('enum', (string) $this->type);
         if (!empty($isEnum)) {
             $numberElements = substr_count(str_replace(['(', ')', "'"], '', $isEnum[1]), ',') + 1;
             if (2 == $numberElements) {
@@ -73,7 +64,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
     {
         $tmp = get_object_vars($this);
         unset($tmp['logger']);
-        $tmp['type'] = strtoupper($tmp['type']);
+        $tmp['type'] = strtoupper((string) $tmp['type']);
 
         return $tmp;
     }
@@ -122,9 +113,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
         return $this->collate;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
@@ -155,8 +143,8 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $baseType = $this->type;
         $length = $this->length;
         $unsigned = '';
-        if (false !== strpos($this->length, 'unsigned')) {
-            $explode = explode(' ', $this->length);
+        if (str_contains((string) $this->length, 'unsigned')) {
+            $explode = explode(' ', (string) $this->length);
             $length = $explode[0];
             $unsigned = !empty($explode[1]) ? ' UNSIGNED' : '';
         }
@@ -164,7 +152,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
             $baseType = $baseType . '(' . $length . ')' . $unsigned;
         }
 
-        return strtoupper($baseType);
+        return strtoupper((string) $baseType);
     }
 
     /**
@@ -183,10 +171,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $this->collate = $collate;
     }
 
-    /**
-     * @param mixed $table
-     */
-    public function setTable($table): void
+    public function setTable(mixed $table): void
     {
         $this->table = $table;
     }
@@ -211,9 +196,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
         return sprintf('ALTER TABLE `%s` DROP COLUMN `%s`;', $this->getTable(), $this->getName());
     }
 
-    /**
-     * @return string
-     */
     private function formatDefaultValue(): string
     {
         $default = $this->getDefaultValue();
@@ -228,9 +210,6 @@ class MysqlDatabaseColumn implements DatabaseInterface
         return " DEFAULT '" . $default . "'";
     }
 
-    /**
-     * @return null|string
-     */
     private function formatCollate(): ?string
     {
         $collate = $this->getCollate();

@@ -16,30 +16,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class JsonDatabaseFactory
 {
     use LoggerTrait;
-    /**
-     * @var string
-     */
-    private $json;
 
     /**
      * JsonDatabaseFactory constructor.
      *
      * @param string $json
      */
-    public function __construct($json)
+    public function __construct(private $json)
     {
-        $this->json = $json;
     }
 
     /**
-     * @param mixed $databaseName
      *
      * @throws \RuntimeException
      * @throws TablenameHasNotDefinedException
      *
-     * @return MysqlDatabase
      */
-    public function generate($databaseName): MysqlDatabase
+    public function generate(mixed $databaseName): MysqlDatabase
     {
         $tables = [];
         $mysqlDatabase = new MysqlDatabase($databaseName);
@@ -92,8 +85,6 @@ class JsonDatabaseFactory
      * @throws \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
      * @throws \Symfony\Component\OptionsResolver\Exception\AccessException
      * @throws \Symfony\Component\OptionsResolver\Exception\NoSuchOptionException
-     *
-     * @return array
      */
     protected function resolve(): array
     {
@@ -156,7 +147,7 @@ class JsonDatabaseFactory
         if (empty($this->json)) {
             return [];
         }
-        if (!$data = json_decode($this->json, true)) {
+        if (!$data = json_decode($this->json, true, 512, JSON_THROW_ON_ERROR)) {
             $data = [];
         }
 
