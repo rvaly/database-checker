@@ -16,8 +16,6 @@ class MysqlRepository implements StructureInterface
 
     /**
      * MysqlRepository constructor.
-     *
-     * @param \PDO $pdo
      */
     public function __construct(\PDO $pdo)
     {

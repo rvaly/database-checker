@@ -22,7 +22,7 @@ class MysqlDatabase implements DatabaseInterface
     /**
      * @var MysqlDatabaseTable[]
      */
-    private $tables = [];
+    private array $tables = [];
 
     /**
      * DatabaseTableStructure constructor.

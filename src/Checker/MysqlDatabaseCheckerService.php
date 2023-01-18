@@ -17,26 +17,14 @@ class MysqlDatabaseCheckerService
 {
     use LoggerTrait;
 
-    /**
-     * @var bool
-     */
-    private $checkCollate;
+    private ?bool $checkCollate = null;
+
+    private ?bool $checkEngine = null;
+
+    private bool $dropStatement = false;
 
     /**
-     * @var bool
-     */
-    private $checkEngine;
-
-    /**
-     * @var bool
-     */
-    private $dropStatement = false;
-
-    /**
-     * @param MysqlDatabase $database
-     * @param MysqlDatabase $newDatabase
      *
-     * @return array
      * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
      * @throws TableHasNotColumnException
@@ -57,7 +45,7 @@ class MysqlDatabaseCheckerService
             try {
                 $newTable = $this->getTable($table, $newTables);
                 $modificationsBetweenTable[] = $this->checkTable($table, $newTable);
-            } catch (TableNotExistException $e) {
+            } catch (TableNotExistException) {
                 //@todo Drop statement.
                 //@todo config for generate create or drop.
                 $modificationsBetweenTable[] = $this->createStatement($table);
@@ -68,7 +56,7 @@ class MysqlDatabaseCheckerService
         foreach ($newTables as $newTable) {
             try {
                 $this->getTable($newTable, $tables);
-            } catch (TableNotExistException $e) {
+            } catch (TableNotExistException) {
                 $modificationsBetweenTable[] = $this->createStatement($newTable);
                 continue;
             }
@@ -88,7 +76,7 @@ class MysqlDatabaseCheckerService
     private function getTable($table, array $newTables)
     {
         foreach ($newTables as $newTable) {
-            if (strtolower($table->getTable()) == strtolower($newTable->getTable())) {
+            if (strtolower((string) $table->getTable()) == strtolower((string) $newTable->getTable())) {
                 return $newTable;
             }
         }
@@ -96,10 +84,7 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseTable $table
-     * @param MysqlDatabaseTable $newTable
      *
-     * @return array
      * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
      * @throws TableHasNotColumnException
@@ -121,7 +106,7 @@ class MysqlDatabaseCheckerService
                 try {
                     $newColumn = $this->getColumn($column, $newColumns);
                     $modificationsBetweenTable[$newColumn->getName()] = $this->checkColumn($column, $newColumn);
-                } catch (ColumnNotExistException $e) {
+                } catch (ColumnNotExistException) {
                     if ($this->dropStatement) {
                         $modificationsBetweenTable[$column->getName()] = $column->deleteStatement();
                         continue;
@@ -129,7 +114,7 @@ class MysqlDatabaseCheckerService
                     // il ne passe jamais ici
 //                $modificationsBetweenTable[$column->getName()] = $this->createStatement($column);
                     continue;
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     continue;
                 }
             }
@@ -140,10 +125,10 @@ class MysqlDatabaseCheckerService
             foreach ($newColumns as $column) {
                 try {
                     $this->getColumn($column, $columns);
-                } catch (ColumnNotExistException $e) {
+                } catch (ColumnNotExistException) {
                     $modificationsBetweenTable[$column->getName()] = $this->createStatement($column);
                     continue;
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     continue;
                 }
             }
@@ -159,12 +144,12 @@ class MysqlDatabaseCheckerService
                 try {
                     $newIndex = $this->getIndex($index, $newIndexes);
                     $modificationsIndexBetweenTable[$newColumn->getName()] = $this->checkIndex($index, $newIndex);
-                } catch (IndexNotExistException $e) {
+                } catch (IndexNotExistException) {
                     if ($this->dropStatement) {
                         $modificationsIndexRemoveBetweenTable[$index->getName()] = $index->deleteStatement();
                         continue;
                     }
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     continue;
                 }
             }
@@ -175,25 +160,14 @@ class MysqlDatabaseCheckerService
             foreach ($newIndexes as $index) {
                 try {
                     $this->getIndex($index, $indexes);
-                } catch (IndexNotExistException $e) {
+                } catch (IndexNotExistException) {
                     $modificationsIndexBetweenTable[$index->getName()] = $index->createStatement();
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     continue;
                 }
             }
         }
 
-//        foreach ($newIndexes as $indexName => $index) {
-//            foreach ($columnNeedAlter as $colonne) {
-//                if (!in_array($colonne, $index->getColumns(), false)) {
-//                    continue;
-//                }
-//                if ($this->dropStatement) {
-//                    $modificationsIndexRemoveBetweenTable[] = $index->deleteStatement();
-//                }
-//                $modificationsIndexBetweenTable[] = $index->createStatement();
-//            }
-//        }
 
         $modificationsIndexBetweenTable = $this->formatStatements(array_filter($modificationsIndexBetweenTable));
         $modificationsIndexRemoveBetweenTable = $this->formatStatements(array_filter($modificationsIndexRemoveBetweenTable));
@@ -216,8 +190,6 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseTable $table
-     *
      * @throws TableHasNotColumnException
      */
     private function disabledCollate(MysqlDatabaseTable $table): void
@@ -236,11 +208,10 @@ class MysqlDatabaseCheckerService
             return true;
         }
 
-        return strtolower(json_encode($table->toArray())) == strtolower(json_encode($newTable->toArray()));
+        return strtolower(json_encode($table->toArray(), JSON_THROW_ON_ERROR)) == strtolower(json_encode($newTable->toArray(), JSON_THROW_ON_ERROR));
     }
 
     /**
-     * @param MysqlDatabaseColumn   $column
      * @param MysqlDatabaseColumn[] $newColumns
      *
      * @return mixed
@@ -250,7 +221,7 @@ class MysqlDatabaseCheckerService
     private function getColumn(MysqlDatabaseColumn $column, array $newColumns)
     {
         foreach ($newColumns as $newColumn) {
-            if (strtolower($column->getName()) == strtolower($newColumn->getName())) {
+            if (strtolower((string) $column->getName()) == strtolower((string) $newColumn->getName())) {
                 return $newColumn;
             }
         }
@@ -258,10 +229,6 @@ class MysqlDatabaseCheckerService
     }
 
     /**
-     * @param MysqlDatabaseColumn $column
-     * @param MysqlDatabaseColumn $newColumn
-     *
-     * @return array
      * @throws \LBIGroupDataBaseChecker\Exception\TablenameHasNotDefinedException
      *
      */
@@ -272,7 +239,7 @@ class MysqlDatabaseCheckerService
         }
         try {
             $statements = $newColumn->alterStatement();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             return [];
         }
 
@@ -291,13 +258,13 @@ class MysqlDatabaseCheckerService
             return true;
         }
 
-        return strtolower(json_encode($column->toArray())) == strtolower(json_encode($newColumn->toArray()));
+        return strtolower(json_encode($column->toArray(), JSON_THROW_ON_ERROR)) == strtolower(json_encode($newColumn->toArray(), JSON_THROW_ON_ERROR));
     }
 
     private function getIndex(MysqlDatabaseIndex $index, array $newIndexes)
     {
         foreach ($newIndexes as $newIndex) {
-            if (strtolower($index->getName()) == strtolower($newIndex->getName())) {
+            if (strtolower((string) $index->getName()) == strtolower((string) $newIndex->getName())) {
                 return $newIndex;
             }
         }
@@ -311,7 +278,7 @@ class MysqlDatabaseCheckerService
         }
         try {
             $statements = $newIndex->alterStatement();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             return [];
         }
 
@@ -325,11 +292,11 @@ class MysqlDatabaseCheckerService
             return true;
         }
 
-        if (strtolower(json_encode($index->toArray())) == strtolower(json_encode($newIndex->toArray()))) {
+        if (strtolower(json_encode($index->toArray(), JSON_THROW_ON_ERROR)) == strtolower(json_encode($newIndex->toArray(), JSON_THROW_ON_ERROR))) {
             return true;
         }
 
-        if (strtolower($index->getTable()) === strtolower($newIndex->getTable()) && $indexColumns = $index->getColumns() && $newIndexColumns = $newIndex->getColumns()) {
+        if (strtolower((string) $index->getTable()) === strtolower((string) $newIndex->getTable()) && $indexColumns = $index->getColumns() && $newIndexColumns = $newIndex->getColumns()) {
             if (is_array($newIndexColumns) && is_array($indexColumns)) {
                 foreach ($indexColumns as $column) {
                     if (!in_array($column, $newIndexColumns)) {
@@ -358,16 +325,11 @@ class MysqlDatabaseCheckerService
     {
         try {
             return $databaseInterface->createStatement();
-        } catch (TableHasNotColumnException $e) {
+        } catch (TableHasNotColumnException) {
             return [];
         }
     }
 
-    /**
-     * @param array $modificationsBetweenTable
-     *
-     * @return array
-     */
     private function formatStatements(array $modificationsBetweenTable): array
     {
         $statements = [];
@@ -393,7 +355,6 @@ class MysqlDatabaseCheckerService
     public function enableDropStatement(): void
     {
         $this->dropStatement = false;
-//        $this->dropStatement = true;
     }
 
     public function getDropStatement(): bool

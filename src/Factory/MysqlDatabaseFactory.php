@@ -12,21 +12,17 @@ use LBIGroupDataBaseChecker\Structure\MysqlDatabase;
 class MysqlDatabaseFactory
 {
     use LoggerTrait;
-
-    protected $databaseName;
     protected $repositoryMysql;
-    private $checkCollate = false;
+    private bool $checkCollate = false;
 
     /**
      * MysqlDatabaseFactory constructor.
      *
-     * @param StructureInterface $repositoryMysql
      * @param string             $databaseName
      */
-    public function __construct(StructureInterface $repositoryMysql, $databaseName)
+    public function __construct(StructureInterface $repositoryMysql, protected $databaseName)
     {
         $this->repositoryMysql = $repositoryMysql;
-        $this->databaseName = $databaseName;
     }
 
     public function enableCheckCollate(): void
@@ -35,7 +31,6 @@ class MysqlDatabaseFactory
     }
 
     /**
-     * @return MysqlDatabase
      * @throws \LogicException
      *
      */
@@ -47,7 +42,7 @@ class MysqlDatabaseFactory
             $export['tables'][$table] = $this->getIndex($table);
             $export['tables'][$table]['columns'] = $this->getColumns($table);
         }
-        $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($export));
+        $factoryJsonDatabase = new JsonDatabaseFactory(json_encode($export, JSON_THROW_ON_ERROR));
 
         try {
             $export = $factoryJsonDatabase->generate($this->databaseName);
@@ -68,7 +63,7 @@ class MysqlDatabaseFactory
         $export = [];
         foreach ($results as $row) {
             if ('PRIMARY' === $row['INDEX_NAME']) {
-                $export['primary'] = array_filter(explode(',', $row['COLUMN_NAME']));
+                $export['primary'] = array_filter(explode(',', (string) $row['COLUMN_NAME']));
                 continue;
             }
             $key = 'indexes';
@@ -78,7 +73,7 @@ class MysqlDatabaseFactory
             if (!$row['NON_FULLTEXT']) {
                 $key = 'fulltexts';
             }
-            $export[$key][] = array_filter(['name' => $row['INDEX_NAME'], 'columns' => explode(',', $row['COLUMN_NAME'])]);
+            $export[$key][] = array_filter(['name' => $row['INDEX_NAME'], 'columns' => explode(',', (string) $row['COLUMN_NAME'])]);
         }
 
         return $export;
@@ -90,7 +85,7 @@ class MysqlDatabaseFactory
         $results = $this->repositoryMysql->fetchColumnsStructure($this->databaseName, $table);
         foreach ($results as $row) {
             $type = $row['DATA_TYPE'];
-            $length = str_replace([$type, '(', ')'], '', $row['COLUMN_TYPE']);
+            $length = str_replace([$type, '(', ')'], '', (string) $row['COLUMN_TYPE']);
             if ('enum' === $type) {
                 $type = $row['COLUMN_TYPE'];
                 $length = null;
@@ -120,6 +115,6 @@ class MysqlDatabaseFactory
             $export[$table]['columns'] = $this->getColumns($table);
         }
 
-        return json_encode($export);
+        return json_encode($export, JSON_THROW_ON_ERROR);
     }
 }

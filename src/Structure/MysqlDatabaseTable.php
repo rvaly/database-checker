@@ -28,12 +28,12 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @var MysqlDatabaseColumn[]
      */
-    private $columns = [];
+    private array $columns = [];
 
     /**
      * @var MysqlDatabaseIndex[]
      */
-    private $indexes = [];
+    private array $indexes = [];
 
     /**
      * @var string
@@ -83,7 +83,6 @@ class MysqlDatabaseTable implements DatabaseInterface
     /**
      * @param       $indexName
      * @param       $unique
-     * @param array $columns
      */
     protected function addIndexType($indexName, $unique, array $columns): void
     {
@@ -94,7 +93,7 @@ class MysqlDatabaseTable implements DatabaseInterface
             $index = new MysqlDatabaseIndex($indexName, $columns, $unique);
             $index->setTable($this->getTable());
             $this->indexes[$indexName] = $index;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
     }
 
@@ -223,7 +222,7 @@ class MysqlDatabaseTable implements DatabaseInterface
                     continue;
                 }
                 $modifications[] = $index->createStatement();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->critical('Unexpected error are throw.', ['table' => $this->getTable(), 'index' => $index->getName()]);
                 continue;
             }
@@ -240,8 +239,6 @@ class MysqlDatabaseTable implements DatabaseInterface
      * @param $indexName
      *
      * @throws \RuntimeException
-     *
-     * @return MysqlDatabaseIndex
      */
     public function getIndex($indexName): MysqlDatabaseIndex
     {
@@ -253,11 +250,6 @@ class MysqlDatabaseTable implements DatabaseInterface
         return $this->indexes[$indexName];
     }
 
-    /**
-     * @param array $modificationsBetweenTable
-     *
-     * @return array
-     */
     private function formatStatements(array $modificationsBetweenTable): array
     {
         $statements = [];
@@ -277,7 +269,7 @@ class MysqlDatabaseTable implements DatabaseInterface
         }
         $tmp = [];
         foreach ($modifications as $modification) {
-            $tmp[] = trim(str_replace(['ALTER TABLE `' . $this->getTable() . '` ADD COLUMN', 'ALTER TABLE `' . $this->getTable() . '` ADD ', ';'], '', $modification));
+            $tmp[] = trim(str_replace(['ALTER TABLE `' . $this->getTable() . '` ADD COLUMN', 'ALTER TABLE `' . $this->getTable() . '` ADD ', ';'], '', (string) $modification));
         }
         $collate = '' == $this->getCollate() ? '' : sprintf("COLLATE='%s'", $this->getCollate());
 
@@ -298,9 +290,6 @@ class MysqlDatabaseTable implements DatabaseInterface
         return $modifications;
     }
 
-    /**
-     * @return array
-     */
     private function alterStatementCollate(): array
     {
         if (empty($this->database)) {
