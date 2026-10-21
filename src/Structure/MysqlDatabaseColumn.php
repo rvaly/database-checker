@@ -45,7 +45,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
 
     private function setType($type): void
     {
-        $type = strtolower($type);
+        $type = strtolower((string) $type);
         $this->type = $type;
     }
 
@@ -54,13 +54,13 @@ class MysqlDatabaseColumn implements DatabaseInterface
      */
     public function setExtra($extra): void
     {
-        $this->extra = strtoupper($extra);
+        $this->extra = strtoupper((string) $extra);
     }
 
     public function optimizeType(): void
     {
-        $isEnum = explode('enum', $this->type);
-        if (!empty($isEnum)) {
+        $isEnum = explode('enum', (string) $this->type);
+        if (isset($isEnum[1])) {
             $numberElements = substr_count(str_replace(['(', ')', "'"], '', $isEnum[1]), ',') + 1;
             if (2 == $numberElements) {
                 $this->type = 'tinyint';
@@ -155,8 +155,8 @@ class MysqlDatabaseColumn implements DatabaseInterface
         $baseType = $this->type;
         $length = $this->length;
         $unsigned = '';
-        if (false !== strpos($this->length, 'unsigned')) {
-            $explode = explode(' ', $this->length);
+        if (false !== strpos((string) $this->length, 'unsigned')) {
+            $explode = explode(' ', (string) $this->length);
             $length = $explode[0];
             $unsigned = !empty($explode[1]) ? ' UNSIGNED' : '';
         }
@@ -164,7 +164,7 @@ class MysqlDatabaseColumn implements DatabaseInterface
             $baseType = $baseType . '(' . $length . ')' . $unsigned;
         }
 
-        return strtoupper($baseType);
+        return strtoupper((string) $baseType);
     }
 
     /**

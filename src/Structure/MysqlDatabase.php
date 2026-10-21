@@ -126,7 +126,7 @@ class MysqlDatabase implements DatabaseInterface
         }
 
         return [
-            sprintf('ALTER DATABASE %s CHARACTER SET %s COLLATE %s;', $this->database, explode('_', $collateTmp)[0], $collateTmp),
+            sprintf('ALTER DATABASE %s CHARACTER SET %s COLLATE %s;', $this->database, explode('_', (string) $collateTmp)[0], $collateTmp),
         ];
     }
 

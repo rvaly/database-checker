@@ -88,7 +88,7 @@ class MysqlDatabaseCheckerService
     private function getTable($table, array $newTables)
     {
         foreach ($newTables as $newTable) {
-            if (strtolower($table->getTable()) == strtolower($newTable->getTable())) {
+            if (strtolower((string) $table->getTable()) == strtolower((string) $newTable->getTable())) {
                 return $newTable;
             }
         }
@@ -245,7 +245,7 @@ class MysqlDatabaseCheckerService
     private function getColumn(MysqlDatabaseColumn $column, array $newColumns)
     {
         foreach ($newColumns as $newColumn) {
-            if (strtolower($column->getName()) == strtolower($newColumn->getName())) {
+            if (strtolower((string) $column->getName()) == strtolower((string) $newColumn->getName())) {
                 return $newColumn;
             }
         }
@@ -290,7 +290,7 @@ class MysqlDatabaseCheckerService
     private function getIndex(MysqlDatabaseIndex $index, array $newIndexes)
     {
         foreach ($newIndexes as $newIndex) {
-            if (strtolower($index->getName()) == strtolower($newIndex->getName())) {
+            if (strtolower((string) $index->getName()) == strtolower((string) $newIndex->getName())) {
                 return $newIndex;
             }
         }
